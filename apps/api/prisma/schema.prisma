@@ -1,0 +1,906 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  administrador
+  moderador
+  gestor
+  coordenador
+  escalista
+}
+
+enum EscalistaStatus {
+  pendente
+  ativo
+  inativo
+}
+
+enum VagaStatus {
+  aberta
+  fechada
+  cancelada
+  anunciada
+}
+
+enum CandidaturaStatus {
+  pendente
+  aprovada
+  rejeitada
+}
+
+enum GradeStatus {
+  rascunho
+  publicada
+  encerrada
+}
+
+enum PagamentoStatus {
+  pendente
+  autorizado
+  pago
+  cancelado
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+// ============================================
+// ENUMS DO MÓDULO DE COMUNICAÇÃO
+// ============================================
+
+enum ConversationType {
+  direct
+  group
+}
+
+enum MessageType {
+  text
+  image
+  audio
+  video
+  file
+  document
+  location
+  shift_offer
+  shift_response
+  system
+  sticker
+  contact
+  interactive
+  template
+}
+
+enum MessageStatus {
+  sending
+  sent
+  delivered
+  read
+  failed
+}
+
+enum ParticipantRole {
+  admin
+  member
+}
+
+enum ShiftOfferStatus {
+  pending
+  accepted
+  rejected
+  expired
+  cancelled
+}
+
+enum WhatsAppInstanceStatus {
+  connected
+  disconnected
+  offline
+  connecting
+}
+
+// Better Auth User model
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false) @map("email_verified")
+  name          String
+  image         String?
+  role          UserRole  @default(escalista)
+  grupoIds      String[]  @map("grupo_ids")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("users")
+}
+
+// Better Auth Session model
+model Session {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Better Auth Account model (for OAuth providers and credentials)
+model Account {
+  id                    String    @id @default(uuid())
+  userId                String    @map("user_id")
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  idToken               String?   @map("id_token")
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+// Better Auth Verification model (for email verification, password reset, magic link)
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("verifications")
+}
+
+model Grupo {
+  id               String            @id @default(uuid())
+  nome             String
+  descricao        String?
+  ativo            Boolean           @default(true)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  hospitais        Hospital[]
+  escalistas       Escalista[]
+  conversations    Conversation[]
+  whatsAppInstance WhatsAppInstance?
+  tickets          Ticket[]
+  kanbanCards      KanbanCard[]
+  kanbanTags       KanbanTag[]
+  notifications    Notification[]
+
+  @@map("grupos")
+}
+
+model Especialidade {
+  id        String   @id @default(uuid())
+  nome      String   @unique
+  sigla     String?
+  cor       String?
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  medicos   Medico[]
+  vagas     Vaga[]
+
+  @@map("especialidades")
+}
+
+model Hospital {
+  id        String   @id @default(uuid())
+  nome      String
+  cnpj      String?  @unique
+  endereco  String?
+  cidade    String?
+  estado    String?
+  cep       String?
+  telefone  String?
+  email     String?
+  ativo     Boolean  @default(true)
+  grupoId   String   @map("grupo_id")
+  grupo     Grupo    @relation(fields: [grupoId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  setores   Setor[]
+  vagas     Vaga[]
+  grades    Grade[]
+
+  @@map("hospitais")
+}
+
+model Setor {
+  id         String   @id @default(uuid())
+  nome       String
+  descricao  String?
+  ativo      Boolean  @default(true)
+  hospitalId String   @map("hospital_id")
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  vagas      Vaga[]
+  grades     Grade[]
+
+  @@map("setores")
+}
+
+model Medico {
+  id                    String            @id @default(uuid())
+  nome                  String
+  crm                   String
+  crmUf                 String            @map("crm_uf")
+  cpf                   String?           @unique
+  email                 String?           @unique
+  telefone              String?
+  especialidadeId       String            @map("especialidade_id")
+  especialidade         Especialidade     @relation(fields: [especialidadeId], references: [id])
+  ativo                 Boolean           @default(true)
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+  escalistas            Escalista[]
+  candidaturas          Candidatura[]
+  timeSlots             TimeSlot[]
+  pagamentos            Pagamento[]
+  checkinCheckouts      CheckinCheckout[]
+  chatParticipants      ChatParticipant[]
+  linkedContacts        ChatContact[]     @relation("LinkedMedico")
+  receivedShiftOffers   ChatShiftOffer[]  @relation("RecipientMedico")
+
+  @@unique([crm, crmUf])
+  @@map("medicos")
+}
+
+model Escalista {
+  id        String          @id @default(uuid())
+  medicoId  String          @map("medico_id")
+  medico    Medico          @relation(fields: [medicoId], references: [id])
+  grupoId   String          @map("grupo_id")
+  grupo     Grupo           @relation(fields: [grupoId], references: [id])
+  status    EscalistaStatus @default(pendente)
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@unique([medicoId, grupoId])
+  @@map("escalistas")
+}
+
+model Vaga {
+  id               String            @id @default(uuid())
+  data             DateTime
+  horaInicio       String            @map("hora_inicio")
+  horaFim          String            @map("hora_fim")
+  valor            Decimal           @db.Decimal(10, 2)
+  observacoes      String?
+  status           VagaStatus        @default(aberta)
+  hospitalId       String            @map("hospital_id")
+  hospital         Hospital          @relation(fields: [hospitalId], references: [id])
+  setorId          String            @map("setor_id")
+  setor            Setor             @relation(fields: [setorId], references: [id])
+  especialidadeId  String            @map("especialidade_id")
+  especialidade    Especialidade     @relation(fields: [especialidadeId], references: [id])
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  candidaturas     Candidatura[]
+  pagamentos       Pagamento[]
+  checkinCheckouts CheckinCheckout[]
+  shiftOffers      ChatShiftOffer[]
+
+  @@map("vagas")
+}
+
+model Candidatura {
+  id        String            @id @default(uuid())
+  vagaId    String            @map("vaga_id")
+  vaga      Vaga              @relation(fields: [vagaId], references: [id])
+  medicoId  String            @map("medico_id")
+  medico    Medico            @relation(fields: [medicoId], references: [id])
+  status    CandidaturaStatus @default(pendente)
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  @@unique([vagaId, medicoId])
+  @@map("candidaturas")
+}
+
+model Grade {
+  id         String      @id @default(uuid())
+  nome       String
+  descricao  String?
+  dataInicio DateTime    @map("data_inicio")
+  dataFim    DateTime    @map("data_fim")
+  hospitalId String      @map("hospital_id")
+  hospital   Hospital    @relation(fields: [hospitalId], references: [id])
+  setorId    String      @map("setor_id")
+  setor      Setor       @relation(fields: [setorId], references: [id])
+  status     GradeStatus @default(rascunho)
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  timeSlots  TimeSlot[]
+
+  @@map("grades")
+}
+
+model TimeSlot {
+  id         String   @id @default(uuid())
+  gradeId    String   @map("grade_id")
+  grade      Grade    @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  medicoId   String?  @map("medico_id")
+  medico     Medico?  @relation(fields: [medicoId], references: [id])
+  data       DateTime
+  horaInicio String   @map("hora_inicio")
+  horaFim    String   @map("hora_fim")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("time_slots")
+}
+
+model Pagamento {
+  id              String          @id @default(uuid())
+  vagaId          String          @map("vaga_id")
+  vaga            Vaga            @relation(fields: [vagaId], references: [id])
+  medicoId        String          @map("medico_id")
+  medico          Medico          @relation(fields: [medicoId], references: [id])
+  valor           Decimal         @db.Decimal(10, 2)
+  status          PagamentoStatus @default(pendente)
+  dataAutorizacao DateTime?       @map("data_autorizacao")
+  dataPagamento   DateTime?       @map("data_pagamento")
+  observacoes     String?
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  @@map("pagamentos")
+}
+
+model CheckinCheckout {
+  id          String    @id @default(uuid())
+  vagaId      String    @map("vaga_id")
+  vaga        Vaga      @relation(fields: [vagaId], references: [id])
+  medicoId    String    @map("medico_id")
+  medico      Medico    @relation(fields: [medicoId], references: [id])
+  checkinAt   DateTime? @map("checkin_at")
+  checkoutAt  DateTime? @map("checkout_at")
+  observacoes String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@unique([vagaId, medicoId])
+  @@map("checkin_checkout")
+}
+
+// Audit Log - Registro de todas as ações de modificação
+model AuditLog {
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  userEmail     String      @map("user_email")
+  action        AuditAction
+  resource      String
+  resourceId    String?     @map("resource_id")
+  oldValue      Json?       @map("old_value")
+  newValue      Json?       @map("new_value")
+  ipAddress     String?     @map("ip_address")
+  userAgent     String?     @map("user_agent")
+  correlationId String?     @map("correlation_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================
+// MÓDULO DE COMUNICAÇÃO - CHAT/WHATSAPP
+// ============================================
+
+// Conversa (direta ou grupo)
+model Conversation {
+  id                 String           @id @default(uuid())
+  type               ConversationType
+  name               String?
+  createdById        String           @map("created_by_id")
+  grupoId            String           @map("grupo_id")
+  grupo              Grupo            @relation(fields: [grupoId], references: [id])
+  zapsterGroupId     String?          @map("zapster_group_id")
+  isArchived         Boolean          @default(false) @map("is_archived")
+  lastMessageAt      DateTime?        @map("last_message_at")
+  lastMessagePreview String?          @map("last_message_preview")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+  shiftOffers  ChatShiftOffer[]
+
+  @@index([grupoId])
+  @@index([createdById])
+  @@index([lastMessageAt(sort: Desc)])
+  @@index([zapsterGroupId])
+  @@map("chat_conversations")
+}
+
+// Participante de uma conversa
+model ChatParticipant {
+  id             String          @id @default(uuid())
+  conversationId String          @map("conversation_id")
+  conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String?         @map("user_id")
+  medicoId       String?         @map("medico_id")
+  medico         Medico?         @relation(fields: [medicoId], references: [id])
+  phoneNumber    String          @map("phone_number")
+  role           ParticipantRole @default(member)
+  isMuted        Boolean         @default(false) @map("is_muted")
+  unreadCount    Int             @default(0) @map("unread_count")
+  joinedAt       DateTime        @default(now()) @map("joined_at")
+  leftAt         DateTime?       @map("left_at")
+  lastReadAt     DateTime?       @map("last_read_at")
+
+  @@unique([conversationId, phoneNumber])
+  @@index([userId])
+  @@index([medicoId])
+  @@index([phoneNumber])
+  @@map("chat_participants")
+}
+
+// Mensagem de chat
+model ChatMessage {
+  id                String        @id @default(uuid())
+  conversationId    String        @map("conversation_id")
+  conversation      Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId          String?       @map("sender_id")
+  senderPhone       String        @map("sender_phone")
+  content           String?
+  messageType       MessageType   @default(text) @map("message_type")
+  replyToId         String?       @map("reply_to_id")
+  replyTo           ChatMessage?  @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies           ChatMessage[] @relation("MessageReplies")
+  metadata          Json?         @default("{}")
+  status            MessageStatus @default(sending)
+  whatsappMessageId String?       @map("whatsapp_message_id")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  deliveredAt       DateTime?     @map("delivered_at")
+  readAt            DateTime?     @map("read_at")
+  deletedAt         DateTime?     @map("deleted_at")
+
+  shiftOffer ChatShiftOffer?
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([conversationId, createdAt(sort: Desc)])
+  @@index([whatsappMessageId])
+  @@index([messageType])
+  @@map("chat_messages")
+}
+
+// Contato salvo (agenda pessoal do usuário)
+model ChatContact {
+  id             String   @id @default(uuid())
+  ownerId        String   @map("owner_id")
+  name           String
+  phoneNumber    String   @map("phone_number")
+  email          String?
+  avatarUrl      String?  @map("avatar_url")
+  linkedUserId   String?  @map("linked_user_id")
+  linkedMedicoId String?  @map("linked_medico_id")
+  linkedMedico   Medico?  @relation("LinkedMedico", fields: [linkedMedicoId], references: [id])
+  isFavorite     Boolean  @default(false) @map("is_favorite")
+  isBlocked      Boolean  @default(false) @map("is_blocked")
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([ownerId, phoneNumber])
+  @@index([ownerId])
+  @@index([linkedMedicoId])
+  @@index([phoneNumber])
+  @@map("chat_contacts")
+}
+
+// Oferta de plantão via chat
+model ChatShiftOffer {
+  id                String           @id @default(uuid())
+  vagaId            String           @map("vaga_id")
+  vaga              Vaga             @relation(fields: [vagaId], references: [id])
+  messageId         String?          @unique @map("message_id")
+  message           ChatMessage?     @relation(fields: [messageId], references: [id])
+  senderId          String           @map("sender_id")
+  recipientId       String?          @map("recipient_id")
+  recipientMedicoId String?          @map("recipient_medico_id")
+  recipientMedico   Medico?          @relation("RecipientMedico", fields: [recipientMedicoId], references: [id])
+  recipientPhone    String           @map("recipient_phone")
+  status            ShiftOfferStatus @default(pending)
+  expiresAt         DateTime         @map("expires_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  respondedAt       DateTime?        @map("responded_at")
+  conversationId    String?          @map("conversation_id")
+  conversation      Conversation?    @relation(fields: [conversationId], references: [id])
+
+  @@index([vagaId])
+  @@index([senderId])
+  @@index([recipientMedicoId])
+  @@index([status])
+  @@index([conversationId])
+  @@map("chat_shift_offers")
+}
+
+// Instância WhatsApp por grupo (Zapster, Twilio ou Meta)
+model WhatsAppInstance {
+  id                 String                 @id @default(uuid())
+  grupoId            String                 @unique @map("grupo_id")
+  grupo              Grupo                  @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  provider           String                 @default("zapster") // zapster, twilio, meta
+  providerInstanceId String                 @map("provider_instance_id")
+  instanceName       String                 @map("instance_name")
+  status             WhatsAppInstanceStatus @default(disconnected)
+  phoneNumber        String?                @map("phone_number")
+  metadata           Json?                  @default("{}")
+  createdById        String                 @map("created_by_id")
+  createdAt          DateTime               @default(now()) @map("created_at")
+  updatedAt          DateTime               @updatedAt @map("updated_at")
+
+  @@index([providerInstanceId])
+  @@index([status])
+  @@map("whatsapp_instances")
+}
+
+// ============================================
+// ENUMS DO MÓDULO DE TICKETS
+// ============================================
+
+enum TicketStatus {
+  open
+  in_review
+  in_progress
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+  critical
+}
+
+enum TicketCategory {
+  ui
+  functionality
+  performance
+  security
+  api
+  other
+}
+
+enum TicketType {
+  bug
+  feature
+  incident
+  improvement
+  tech_task
+  support
+  integration
+  security
+}
+
+enum TicketSector {
+  dev
+  comercial
+  prompters
+}
+
+enum KanbanTab {
+  projetos
+  financeiro
+}
+
+enum KanbanTimelineType {
+  create
+  move
+  comment
+  assign
+  tag
+  link
+  update
+}
+
+// ============================================
+// MÓDULO DE TICKETS
+// ============================================
+
+model Ticket {
+  id                String           @id @default(uuid())
+  title             String
+  description       String           @db.Text
+  priority          TicketPriority
+  category          TicketCategory
+  status            TicketStatus     @default(open)
+  sector            TicketSector     @default(dev)
+  type              TicketType       @default(bug)
+  location          String?
+  reproductionSteps String?          @db.Text @map("reproduction_steps")
+  screenshots       String[]
+  tags              String[]
+  slaDeadline       DateTime?        @map("sla_deadline")
+  slaBreach         Boolean          @default(false) @map("sla_breach")
+  archived          Boolean          @default(false)
+  resolvedAt        DateTime?        @map("resolved_at")
+  closedAt          DateTime?        @map("closed_at")
+  createdById       String           @map("created_by_id")
+  assignedToId      String?          @map("assigned_to_id")
+  grupoId           String           @map("grupo_id")
+  grupo             Grupo            @relation(fields: [grupoId], references: [id])
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  comments    TicketComment[]
+  attachments TicketAttachment[]
+  history     TicketHistory[]
+
+  @@index([status, priority])
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([grupoId])
+  @@index([slaDeadline])
+  @@map("tickets")
+}
+
+model TicketComment {
+  id         String   @id @default(uuid())
+  content    String   @db.Text
+  isInternal Boolean  @default(false) @map("is_internal")
+  ticketId   String   @map("ticket_id")
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId   String   @map("author_id")
+  authorName String   @map("author_name")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([ticketId])
+  @@index([authorId])
+  @@map("ticket_comments")
+}
+
+model TicketAttachment {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String   @map("original_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  url          String
+  key          String   @unique
+  ticketId     String   @map("ticket_id")
+  ticket       Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([ticketId])
+  @@map("ticket_attachments")
+}
+
+model TicketHistory {
+  id         String   @id @default(uuid())
+  action     String
+  field      String?
+  oldValue   String?  @db.Text @map("old_value")
+  newValue   String?  @db.Text @map("new_value")
+  metadata   Json?
+  ticketId   String   @map("ticket_id")
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId   String   @map("author_id")
+  authorName String   @map("author_name")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([ticketId])
+  @@index([createdAt])
+  @@map("ticket_history")
+}
+
+// ============================================
+// MÓDULO KANBAN
+// ============================================
+
+model KanbanCard {
+  id          String             @id @default(uuid())
+  title       String
+  description String?            @db.Text
+  status      String
+  tab         KanbanTab
+  assigneeId  String?            @map("assignee_id")
+  grupoId     String             @map("grupo_id")
+  grupo       Grupo              @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  createdById String             @map("created_by_id")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  deletedAt   DateTime?          @map("deleted_at")
+
+  tags     KanbanCardTag[]
+  links    KanbanLink[]
+  timeline KanbanTimeline[]
+
+  @@index([tab, status])
+  @@index([grupoId])
+  @@index([assigneeId])
+  @@map("kanban_cards")
+}
+
+model KanbanTag {
+  id        String          @id @default(uuid())
+  name      String
+  color     String          @default("#3B82F6")
+  grupoId   String          @map("grupo_id")
+  grupo     Grupo           @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  createdBy String          @map("created_by")
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  cards KanbanCardTag[]
+
+  @@unique([grupoId, name])
+  @@map("kanban_tags")
+}
+
+model KanbanCardTag {
+  cardId    String     @map("card_id")
+  tagId     String     @map("tag_id")
+  card      KanbanCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  tag       KanbanTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@id([cardId, tagId])
+  @@map("kanban_card_tags")
+}
+
+model KanbanLink {
+  id        String     @id @default(uuid())
+  title     String
+  url       String
+  cardId    String     @map("card_id")
+  card      KanbanCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  createdBy String     @map("created_by")
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@map("kanban_links")
+}
+
+model KanbanTimeline {
+  id        String             @id @default(uuid())
+  cardId    String             @map("card_id")
+  card      KanbanCard         @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  type      KanbanTimelineType
+  authorId  String             @map("author_id")
+  content   String?            @db.Text
+  metadata  Json?
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  @@index([cardId])
+  @@index([createdAt])
+  @@map("kanban_timeline")
+}
+
+// ============================================
+// ENUMS DO MÓDULO DE NOTIFICAÇÕES
+// ============================================
+
+enum NotificationType {
+  // Tickets
+  ticket_created
+  ticket_assigned
+  ticket_status_changed
+  ticket_comment_added
+  ticket_sla_warning
+  ticket_sla_breach
+
+  // Comunicação
+  message_received
+  conversation_created
+  shift_offer_received
+  shift_offer_response
+
+  // Vagas
+  vaga_created
+  vaga_updated
+  vaga_expiring
+  vaga_no_candidates
+
+  // Candidaturas
+  candidatura_received
+  candidatura_approved
+  candidatura_rejected
+
+  // Médicos
+  medico_registered
+  medico_approved
+  medico_documents_pending
+
+  // Comunicados
+  comunicado_published
+
+  // Check-in/Check-out
+  checkin_reminder
+  checkout_reminder
+  checkin_late
+  checkout_late
+}
+
+enum NotificationChannel {
+  in_app
+  email
+  push
+}
+
+enum NotificationPriority {
+  low
+  normal
+  high
+  urgent
+}
+
+// ============================================
+// MÓDULO DE NOTIFICAÇÕES
+// ============================================
+
+model Notification {
+  id        String               @id @default(uuid())
+  userId    String               @map("user_id")
+  type      NotificationType
+  priority  NotificationPriority @default(normal)
+  title     String
+  content   String
+  data      Json?
+  read      Boolean              @default(false)
+  readAt    DateTime?            @map("read_at")
+  sentAt    DateTime             @default(now()) @map("sent_at")
+  channels  NotificationChannel[]
+  grupoId   String?              @map("grupo_id")
+  grupo     Grupo?               @relation(fields: [grupoId], references: [id])
+  createdAt DateTime             @default(now()) @map("created_at")
+
+  @@index([userId, read])
+  @@index([userId, type])
+  @@index([grupoId])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  inApp     Boolean          @default(true) @map("in_app")
+  email     Boolean          @default(true)
+  push      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  @@unique([userId, type])
+  @@index([userId])
+  @@map("notification_preferences")
+}
+
+model NotificationTemplate {
+  id        String           @id @default(uuid())
+  type      NotificationType @unique
+  titleTpl  String           @map("title_template")
+  bodyTpl   String           @map("body_template") @db.Text
+  emailTpl  String?          @map("email_template") @db.Text
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  @@map("notification_templates")
+}
