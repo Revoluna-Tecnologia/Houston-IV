@@ -1,0 +1,29 @@
+services:
+  # Backend API
+  - type: web
+    name: houston-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    plan: free # ou starter se precisar de mais recursos
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: houston-db
+          property: connectionString
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        value: https://houston-api.onrender.com
+      - key: PORT
+        value: 3001
+      # Adicione outras variáveis de ambiente necessárias
+
+  # PostgreSQL Database
+  - type: pgsql
+    name: houston-db
+    plan: free
+    databaseName: houston
+    databaseUser: houston
