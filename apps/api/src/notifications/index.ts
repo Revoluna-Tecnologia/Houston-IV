@@ -1,0 +1,6 @@
+export * from './notifications.module'
+export * from './notifications.service'
+export * from './notifications.repository'
+export * from './notifications.gateway'
+export * from './dto'
+export * from './providers'
