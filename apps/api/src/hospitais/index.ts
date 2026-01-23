@@ -1,0 +1,5 @@
+export * from './hospitais.module'
+export * from './hospitais.service'
+export * from './hospitais.controller'
+export * from './hospitais.repository'
+export * from './dto'
