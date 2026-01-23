@@ -1,0 +1,5 @@
+export * from './setores.module'
+export * from './setores.service'
+export * from './setores.controller'
+export * from './setores.repository'
+export * from './dto'
