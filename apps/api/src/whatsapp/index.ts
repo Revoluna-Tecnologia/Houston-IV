@@ -1,0 +1,5 @@
+export * from './whatsapp.module'
+export * from './whatsapp.service'
+export * from './types'
+export * from './providers'
+export * from './instances'
