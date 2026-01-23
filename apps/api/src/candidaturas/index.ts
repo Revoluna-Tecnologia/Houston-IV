@@ -1,0 +1,5 @@
+export * from './candidaturas.module'
+export * from './candidaturas.service'
+export * from './candidaturas.controller'
+export * from './candidaturas.repository'
+export * from './dto'
