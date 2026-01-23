@@ -1,0 +1,5 @@
+export * from './grupos.module'
+export * from './grupos.service'
+export * from './grupos.controller'
+export * from './grupos.repository'
+export * from './dto'
