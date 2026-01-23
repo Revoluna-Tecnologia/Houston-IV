@@ -1,0 +1,6 @@
+export * from './comunicacao.module'
+export * from './types'
+export * from './conversations'
+export * from './messages'
+export * from './contacts'
+export * from './shift-offers'
