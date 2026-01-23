@@ -1,0 +1,5 @@
+export { TicketsModule } from './tickets.module'
+export { TicketsService } from './tickets.service'
+export { TicketsRepository } from './tickets.repository'
+export * from './dto'
+export * from './analytics'
