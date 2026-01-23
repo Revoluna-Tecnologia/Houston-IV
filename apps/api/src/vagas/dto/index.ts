@@ -1,0 +1,5 @@
+export * from './create-vaga.dto'
+export * from './update-vaga.dto'
+export * from './update-status.dto'
+export * from './vaga-response.dto'
+export * from './vaga-query.dto'
