@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxo de Autenticação - Better Auth | Houston IV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            flex: 1;
+            min-width: 250px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .flow-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .flow-box.frontend {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: #f59e0b;
+        }
+
+        .flow-box.backend {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+
+        .flow-box.database {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border-color: #6366f1;
+        }
+
+        .flow-box.auth {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border-color: #ec4899;
+        }
+
+        .flow-box h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+        }
+
+        .flow-box p, .flow-box ul {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .flow-box ul {
+            margin-left: 20px;
+        }
+
+        .flow-box li {
+            margin-bottom: 8px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #3b82f6;
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .arrow-down {
+            font-size: 2em;
+            color: #3b82f6;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        .code-block .keyword {
+            color: #c678dd;
+        }
+
+        .code-block .string {
+            color: #98c379;
+        }
+
+        .code-block .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-card h4 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .auth-methods {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .auth-method {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+
+        .auth-method:hover {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge.success {
+            background: #10b981;
+        }
+
+        .badge.warning {
+            background: #f59e0b;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #3b82f6;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #3b82f6;
+        }
+
+        .timeline-content {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .timeline-content h4 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .flow-row {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Fluxo de Autenticação - Better Auth</h1>
+            <p>Sistema de autenticação completo do Houston IV</p>
+        </header>
+
+        <div class="content">
+            <!-- Visão Geral -->
+            <div class="section">
+                <h2 class="section-title">📋 Visão Geral</h2>
+                <p style="font-size: 1.1em; line-height: 1.8; color: #4b5563;">
+                    O <strong>Houston IV</strong> utiliza o <span class="highlight">Better Auth</span>, uma biblioteca moderna de autenticação para aplicações fullstack.
+                    O sistema implementa autenticação com múltiplos métodos, gerenciamento de sessões via cookies, e controle de acesso baseado em roles (RBAC).
+                </p>
+
+                <div class="feature-grid" style="margin-top: 30px;">
+                    <div class="feature-card">
+                        <h4>🔑 Métodos de Autenticação</h4>
+                        <ul>
+                            <li>Email + Senha</li>
+                            <li>OAuth (Google/Microsoft)</li>
+                            <li>Magic Link (Email)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🛡️ Segurança</h4>
+                        <ul>
+                            <li>Sessions via cookies HTTP-only</li>
+                            <li>CSRF protection</li>
+                            <li>Password hashing (bcrypt)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>👥 Controle de Acesso</h4>
+                        <ul>
+                            <li>RBAC (Role-Based Access Control)</li>
+                            <li>Permissions granulares</li>
+                            <li>Guards customizados</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚙️ Infraestrutura</h4>
+                        <ul>
+                            <li>PostgreSQL + Prisma</li>
+                            <li>Next.js Proxy para cookies</li>
+                            <li>NestJS Backend API</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuração do Better Auth -->
+            <div class="section">
+                <h2 class="section-title">⚙️ Configuração do Better Auth</h2>
+                <div class="flow-box backend">
+                    <h3>
+                        <span class="icon">🔧</span>
+                        Backend - auth.config.ts
+                        <span class="badge success">API</span>
+                    </h3>
+                    <p>Configuração central do Better Auth no backend NestJS:</p>
+                    <ul>
+                        <li><strong>Base URL:</strong> http://localhost:3001</li>
+                        <li><strong>Base Path:</strong> /auth (rotas em /api/auth/*)</li>
+                        <li><strong>Adapter:</strong> Prisma (PostgreSQL)</li>
+                        <li><strong>Secret:</strong> BETTER_AUTH_SECRET (env var)</li>
+                        <li><strong>Session:</strong> 7 dias de validade</li>
+                        <li><strong>Cookie Cache:</strong> 5 minutos</li>
+                    </ul>
+                    <div class="code-block">
+<span class="keyword">export const</span> auth = <span class="keyword">betterAuth</span>({
+  secret: <span class="string">process.env.BETTER_AUTH_SECRET</span>,
+  baseURL: <span class="string">'http://localhost:3001'</span>,
+  basePath: <span class="string">'/auth'</span>,
+  database: <span class="keyword">prismaAdapter</span>(prisma, {
+    provider: <span class="string">'postgresql'</span>,
+  }),
+
+  emailAndPassword: {
+    enabled: <span class="keyword">true</span>,
+    minPasswordLength: <span class="keyword">8</span>,
+  },
+
+  socialProviders: {
+    google: { ... },
+    microsoft: { ... },
+  },
+
+  session: {
+    expiresIn: <span class="keyword">60 * 60 * 24 * 7</span>, <span class="comment">// 7 days</span>
+    cookieCache: {
+      enabled: <span class="keyword">true</span>,
+      maxAge: <span class="keyword">60 * 5</span>, <span class="comment">// 5 minutes</span>
+    },
+  },
+})
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fluxo de Login -->
+            <div class="section">
+                <h2 class="section-title">🔄 Fluxo Completo de Autenticação</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>1️⃣ Usuário acessa a tela de login</h4>
+                            <p><strong>Frontend:</strong> <code>/apps/web/src/app/(auth)/auth/login/page.tsx</code></p>
+                            <p>Componente <code>&lt;LoginForm /&gt;</code> renderizado com opções de autenticação</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>2️⃣ Usuário escolhe método de autenticação</h4>
+                            <div class="auth-methods">
+                                <div class="auth-method">
+                                    <span>📧</span>
+                                    <strong>Email + Senha</strong>
+                                </div>
+                                <div class="auth-method">
+                                    <span>🔗</span>
+                                    <strong>Google OAuth</strong>
+                                </div>
+                                <div class="auth-method">
+                                    <span>🔗</span>
+                                    <strong>Microsoft OAuth</strong>
+                                </div>
+                                <div class="auth-method">
+                                    <span>✨</span>
+                                    <strong>Magic Link</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>3️⃣ Cliente de autenticação processa requisição</h4>
+                            <p><strong>Arquivo:</strong> <code>/apps/web/src/lib/auth-client.ts</code></p>
+                            <p>Hook <code>useAuth()</code> chama funções do authClient:</p>
+                            <ul>
+                                <li><code>signIn.email({ email, password })</code></li>
+                                <li><code>signIn.social({ provider: 'google' })</code></li>
+                                <li><code>signIn.magicLink({ email })</code></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>4️⃣ Requisição enviada ao Proxy Next.js</h4>
+                            <p><strong>Arquivo:</strong> <code>/apps/web/src/app/api/auth/[...all]/route.ts</code></p>
+                            <p><strong>Por quê?</strong> Resolve problema de cookies cross-domain!</p>
+                            <ul>
+                                <li>Frontend: http://localhost:3000</li>
+                                <li>Backend: http://localhost:3001</li>
+                                <li>Proxy garante que cookies sejam do mesmo domínio (localhost:3000)</li>
+                            </ul>
+                            <div class="code-block">
+<span class="comment">// Proxy forwards to NestJS API</span>
+<span class="keyword">const</span> url = <span class="string">`${API_URL}/api/auth/${path.join('/')}`</span>
+
+<span class="keyword">const</span> response = <span class="keyword">await fetch</span>(url, {
+  method: request.method,
+  headers: {
+    <span class="string">'Cookie'</span>: request.headers.get(<span class="string">'Cookie'</span>),
+    ...
+  },
+  credentials: <span class="string">'include'</span>,
+})
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>5️⃣ Backend processa autenticação</h4>
+                            <p><strong>Arquivo:</strong> <code>/apps/api/src/auth/auth.controller.ts</code></p>
+                            <p>Controller captura todas as rotas <code>/api/auth/*</code> e delega ao Better Auth:</p>
+                            <div class="code-block">
+<span class="keyword">@Controller</span>(<span class="string">'auth'</span>)
+<span class="keyword">export class</span> AuthController {
+  <span class="keyword">private</span> handler = <span class="keyword">toNodeHandler</span>(auth)
+
+  <span class="keyword">@Public()</span>
+  <span class="keyword">@All</span>(<span class="string">'*path'</span>)
+  <span class="keyword">async</span> handleAuth(<span class="keyword">@Req()</span> req, <span class="keyword">@Res()</span> res) {
+    <span class="keyword">return this</span>.handler(req, res)
+  }
+}
+                            </div>
+                            <p>Better Auth valida credenciais, cria sessão e gera cookie HTTP-only</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>6️⃣ Sessão armazenada no banco de dados</h4>
+                            <p><strong>Database:</strong> PostgreSQL via Prisma</p>
+                            <p>Tabelas criadas pelo Better Auth:</p>
+                            <ul>
+                                <li><code>user</code> - Dados do usuário</li>
+                                <li><code>session</code> - Sessões ativas</li>
+                                <li><code>account</code> - Contas OAuth vinculadas</li>
+                                <li><code>verification</code> - Tokens de verificação</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>7️⃣ Cookie enviado ao cliente</h4>
+                            <p>Proxy Next.js repassa o cookie <code>Set-Cookie</code> para o navegador</p>
+                            <ul>
+                                <li><strong>Nome:</strong> <code>better-auth.session_token</code></li>
+                                <li><strong>Flags:</strong> HttpOnly, Secure, SameSite=Lax</li>
+                                <li><strong>Validade:</strong> 7 dias</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>8️⃣ Cliente atualiza estado da sessão</h4>
+                            <p><strong>Hook:</strong> <code>useSession()</code> do Better Auth React</p>
+                            <p>Estado atualizado automaticamente:</p>
+                            <div class="code-block">
+<span class="keyword">const</span> { data: session, isPending } = <span class="keyword">useSession</span>()
+
+<span class="comment">// session.user contém:</span>
+{
+  id: <span class="string">'user-id'</span>,
+  email: <span class="string">'user@example.com'</span>,
+  name: <span class="string">'Nome do Usuário'</span>,
+  role: <span class="string">'escalista'</span>,
+  grupoIds: [...]
+}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>9️⃣ Redirecionamento para área autenticada</h4>
+                            <p>Hook <code>useAuth()</code> executa:</p>
+                            <div class="code-block">
+<span class="keyword">await</span> refetch() <span class="comment">// Atualiza sessão</span>
+router.replace(<span class="string">'/'</span>) <span class="comment">// Redireciona para home</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fluxo de Proteção de Rotas -->
+            <div class="section">
+                <h2 class="section-title">🛡️ Proteção de Rotas</h2>
+
+                <div class="flow-diagram">
+                    <h3 style="color: #f59e0b; margin-bottom: 20px;">Frontend - Protected Routes</h3>
+                    <div class="flow-row">
+                        <div class="flow-box frontend">
+                            <h3><span class="icon">🔒</span> ProtectedRoute Component</h3>
+                            <p><strong>Arquivo:</strong> <code>/apps/web/src/components/auth/protected-route.tsx</code></p>
+                            <div class="code-block">
+<span class="keyword">export function</span> ProtectedRoute({ children }) {
+  <span class="keyword">const</span> { isAuthenticated, isLoading } = <span class="keyword">useAuth</span>()
+
+  <span class="keyword">if</span> (!isLoading && !isAuthenticated) {
+    router.push(<span class="string">'/auth/login'</span>)
+  }
+
+  <span class="keyword">if</span> (!isAuthenticated) <span class="keyword">return null</span>
+
+  <span class="keyword">return</span> <>{children}</>
+}
+                            </div>
+                            <p style="margin-top: 15px;">Verifica <code>isAuthenticated</code> e redireciona se necessário</p>
+                        </div>
+                    </div>
+
+                    <div class="arrow-down">⬇️</div>
+
+                    <h3 style="color: #10b981; margin-bottom: 20px;">Backend - Auth Guards</h3>
+                    <div class="flow-row">
+                        <div class="flow-box backend">
+                            <h3><span class="icon">🛡️</span> AuthGuard</h3>
+                            <p><strong>Arquivo:</strong> <code>/apps/api/src/auth/guards/auth.guard.ts</code></p>
+                            <p><strong>Processo:</strong></p>
+                            <ol style="margin-left: 20px;">
+                                <li>Verifica se rota é <code>@Public()</code></li>
+                                <li>Lê sessão do Better Auth em <code>request.session</code></li>
+                                <li>Busca roles e permissões do usuário</li>
+                                <li>Popula <code>request.user</code> com dados completos</li>
+                                <li>Permite ou nega acesso</li>
+                            </ol>
+                            <div class="code-block">
+<span class="keyword">const</span> authenticatedUser = {
+  id: sessionUser.id,
+  email: sessionUser.email,
+  roles: userPermissions.roles,
+  permissions: userPermissions.permissions,
+  grupoIds: [...],
+  hospitalIds: [...],
+}
+
+request.user = authenticatedUser
+                            </div>
+                        </div>
+
+                        <div class="arrow">➡️</div>
+
+                        <div class="flow-box backend">
+                            <h3><span class="icon">👮</span> RolesGuard</h3>
+                            <p>Verifica se usuário possui roles necessárias</p>
+                            <div class="code-block">
+<span class="keyword">@Roles</span>(<span class="string">'admin'</span>, <span class="string">'gestor'</span>)
+<span class="keyword">@Get</span>(<span class="string">'sensitive-data'</span>)
+getData() {
+  <span class="comment">// Apenas admin ou gestor</span>
+}
+                            </div>
+                        </div>
+
+                        <div class="arrow">➡️</div>
+
+                        <div class="flow-box backend">
+                            <h3><span class="icon">🔑</span> PermissionsGuard</h3>
+                            <p>Verifica permissões granulares</p>
+                            <div class="code-block">
+<span class="keyword">@RequirePermissions</span>(<span class="string">'escalas:write'</span>)
+<span class="keyword">@Post</span>(<span class="string">'escalas'</span>)
+createEscala() {
+  <span class="comment">// Requer permissão específica</span>
+}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métodos de Autenticação Detalhados -->
+            <div class="section">
+                <h2 class="section-title">🔐 Métodos de Autenticação</h2>
+
+                <div class="flow-diagram">
+                    <div class="flow-box auth">
+                        <h3><span class="icon">📧</span> Email + Senha</h3>
+                        <p><strong>Fluxo:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Usuário submete formulário com email e senha</li>
+                            <li><code>signIn.email({ email, password })</code></li>
+                            <li>Better Auth valida credenciais (bcrypt)</li>
+                            <li>Sessão criada e cookie enviado</li>
+                            <li>Redirecionamento para home</li>
+                        </ol>
+                        <p style="margin-top: 10px;"><strong>Config:</strong> Senha mínima de 8 caracteres</p>
+                    </div>
+
+                    <div class="flow-box auth">
+                        <h3><span class="icon">🔗</span> OAuth (Google/Microsoft)</h3>
+                        <p><strong>Fluxo:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Usuário clica no botão social</li>
+                            <li><code>signIn.social({ provider: 'google' })</code></li>
+                            <li>Redirecionado para OAuth provider</li>
+                            <li>Após autorização, retorna com code</li>
+                            <li>Better Auth troca code por tokens</li>
+                            <li>Busca dados do usuário</li>
+                            <li>Cria/atualiza usuário e sessão</li>
+                            <li>Cookie enviado e redirecionamento</li>
+                        </ol>
+                        <p style="margin-top: 10px;"><strong>Config:</strong></p>
+                        <ul>
+                            <li>Google: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET</li>
+                            <li>Microsoft: MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET</li>
+                        </ul>
+                    </div>
+
+                    <div class="flow-box auth">
+                        <h3><span class="icon">✨</span> Magic Link</h3>
+                        <p><strong>Fluxo:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Usuário insere email</li>
+                            <li><code>signIn.magicLink({ email })</code></li>
+                            <li>Better Auth gera token único</li>
+                            <li>Email enviado com link mágico</li>
+                            <li>Usuário clica no link</li>
+                            <li>Token validado e sessão criada</li>
+                            <li>Cookie enviado e redirecionamento</li>
+                        </ol>
+                        <p style="margin-top: 10px;"><strong>Vantagem:</strong> Login sem senha, mais seguro</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arquitetura e Fluxo de Dados -->
+            <div class="section">
+                <h2 class="section-title">🏗️ Arquitetura e Fluxo de Dados</h2>
+
+                <div class="flow-diagram">
+                    <div class="flow-row">
+                        <div class="flow-box frontend">
+                            <h3>🎨 Frontend (Next.js)</h3>
+                            <ul>
+                                <li><strong>Port:</strong> 3000</li>
+                                <li><strong>UI Components:</strong> LoginForm, ProtectedRoute</li>
+                                <li><strong>Auth Client:</strong> auth-client.ts</li>
+                                <li><strong>Hooks:</strong> useAuth(), useSession()</li>
+                                <li><strong>Proxy:</strong> /api/auth/[...all]</li>
+                            </ul>
+                        </div>
+
+                        <div class="arrow">➡️<br/>HTTP<br/>⬅️</div>
+
+                        <div class="flow-box backend">
+                            <h3>⚙️ Backend (NestJS)</h3>
+                            <ul>
+                                <li><strong>Port:</strong> 3001</li>
+                                <li><strong>Controller:</strong> AuthController</li>
+                                <li><strong>Config:</strong> auth.config.ts</li>
+                                <li><strong>Guards:</strong> AuthGuard, RolesGuard, PermissionsGuard</li>
+                                <li><strong>Services:</strong> PermissionsService</li>
+                            </ul>
+                        </div>
+
+                        <div class="arrow">➡️<br/>SQL<br/>⬅️</div>
+
+                        <div class="flow-box database">
+                            <h3>💾 Database (PostgreSQL)</h3>
+                            <ul>
+                                <li><strong>ORM:</strong> Prisma</li>
+                                <li><strong>Tables:</strong> user, session, account, verification</li>
+                                <li><strong>Adapter:</strong> prismaAdapter</li>
+                                <li><strong>Relations:</strong> User → Sessions, User → Accounts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                    <h4 style="color: #f59e0b; margin-bottom: 10px;">⚡ Por que usar Proxy Next.js?</h4>
+                    <p style="line-height: 1.6;">
+                        Sem o proxy, o frontend (localhost:3000) e backend (localhost:3001) seriam domínios diferentes,
+                        causando problemas com cookies devido à política Same-Origin. O proxy Next.js em <code>/api/auth/*</code>
+                        encaminha todas as requisições para o backend, mas mantém os cookies no domínio do frontend,
+                        garantindo que funcionem corretamente.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Recursos Adicionais -->
+            <div class="section">
+                <h2 class="section-title">🎯 Recursos e Funcionalidades</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🔄 Gerenciamento de Sessão</h4>
+                        <ul>
+                            <li>Sessões de 7 dias</li>
+                            <li>Auto-renovação a cada dia</li>
+                            <li>Cache de cookies (5 min)</li>
+                            <li>Logout automático ao expirar</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>👤 Dados de Usuário</h4>
+                        <ul>
+                            <li>Campos padrão: id, email, name</li>
+                            <li>Campos customizados: role, grupoIds</li>
+                            <li>Role padrão: "escalista"</li>
+                            <li>Extensível via additionalFields</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🔒 Segurança</h4>
+                        <ul>
+                            <li>Passwords hasheados (bcrypt)</li>
+                            <li>Cookies HTTP-only</li>
+                            <li>CSRF protection</li>
+                            <li>Trusted origins configurados</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🔑 Reset de Senha</h4>
+                        <ul>
+                            <li>requestPasswordReset(email)</li>
+                            <li>Email com token único</li>
+                            <li>resetPassword(token, newPassword)</li>
+                            <li>Token expira após uso</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>👮 RBAC (Role-Based Access)</h4>
+                        <ul>
+                            <li>Roles: escalista, gestor, admin</li>
+                            <li>Permissões granulares</li>
+                            <li>Guards customizados</li>
+                            <li>Decorators @Roles(), @RequirePermissions()</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🔧 Configuração Flexível</h4>
+                        <ul>
+                            <li>ENV vars para secrets</li>
+                            <li>Múltiplos OAuth providers</li>
+                            <li>Configuração de sessão customizável</li>
+                            <li>Trusted origins para CORS</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arquivos Importantes -->
+            <div class="section">
+                <h2 class="section-title">📁 Arquivos Principais</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Backend - Configuração</h4>
+                            <code>/apps/api/src/auth.config.ts</code>
+                            <p style="margin-top: 10px;">Configuração central do Better Auth com providers, session, database adapter</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Backend - Controller</h4>
+                            <code>/apps/api/src/auth/auth.controller.ts</code>
+                            <p style="margin-top: 10px;">Controller que captura rotas /api/auth/* e delega ao Better Auth</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Backend - Guards</h4>
+                            <code>/apps/api/src/auth/guards/auth.guard.ts</code>
+                            <p style="margin-top: 10px;">Valida sessão e popula request.user com roles e permissões</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Frontend - Auth Client</h4>
+                            <code>/apps/web/src/lib/auth-client.ts</code>
+                            <p style="margin-top: 10px;">Cliente Better Auth React com configuração do proxy</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Frontend - Proxy</h4>
+                            <code>/apps/web/src/app/api/auth/[...all]/route.ts</code>
+                            <p style="margin-top: 10px;">Proxy Next.js que encaminha requisições para o backend mantendo cookies</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Frontend - Hook</h4>
+                            <code>/apps/web/src/hooks/use-auth.ts</code>
+                            <p style="margin-top: 10px;">Hook customizado que expõe funções de login, logout, register, etc</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Frontend - UI</h4>
+                            <code>/apps/web/src/components/auth/login-form.tsx</code>
+                            <p style="margin-top: 10px;">Formulário de login com suporte a email/senha, OAuth e Magic Link</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Frontend - Protected Routes</h4>
+                            <code>/apps/web/src/components/auth/protected-route.tsx</code>
+                            <p style="margin-top: 10px;">Componente HOC que protege rotas verificando autenticação</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variáveis de Ambiente -->
+            <div class="section">
+                <h2 class="section-title">🔐 Variáveis de Ambiente</h2>
+
+                <div class="code-block">
+<span class="comment"># Backend (.env)</span>
+BETTER_AUTH_SECRET=<span class="string">"your-secret-key-here"</span>
+BETTER_AUTH_URL=<span class="string">"http://localhost:3001"</span>
+
+<span class="comment"># OAuth Google</span>
+GOOGLE_CLIENT_ID=<span class="string">"your-google-client-id"</span>
+GOOGLE_CLIENT_SECRET=<span class="string">"your-google-client-secret"</span>
+
+<span class="comment"># OAuth Microsoft</span>
+MICROSOFT_CLIENT_ID=<span class="string">"your-microsoft-client-id"</span>
+MICROSOFT_CLIENT_SECRET=<span class="string">"your-microsoft-client-secret"</span>
+
+<span class="comment"># Database</span>
+DATABASE_URL=<span class="string">"postgresql://user:password@localhost:5432/houston"</span>
+
+<span class="comment"># Frontend (.env.local)</span>
+NEXT_PUBLIC_API_URL=<span class="string">"http://localhost:3001"</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
