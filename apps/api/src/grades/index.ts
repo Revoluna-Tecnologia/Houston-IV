@@ -1,0 +1,5 @@
+export * from './grades.module'
+export * from './grades.service'
+export * from './grades.controller'
+export * from './grades.repository'
+export * from './dto'

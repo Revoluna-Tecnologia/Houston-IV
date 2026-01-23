@@ -1,0 +1,5 @@
+export * from './create-grade.dto'
+export * from './update-grade.dto'
+export * from './grade-response.dto'
+export * from './grade-query.dto'
+export * from './create-time-slot.dto'
