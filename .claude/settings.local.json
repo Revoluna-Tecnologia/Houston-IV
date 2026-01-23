@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Remove-Item \"c:\\\\Users\\\\wesle\\\\Documents\\\\GitHub\\\\houston-iv\\\\apps\\\\web\\\\src\\\\lib\\\\.env\")",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm test:cov:*)",
+      "Bash(ls:*)",
+      "Bash(xargs cat:*)",
+      "Bash(find:*)",
+      "Bash(while read f)",
+      "Bash(do testfile=\"$f%.ts.spec.ts\")",
+      "Bash(if [ ! -f \"$testfile\" ])",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(do if [ ! -f \"$f%.ts.spec.ts\" ])",
+      "Bash(then echo \"NO TEST: $f\")",
+      "Bash(pnpm add:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(pnpm test:integration:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm test:e2e:*)",
+      "Bash(pnpm test:coverage:*)",
+      "Bash(xargs:*)",
+      "Bash(cat:*)",
+      "Bash(__NEW_LINE_5315a223f2702219__ echo \"\")",
+      "Bash(__NEW_LINE_fc6230c76ee5bc67__ echo \"\")",
+      "Bash(__NEW_LINE_5f2a03e270b230be__ echo \"\")",
+      "Bash(explorer \"C:\\\\Users\\\\wesle\\\\Documents\\\\houston-iv\")",
+      "Bash(start \"\" \"c:\\\\Users\\\\wesle\\\\Documents\\\\GitHub\\\\houston-iv\\\\docs\\\\fluxo-autenticacao-better-auth.html\")",
+      "Bash(dir:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}
