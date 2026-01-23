@@ -1,0 +1,5 @@
+export * from './pagamentos.module'
+export * from './pagamentos.service'
+export * from './pagamentos.controller'
+export * from './pagamentos.repository'
+export * from './dto'

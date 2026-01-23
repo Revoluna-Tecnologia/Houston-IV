@@ -1,0 +1,5 @@
+export * from './create-pagamento.dto'
+export * from './update-pagamento.dto'
+export * from './pagamento-response.dto'
+export * from './pagamento-query.dto'
+export * from './bulk-pagamento.dto'
