@@ -1,0 +1,5 @@
+export * from './especialidades.module'
+export * from './especialidades.service'
+export * from './especialidades.controller'
+export * from './especialidades.repository'
+export * from './dto'
