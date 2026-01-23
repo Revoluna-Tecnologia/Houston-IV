@@ -1,0 +1,5 @@
+export * from './medicos.module'
+export * from './medicos.service'
+export * from './medicos.controller'
+export * from './medicos.repository'
+export * from './dto'
