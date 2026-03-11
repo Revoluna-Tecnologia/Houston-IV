@@ -19,9 +19,6 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
-  // Faster builds
-  swcMinify: true,
-
   // Reduce bundle size
   modularizeImports: {
     'lucide-react': {
@@ -32,9 +29,11 @@ const nextConfig: NextConfig = {
   // Experimental features for better performance
   experimental: {
     optimizePackageImports: ['lucide-react', 'date-fns'],
-    turbo: {
-      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js'],
-    },
+  },
+
+  // Turbopack configuration
+  turbopack: {
+    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
 
   // Proxy API requests to the NestJS backend

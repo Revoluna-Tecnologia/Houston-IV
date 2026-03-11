@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Toaster } from 'sonner';
 import { AuthProvider, useAuthContext } from '../../lib/auth-context';
 import { Sidebar, Header, MobileNav } from '../../components/layout';
 import { LoadingSpinner } from '@/components/houston';
@@ -81,6 +82,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <AuthProvider>
       <DashboardContent>{children}</DashboardContent>
+      <Toaster richColors position="bottom-right" />
     </AuthProvider>
   );
 }

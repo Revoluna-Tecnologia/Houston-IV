@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
+import { useCurrentUser } from '@/hooks/use-current-user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -12,7 +13,7 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useKanbanBoard } from '@/hooks/kanban'
-import type { KanbanTab } from '@/services/kanban'
+import { KanbanTab } from '@/services/kanban'
 import {
   KanbanColumn,
   CreateCardModal,
@@ -29,12 +30,13 @@ const COLUMNS = [
 ]
 
 const TABS: { value: KanbanTab; label: string }[] = [
-  { value: 'projetos', label: 'Projetos' },
-  { value: 'financeiro', label: 'Financeiro' },
+  { value: KanbanTab.PROJETOS, label: 'Projetos' },
+  { value: KanbanTab.FINANCEIRO, label: 'Financeiro' },
 ]
 
 export default function KanbanPage() {
-  const [activeTab, setActiveTab] = useState<KanbanTab>('projetos')
+  const { user } = useCurrentUser()
+  const [activeTab, setActiveTab] = useState<KanbanTab>(KanbanTab.PROJETOS)
   const [searchQuery, setSearchQuery] = useState('')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
@@ -49,7 +51,7 @@ export default function KanbanPage() {
     addComment,
     addLink,
     deleteCard,
-  } = useKanbanBoard(activeTab)
+  } = useKanbanBoard({ tab: activeTab })
 
   const filteredCards = useMemo(() => {
     if (!searchQuery.trim()) return cards
@@ -66,12 +68,14 @@ export default function KanbanPage() {
     [filteredCards]
   )
 
+  const currentGrupoId = user?.grupoIds?.[0] ?? ''
+
   const handleCreateCard = useCallback(
-    async (data: { title: string; description?: string; status: string }) => {
-      await createCard({ ...data, tab: activeTab })
+    async (data: Parameters<typeof createCard>[0]) => {
+      await createCard(data)
       setIsCreateModalOpen(false)
     },
-    [createCard, activeTab]
+    [createCard],
   )
 
   const handleMoveCard = useCallback(
@@ -176,7 +180,7 @@ export default function KanbanPage() {
         open={isCreateModalOpen}
         onOpenChange={setIsCreateModalOpen}
         onSubmit={handleCreateCard}
-        columns={COLUMNS}
+        grupoId={currentGrupoId}
       />
 
       <CardDetailsModal
