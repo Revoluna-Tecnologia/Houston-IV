@@ -445,6 +445,18 @@
       "nameRequired": "El nombre es obligatorio",
       "groupRequired": "El grupo es obligatorio",
       "invalidEmail": "Email inválido"
+    },
+    "detail": {
+      "hospitalNotFound": "Hospital no encontrado",
+      "back": "Volver",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "cnpj": "CNPJ",
+      "phone": "Teléfono",
+      "email": "Email",
+      "address": "Dirección",
+      "sectors": "Sectores",
+      "noSectors": "Ningún sector registrado"
     }
   },
   "Escalistas": {
@@ -521,6 +533,21 @@
       "nameRequired": "El nombre es obligatorio",
       "hospitalRequired": "El hospital es obligatorio",
       "sectorRequired": "El sector es obligatorio"
+    },
+    "detail": {
+      "gradeNotFound": "Horario no encontrado",
+      "back": "Volver",
+      "view": "Ver",
+      "edit": "Editar",
+      "publish": "Publicar",
+      "generateVagas": "Generar Turnos",
+      "delete": "Eliminar",
+      "period": "Período",
+      "filling": "Llenado",
+      "slots": "espacios",
+      "filledPercent": "% completado",
+      "viewDetails": "Ver Detalles",
+      "selectMonth": "Seleccione un mes"
     }
   },
   "Pagamentos": {
@@ -654,7 +681,19 @@
       "sendOffer": "Enviar oferta",
       "sendingOffer": "Enviando...",
       "validityError": "La validez debe ser entre 1 y 168 horas (7 días)",
-      "sendError": "Error al enviar oferta"
+      "sendError": "Error al enviar oferta",
+      "statusPending": "Pendiente",
+      "statusAccepted": "Aceptado",
+      "statusRejected": "Rechazado",
+      "statusExpired": "Expirado",
+      "statusCanceled": "Cancelado",
+      "shiftOfferTitle": "Oferta de Guardia",
+      "cancelOfferButton": "Cancelar oferta",
+      "reject": "Rechazar",
+      "accept": "Aceptar",
+      "acceptedAt": "Aceptado el",
+      "rejectedAt": "Rechazado el",
+      "expiresAt": "Expira el"
     }
   },
   "Tickets": {
@@ -674,6 +713,70 @@
       "sector": "Sector",
       "allSectors": "Todos los sectores",
       "noData": "No hay datos disponibles"
+    },
+    "admin": {
+      "statusInReview": "En Revisión",
+      "statusInProgress": "En Progreso",
+      "statusResolved": "Resuelto",
+      "statusClosed": "Cerrado",
+      "priorityLow": "Baja",
+      "priorityMedium": "Media",
+      "priorityHigh": "Alta",
+      "priorityCritical": "Crítica",
+      "allStatuses": "Todos los estados",
+      "allPriorities": "Todas las prioridades",
+      "allCategories": "Todas las categorías",
+      "categoryBug": "Bug",
+      "categoryFeature": "Funcionalidad",
+      "categoryPerformance": "Rendimiento",
+      "categorySecurity": "Seguridad",
+      "searchPlaceholder": "Buscar tickets...",
+      "titleColumn": "Título",
+      "statusColumn": "Estado",
+      "priorityColumn": "Prioridad",
+      "categoryColumn": "Categoría",
+      "createdAtColumn": "Creado el",
+      "actionsColumn": "Acciones",
+      "slaViolated": "SLA Violado",
+      "violated": "Violado",
+      "view": "Ver",
+      "noTicketsFound": "No se encontraron tickets",
+      "description": "Descripción",
+      "location": "Ubicación",
+      "stepsToReproduce": "Pasos para Reproducir",
+      "internalComments": "Comentarios Internos",
+      "noComments": "Sin comentarios",
+      "addCommentPlaceholder": "Agregar comentario interno...",
+      "comment": "Comentar",
+      "createdAt": "Creado el",
+      "resolvedAt": "Resuelto el",
+      "archiveTicket": "Archivar Ticket",
+      "archiveTicketConfirm": "¿Está seguro de que desea archivar este ticket?",
+      "ticketsSelected": "ticket(s) seleccionado(s)",
+      "changeStatus": "Cambiar estado",
+      "archive": "Archivar",
+      "clearSelection": "Limpiar selección",
+      "totalTickets": "Total de Tickets",
+      "openTickets": "Abiertos",
+      "resolvedTickets": "Resueltos",
+      "avgResolutionTime": "Tiempo Promedio de Resolución",
+      "slaMetrics": "Métricas de SLA",
+      "complianceRate": "Tasa de Cumplimiento",
+      "onTime": "A Tiempo",
+      "atRisk": "En Riesgo",
+      "violatedCount": "Violados",
+      "totalWithSLA": "Total con SLA",
+      "ticketsTimeline": "Timeline de Tickets",
+      "noDataAvailable": "No hay datos disponibles",
+      "created": "Creados",
+      "resolved": "Resueltos",
+      "topAssignees": "Top Responsables",
+      "noAssignees": "Ningún responsable asignado",
+      "assignee": "Responsable",
+      "total": "Total",
+      "openCount": "Abiertos",
+      "resolvedCount": "Resueltos",
+      "avgTime": "Tiempo Promedio"
     }
   },
   "Kanban": {
@@ -692,6 +795,31 @@
     "tabs": {
       "projects": "Proyectos",
       "financial": "Financiero"
+    },
+    "card": {
+      "titleLabel": "Título *",
+      "titlePlaceholder": "Nombre de la tarea",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describa la tarea...",
+      "tab": "Pestaña",
+      "cancel": "Cancelar",
+      "creating": "Creando...",
+      "createCard": "Crear Tarjeta",
+      "addLink": "Agregar Enlace",
+      "linkTitlePlaceholder": "Título",
+      "add": "Agregar",
+      "history": "Historial",
+      "addComment": "Agregar Comentario",
+      "commentPlaceholder": "Escriba un comentario...",
+      "comment": "Comentar",
+      "createdAt": "Creado el",
+      "deleteCard": "Eliminar Tarjeta",
+      "deleteConfirm": "¿Está seguro de que desea eliminar esta tarjeta?",
+      "dragHere": "Arrastre tarjetas aquí",
+      "statusTodo": "Por Hacer",
+      "statusInProgress": "En Progreso",
+      "statusReview": "Revisión",
+      "statusDone": "Completado"
     }
   },
   "Notifications": {
@@ -716,6 +844,34 @@
     "empty": {
       "noUnread": "Ninguna notificación no leída",
       "noNotifications": "Ninguna notificación"
+    },
+    "preferences": {
+      "title": "Preferencias de Notificación",
+      "description": "Configure cómo desea recibir sus notificaciones",
+      "save": "Guardar cambios",
+      "type": "Tipo",
+      "inApp": "In-App",
+      "email": "Email",
+      "push": "Push",
+      "pushComingSoon": "* Las notificaciones push estarán disponibles pronto.",
+      "savedTitle": "Preferencias guardadas",
+      "savedDescription": "Sus preferencias de notificación han sido actualizadas.",
+      "errorTitle": "Error al guardar",
+      "errorDescription": "No fue posible guardar sus preferencias.",
+      "categories": {
+        "tickets": "Tickets",
+        "ticketsDesc": "Notificaciones sobre tickets y atención",
+        "vagasCandidaturas": "Turnos y Postulaciones",
+        "vagasCandidaturasDesc": "Notificaciones sobre turnos y procesos de selección",
+        "messages": "Mensajes",
+        "messagesDesc": "Notificaciones de comunicación",
+        "doctors": "Médicos",
+        "doctorsDesc": "Notificaciones sobre registro de médicos",
+        "checkin": "Check-in/Check-out",
+        "checkinDesc": "Recordatorios y alertas de asistencia",
+        "announcements": "Comunicados",
+        "announcementsDesc": "Comunicados y avisos generales"
+      }
     }
   },
   "Settings": {
@@ -778,6 +934,33 @@
       "medium": "Media",
       "high": "Alta",
       "critical": "Crítica"
+    },
+    "form": {
+      "titleLabel": "Título *",
+      "titlePlaceholder": "Describa brevemente el problema",
+      "descriptionLabel": "Descripción *",
+      "descriptionPlaceholder": "Describa el problema en detalle",
+      "locationLabel": "Ubicación (URL o página)",
+      "locationPlaceholder": "/dashboard/turnos",
+      "stepsLabel": "Pasos para Reproducir",
+      "stepsPlaceholder": "1. Acceder a la página X\n2. Hacer clic en el botón Y\n3. Aparece el error",
+      "cancel": "Cancelar",
+      "creating": "Creando...",
+      "createButton": "Crear Ticket",
+      "categoryInterface": "Interfaz",
+      "categoryFeature": "Funcionalidad",
+      "categoryPerformance": "Rendimiento",
+      "categorySecurity": "Seguridad"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar tickets...",
+      "allStatuses": "Todos los Estados",
+      "allPriorities": "Todas las Prioridades"
+    },
+    "card": {
+      "comments": "comentarios",
+      "slaViolated": "SLA violado",
+      "viewDetails": "Ver Detalles"
     }
   },
   "Admin": {
@@ -830,6 +1013,10 @@
     "auth": {
       "loginError": "Error al iniciar sesión",
       "signupError": "Error al crear cuenta"
+    },
+    "fileUpload": {
+      "fileTooLarge": "Archivo demasiado grande. Máximo permitido: {max}MB",
+      "fileTypeNotAllowed": "Tipo de archivo no permitido: {type}"
     }
   }
 }

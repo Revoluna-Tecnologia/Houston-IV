@@ -445,6 +445,18 @@
       "nameRequired": "Nome é obrigatório",
       "groupRequired": "Grupo é obrigatório",
       "invalidEmail": "Email inválido"
+    },
+    "detail": {
+      "hospitalNotFound": "Hospital não encontrado",
+      "back": "Voltar",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "cnpj": "CNPJ",
+      "phone": "Telefone",
+      "email": "Email",
+      "address": "Endereço",
+      "sectors": "Setores",
+      "noSectors": "Nenhum setor cadastrado"
     }
   },
   "Escalistas": {
@@ -521,6 +533,21 @@
       "nameRequired": "Nome é obrigatório",
       "hospitalRequired": "Hospital é obrigatório",
       "sectorRequired": "Setor é obrigatório"
+    },
+    "detail": {
+      "gradeNotFound": "Grade não encontrada",
+      "back": "Voltar",
+      "view": "Ver",
+      "edit": "Editar",
+      "publish": "Publicar",
+      "generateVagas": "Gerar Vagas",
+      "delete": "Deletar",
+      "period": "Período",
+      "filling": "Preenchimento",
+      "slots": "slots",
+      "filledPercent": "% preenchido",
+      "viewDetails": "Ver Detalhes",
+      "selectMonth": "Selecione um mês"
     }
   },
   "Pagamentos": {
@@ -654,7 +681,19 @@
       "sendOffer": "Enviar oferta",
       "sendingOffer": "Enviando...",
       "validityError": "Validade deve ser entre 1 e 168 horas (7 dias)",
-      "sendError": "Erro ao enviar oferta"
+      "sendError": "Erro ao enviar oferta",
+      "statusPending": "Pendente",
+      "statusAccepted": "Aceito",
+      "statusRejected": "Recusado",
+      "statusExpired": "Expirado",
+      "statusCanceled": "Cancelado",
+      "shiftOfferTitle": "Oferta de Plantão",
+      "cancelOfferButton": "Cancelar oferta",
+      "reject": "Recusar",
+      "accept": "Aceitar",
+      "acceptedAt": "Aceito em",
+      "rejectedAt": "Recusado em",
+      "expiresAt": "Expira em"
     }
   },
   "Tickets": {
@@ -674,6 +713,70 @@
       "sector": "Setor",
       "allSectors": "Todos os setores",
       "noData": "Nenhum dado disponível"
+    },
+    "admin": {
+      "statusInReview": "Em Revisão",
+      "statusInProgress": "Em Andamento",
+      "statusResolved": "Resolvido",
+      "statusClosed": "Fechado",
+      "priorityLow": "Baixa",
+      "priorityMedium": "Média",
+      "priorityHigh": "Alta",
+      "priorityCritical": "Crítica",
+      "allStatuses": "Todos os status",
+      "allPriorities": "Todas as prioridades",
+      "allCategories": "Todas as categorias",
+      "categoryBug": "Bug",
+      "categoryFeature": "Funcionalidade",
+      "categoryPerformance": "Performance",
+      "categorySecurity": "Segurança",
+      "searchPlaceholder": "Buscar tickets...",
+      "titleColumn": "Título",
+      "statusColumn": "Status",
+      "priorityColumn": "Prioridade",
+      "categoryColumn": "Categoria",
+      "createdAtColumn": "Criado em",
+      "actionsColumn": "Ações",
+      "slaViolated": "SLA Violado",
+      "violated": "Violado",
+      "view": "Ver",
+      "noTicketsFound": "Nenhum ticket encontrado",
+      "description": "Descrição",
+      "location": "Localização",
+      "stepsToReproduce": "Passos para Reprodução",
+      "internalComments": "Comentários Internos",
+      "noComments": "Nenhum comentário",
+      "addCommentPlaceholder": "Adicionar comentário interno...",
+      "comment": "Comentar",
+      "createdAt": "Criado em",
+      "resolvedAt": "Resolvido em",
+      "archiveTicket": "Arquivar Ticket",
+      "archiveTicketConfirm": "Tem certeza que deseja arquivar este ticket?",
+      "ticketsSelected": "ticket(s) selecionado(s)",
+      "changeStatus": "Alterar status",
+      "archive": "Arquivar",
+      "clearSelection": "Limpar seleção",
+      "totalTickets": "Total de Tickets",
+      "openTickets": "Em Aberto",
+      "resolvedTickets": "Resolvidos",
+      "avgResolutionTime": "Tempo Médio de Resolução",
+      "slaMetrics": "Métricas de SLA",
+      "complianceRate": "Taxa de Cumprimento",
+      "onTime": "No Prazo",
+      "atRisk": "Em Risco",
+      "violatedCount": "Violados",
+      "totalWithSLA": "Total com SLA",
+      "ticketsTimeline": "Timeline de Tickets",
+      "noDataAvailable": "Nenhum dado disponível",
+      "created": "Criados",
+      "resolved": "Resolvidos",
+      "topAssignees": "Top Responsáveis",
+      "noAssignees": "Nenhum responsável atribuído",
+      "assignee": "Responsável",
+      "total": "Total",
+      "openCount": "Abertos",
+      "resolvedCount": "Resolvidos",
+      "avgTime": "Tempo Médio"
     }
   },
   "Kanban": {
@@ -692,6 +795,31 @@
     "tabs": {
       "projects": "Projetos",
       "financial": "Financeiro"
+    },
+    "card": {
+      "titleLabel": "Título *",
+      "titlePlaceholder": "Nome da tarefa",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Descreva a tarefa...",
+      "tab": "Aba",
+      "cancel": "Cancelar",
+      "creating": "Criando...",
+      "createCard": "Criar Card",
+      "addLink": "Adicionar Link",
+      "linkTitlePlaceholder": "Título",
+      "add": "Adicionar",
+      "history": "Histórico",
+      "addComment": "Adicionar Comentário",
+      "commentPlaceholder": "Escreva um comentário...",
+      "comment": "Comentar",
+      "createdAt": "Criado em",
+      "deleteCard": "Excluir Card",
+      "deleteConfirm": "Tem certeza que deseja excluir este card?",
+      "dragHere": "Arraste cards para cá",
+      "statusTodo": "A Fazer",
+      "statusInProgress": "Em Andamento",
+      "statusReview": "Revisão",
+      "statusDone": "Concluído"
     }
   },
   "Notifications": {
@@ -716,6 +844,34 @@
     "empty": {
       "noUnread": "Nenhuma notificação não lida",
       "noNotifications": "Nenhuma notificação"
+    },
+    "preferences": {
+      "title": "Preferências de Notificação",
+      "description": "Configure como deseja receber suas notificações",
+      "save": "Salvar alterações",
+      "type": "Tipo",
+      "inApp": "In-App",
+      "email": "Email",
+      "push": "Push",
+      "pushComingSoon": "* Notificações push estarão disponíveis em breve.",
+      "savedTitle": "Preferências salvas",
+      "savedDescription": "Suas preferências de notificação foram atualizadas.",
+      "errorTitle": "Erro ao salvar",
+      "errorDescription": "Não foi possível salvar suas preferências.",
+      "categories": {
+        "tickets": "Tickets",
+        "ticketsDesc": "Notificações sobre tickets e atendimentos",
+        "vagasCandidaturas": "Vagas e Candidaturas",
+        "vagasCandidaturasDesc": "Notificações sobre vagas e processos seletivos",
+        "messages": "Mensagens",
+        "messagesDesc": "Notificações de comunicação",
+        "doctors": "Médicos",
+        "doctorsDesc": "Notificações sobre cadastro de médicos",
+        "checkin": "Check-in/Check-out",
+        "checkinDesc": "Lembretes e alertas de presença",
+        "announcements": "Comunicados",
+        "announcementsDesc": "Comunicados e avisos gerais"
+      }
     }
   },
   "Settings": {
@@ -778,6 +934,33 @@
       "medium": "Média",
       "high": "Alta",
       "critical": "Crítica"
+    },
+    "form": {
+      "titleLabel": "Título *",
+      "titlePlaceholder": "Descreva brevemente o problema",
+      "descriptionLabel": "Descrição *",
+      "descriptionPlaceholder": "Descreva o problema em detalhes",
+      "locationLabel": "Localização (URL ou página)",
+      "locationPlaceholder": "/dashboard/vagas",
+      "stepsLabel": "Passos para Reprodução",
+      "stepsPlaceholder": "1. Acessar a página X\n2. Clicar no botão Y\n3. Erro aparece",
+      "cancel": "Cancelar",
+      "creating": "Criando...",
+      "createButton": "Criar Ticket",
+      "categoryInterface": "Interface",
+      "categoryFeature": "Funcionalidade",
+      "categoryPerformance": "Performance",
+      "categorySecurity": "Segurança"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar tickets...",
+      "allStatuses": "Todos os Status",
+      "allPriorities": "Todas Prioridades"
+    },
+    "card": {
+      "comments": "comentários",
+      "slaViolated": "SLA violado",
+      "viewDetails": "Ver Detalhes"
     }
   },
   "Admin": {
@@ -830,6 +1013,10 @@
     "auth": {
       "loginError": "Erro ao fazer login",
       "signupError": "Erro ao criar conta"
+    },
+    "fileUpload": {
+      "fileTooLarge": "Arquivo muito grande. Máximo permitido: {max}MB",
+      "fileTypeNotAllowed": "Tipo de arquivo não permitido: {type}"
     }
   }
 }
