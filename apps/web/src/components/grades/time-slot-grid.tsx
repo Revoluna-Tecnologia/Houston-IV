@@ -70,11 +70,11 @@ export function TimeSlotGrid({
     <div className={cn('overflow-x-auto', className)}>
       <div className="min-w-[800px]">
         <div className="grid" style={{ gridTemplateColumns: `80px repeat(${days.length}, 1fr)` }}>
-          <div className="h-12 border-b border-r bg-gray-50" />
+          <div className="h-12 border-b border-r bg-muted" />
           {days.map((day, idx) => (
             <div
               key={idx}
-              className="h-12 border-b border-r bg-gray-50 flex flex-col items-center justify-center"
+              className="h-12 border-b border-r bg-muted flex flex-col items-center justify-center"
             >
               <span className="text-xs text-gray-500">{DIAS_SEMANA[day.getDay()]}</span>
               <span className="text-sm font-medium">{formatDate(day)}</span>
@@ -85,7 +85,7 @@ export function TimeSlotGrid({
             <>
               <div
                 key={`hora-${hora}`}
-                className="h-8 border-b border-r bg-gray-50 flex items-center justify-center"
+                className="h-8 border-b border-r bg-muted flex items-center justify-center"
               >
                 <span className="text-xs text-gray-600">{hora}</span>
               </div>
@@ -99,7 +99,7 @@ export function TimeSlotGrid({
                       'h-8 border-b border-r cursor-pointer transition-colors',
                       hasSlot
                         ? 'bg-primary-100 hover:bg-primary-200'
-                        : 'bg-white hover:bg-gray-50'
+                        : 'bg-background hover:bg-muted'
                     )}
                     onClick={() => handleCellClick(day, hora)}
                     title={hasSlot ? `Slot preenchido: ${hora}` : `Adicionar slot: ${hora}`}

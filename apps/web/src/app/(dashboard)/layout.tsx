@@ -35,7 +35,7 @@ function DashboardContent({ children }: DashboardContentProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-app-bg">
       <Sidebar user={user} />
       <MobileNav
         user={user}

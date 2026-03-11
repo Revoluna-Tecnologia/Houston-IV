@@ -102,7 +102,7 @@ export default function DashboardPage() {
       <div>
         <h2 className="mb-4 text-lg font-semibold">Hospitais</h2>
         {filteredHospitaisWithVagas.length === 0 ? (
-          <div className="rounded-lg border bg-gray-50 p-8 text-center text-gray-500">
+          <div className="rounded-lg border bg-muted p-8 text-center text-muted-foreground">
             Nenhum hospital com vagas para o periodo selecionado.
           </div>
         ) : (

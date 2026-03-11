@@ -58,9 +58,9 @@ function Calendar({
         ),
         month_grid: 'w-full border-collapse',
         weekdays: 'flex',
-        weekday: 'text-gray-500 rounded-md w-9 font-normal text-[0.8rem]',
+        weekday: 'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
         week: 'flex w-full mt-2',
-        day: 'h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-gray-100/50 [&:has([aria-selected])]:bg-gray-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
+        day: 'h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
         day_button: cn(
           buttonVariants({ variant: 'ghost' }),
           'h-9 w-9 p-0 font-normal aria-selected:opacity-100'
@@ -68,12 +68,12 @@ function Calendar({
         range_end: 'day-range-end',
         selected:
           'bg-primary-500 text-white hover:bg-primary-500 hover:text-white focus:bg-primary-500 focus:text-white',
-        today: 'bg-gray-100 text-foreground',
+        today: 'bg-accent text-accent-foreground',
         outside:
-          'day-outside text-gray-500 aria-selected:bg-gray-100/50 aria-selected:text-gray-500',
-        disabled: 'text-gray-500 opacity-50',
+          'day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
+        disabled: 'text-muted-foreground opacity-50',
         range_middle:
-          'aria-selected:bg-gray-100 aria-selected:text-foreground',
+          'aria-selected:bg-accent aria-selected:text-accent-foreground',
         hidden: 'invisible',
         ...classNames,
       }}

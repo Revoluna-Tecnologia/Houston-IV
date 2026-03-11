@@ -49,9 +49,9 @@ export interface StatCardProps {
 
 const variantStyles: Record<StatCardVariant, { bg: string; text: string; icon: string }> = {
   default: {
-    bg: 'bg-gray-50',
-    text: 'text-gray-900',
-    icon: 'text-gray-500',
+    bg: 'bg-muted',
+    text: 'text-foreground',
+    icon: 'text-muted-foreground',
   },
   success: {
     bg: 'bg-green-50',
@@ -91,7 +91,7 @@ export function StatCard({
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-sm text-gray-500">{label}</p>
+            <p className="text-sm text-muted-foreground">{label}</p>
             <p className={cn('mt-1 text-2xl font-semibold', styles.text)}>{value}</p>
             {trend && trendValue && (
               <div
