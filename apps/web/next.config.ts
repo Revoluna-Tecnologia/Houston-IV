@@ -40,12 +40,11 @@ const nextConfig: NextConfig = {
   },
 
   // Proxy API requests to the NestJS backend
-  // This solves cross-domain cookie issues by keeping all requests on the same domain
+  // File-system routes (e.g. /api/auth/[...all]) take precedence over rewrites
   async rewrites() {
     return [
       {
-        // Proxy all /api/* requests (except /api/auth/* which has its own handler)
-        source: '/api/:path((?!auth).*)',
+        source: '/api/:path*',
         destination: `${API_URL}/api/:path*`,
       },
     ]
