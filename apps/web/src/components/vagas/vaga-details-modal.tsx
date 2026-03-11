@@ -1,8 +1,9 @@
 'use client';
 
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
+import { useDateLocale } from '@/lib/date-locale';
 import { Button } from '@/components/ui/button';
 import { Modal, StatusBadge, type StatusBadgeVariant } from '@/components/houston';
 import type { Vaga, VagaStatus, Hospital, Candidatura } from '../../services/types';
@@ -40,6 +41,8 @@ export function VagaDetailsModal({
   const t = useTranslations('Vagas');
   const tCommon = useTranslations('Common.actions');
   const tCandidaturas = useTranslations('Candidaturas.status');
+  const formatCurrency = useFormatCurrency();
+  const dateLocale = useDateLocale();
 
   if (!vaga) return null;
 
@@ -50,13 +53,9 @@ export function VagaDetailsModal({
     cancelada: t('status.cancelled'),
   };
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
-
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+    return format(d, "dd 'de' MMMM 'de' yyyy", { locale: dateLocale });
   };
 
   const canCancel = vaga.status === 'aberta' || vaga.status === 'anunciada';

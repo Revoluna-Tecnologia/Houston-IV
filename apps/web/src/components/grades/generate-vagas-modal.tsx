@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useFormatCurrency } from '@/lib/format-currency';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,6 +45,7 @@ export function GenerateVagasModal({
   especialidades,
   onConfirm,
 }: GenerateVagasModalProps) {
+  const formatCurrency = useFormatCurrency();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [especialidadeId, setEspecialidadeId] = useState('');
   const [valor, setValor] = useState(0);
@@ -130,13 +132,10 @@ export function GenerateVagasModal({
         <div className="rounded-lg border p-4">
           <h4 className="text-sm font-medium mb-2">Valor Total Estimado</h4>
           <p className="text-2xl font-semibold text-primary-600">
-            {(slotsCount * valor).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}
+            {formatCurrency(slotsCount * valor)}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {slotsCount} vagas x {valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            {slotsCount} vagas x {formatCurrency(valor)}
           </p>
         </div>
 

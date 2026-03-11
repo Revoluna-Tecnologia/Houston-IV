@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
 import { StatCard } from './stat-card';
 import type { Vaga, Pagamento } from '../../services/types';
 
@@ -145,10 +146,7 @@ export interface GlobalMetricsProps {
 
 export function GlobalMetrics({ vagas, pagamentos, isLoading: _isLoading }: GlobalMetricsProps) {
   const t = useTranslations('Dashboard.metrics');
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
+  const formatCurrency = useFormatCurrency();
 
   const totalVagas = vagas.length;
   const vagasAbertas = vagas.filter((v) => v.status === 'aberta' || v.status === 'anunciada').length;

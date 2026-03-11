@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { useDateLocale } from '@/lib/date-locale'
 import { Bell, MessageSquare, Calendar, AlertTriangle, Users, FileText, Clock, Check, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -52,11 +52,12 @@ export function NotificationItem({
   onDelete,
   onClick,
 }: NotificationItemProps) {
+  const dateLocale = useDateLocale()
   const Icon = getIcon(notification.type)
   const priorityColor = getPriorityColor(notification.priority)
   const timeAgo = formatDistanceToNow(new Date(notification.createdAt), {
     addSuffix: true,
-    locale: ptBR,
+    locale: dateLocale,
   })
 
   const handleClick = () => {

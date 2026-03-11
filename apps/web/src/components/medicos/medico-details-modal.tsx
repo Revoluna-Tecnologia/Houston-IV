@@ -1,8 +1,8 @@
 'use client';
 
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
+import { useDateLocale } from '@/lib/date-locale';
 import { Modal, StatusBadge } from '@/components/houston';
 import type { Medico, Especialidade, Escalista, Candidatura, CandidaturaStatus } from '../../services/types';
 
@@ -33,11 +33,13 @@ export function MedicoDetailsModal({
   onEdit,
   onDelete,
 }: MedicoDetailsModalProps) {
+  const dateLocale = useDateLocale();
+
   if (!medico) return null;
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: ptBR });
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
   };
 
   const formatCpf = (cpf: string | null) => {

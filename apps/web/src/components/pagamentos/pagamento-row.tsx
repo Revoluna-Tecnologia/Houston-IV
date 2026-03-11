@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { TableRow, TableCell } from '@/components/ui/table';
+import { useFormatCurrency } from '@/lib/format-currency';
+import { useDateLocale } from '@/lib/date-locale';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge, type StatusBadgeVariant } from '@/components/houston';
@@ -109,22 +110,20 @@ export function PagamentoRow({
   onAutorizar,
   onPagar,
 }: PagamentoRowProps) {
+  const formatCurrency = useFormatCurrency();
+  const dateLocale = useDateLocale();
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
 
   const formatDate = (date: Date | string | null | undefined) => {
     if (!date) return '-';
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: ptBR });
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
   };
 
   const formatDateTime = (date: Date | string | null | undefined) => {
     if (!date) return '-';
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, "dd/MM/yyyy 'as' HH:mm", { locale: ptBR });
+    return format(d, "dd/MM/yyyy 'as' HH:mm", { locale: dateLocale });
   };
 
   return (

@@ -1,8 +1,8 @@
 'use client'
 
 import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
+import { useDateLocale } from '@/lib/date-locale'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -40,6 +40,8 @@ function DatePicker({
   disabled,
   className,
 }: DatePickerProps) {
+  const dateLocale = useDateLocale()
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -53,7 +55,7 @@ function DatePicker({
           disabled={disabled}
         >
           <CalendarIcon />
-          {value ? format(value, 'PPP', { locale: ptBR }) : placeholder}
+          {value ? format(value, 'PPP', { locale: dateLocale }) : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -62,7 +64,7 @@ function DatePicker({
           selected={value}
           onSelect={onChange}
           initialFocus
-          locale={ptBR}
+          locale={dateLocale}
         />
       </PopoverContent>
     </Popover>

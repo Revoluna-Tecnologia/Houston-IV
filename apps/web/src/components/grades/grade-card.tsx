@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -124,22 +125,11 @@ export interface GradeCardProps {
   onDelete: (grade: GradeWithRelations) => void;
 }
 
-const STATUS_LABELS: Record<GradeStatus, string> = {
-  rascunho: 'Rascunho',
-  publicada: 'Publicada',
-  arquivada: 'Arquivada',
-};
-
 const STATUS_VARIANTS: Record<GradeStatus, StatusBadgeVariant> = {
   rascunho: 'warning',
   publicada: 'success',
   arquivada: 'pending',
 };
-
-const MESES = [
-  'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-];
 
 export function GradeCard({
   grade,
@@ -149,6 +139,22 @@ export function GradeCard({
   onGenerateVagas,
   onDelete,
 }: GradeCardProps) {
+  const t = useTranslations('Grades');
+  const tc = useTranslations('Common');
+
+  const STATUS_LABELS: Record<GradeStatus, string> = {
+    rascunho: t('statusLabels.draft'),
+    publicada: t('statusLabels.published'),
+    arquivada: t('statusLabels.archived'),
+  };
+
+  const MESES = [
+    tc('months.january'), tc('months.february'), tc('months.march'),
+    tc('months.april'), tc('months.may'), tc('months.june'),
+    tc('months.july'), tc('months.august'), tc('months.september'),
+    tc('months.october'), tc('months.november'), tc('months.december'),
+  ];
+
   const progressPercentage = grade.totalSlots && grade.totalSlots > 0
     ? Math.round((grade.slotsPreenchidos || 0) / grade.totalSlots * 100)
     : 0;
@@ -173,22 +179,22 @@ export function GradeCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onView(grade)}>
               <EyeIcon />
-              Ver
+              {t('detail.view')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(grade)}>
               <EditIcon />
-              Editar
+              {t('detail.edit')}
             </DropdownMenuItem>
             {grade.status === 'rascunho' && (
               <DropdownMenuItem onClick={() => onPublish(grade)}>
                 <SendIcon />
-                Publicar
+                {t('detail.publish')}
               </DropdownMenuItem>
             )}
             {grade.status === 'publicada' && (
               <DropdownMenuItem onClick={() => onGenerateVagas(grade)}>
                 <ZapIcon />
-                Gerar Vagas
+                {t('detail.generateVagas')}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
@@ -196,14 +202,14 @@ export function GradeCard({
               className="text-red-600"
             >
               <TrashIcon />
-              Deletar
+              {t('detail.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-500">Periodo</span>
+          <span className="text-sm text-gray-500">{t('detail.period')}</span>
           <span className="text-sm font-medium">{periodoLabel}</span>
         </div>
 
@@ -216,13 +222,13 @@ export function GradeCard({
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">Preenchimento</span>
+            <span className="text-gray-500">{t('detail.filling')}</span>
             <span className="font-medium">
-              {grade.slotsPreenchidos || 0} / {grade.totalSlots || 0} slots
+              {grade.slotsPreenchidos || 0} / {grade.totalSlots || 0} {t('detail.slots')}
             </span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
-          <p className="text-xs text-gray-500 text-right">{progressPercentage}% preenchido</p>
+          <p className="text-xs text-gray-500 text-right">{progressPercentage}{t('detail.filledPercent')}</p>
         </div>
 
         <div className="flex gap-2 pt-2">
@@ -232,7 +238,7 @@ export function GradeCard({
             className="flex-1"
             onClick={() => onView(grade)}
           >
-            Ver Detalhes
+            {t('detail.viewDetails')}
           </Button>
           {grade.status === 'rascunho' && (
             <Button
@@ -240,7 +246,7 @@ export function GradeCard({
               className="flex-1"
               onClick={() => onPublish(grade)}
             >
-              Publicar
+              {t('detail.publish')}
             </Button>
           )}
         </div>

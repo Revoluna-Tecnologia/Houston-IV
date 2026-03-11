@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useFormatCurrency } from '@/lib/format-currency';
 import type { Hospital, Vaga } from '../../services/types';
 
 const BuildingIcon = () => (
@@ -37,13 +38,10 @@ export interface HospitalCardProps {
 }
 
 export function HospitalCard({ hospital, vagas, onClick, className }: HospitalCardProps) {
+  const formatCurrency = useFormatCurrency();
   const vagasAbertas = vagas.filter((v) => v.status === 'aberta' || v.status === 'anunciada').length;
   const vagasFechadas = vagas.filter((v) => v.status === 'fechada').length;
   const valorTotal = vagas.reduce((acc, v) => acc + (v.valor || 0), 0);
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
 
   return (
     <Card

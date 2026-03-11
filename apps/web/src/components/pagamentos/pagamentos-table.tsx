@@ -1,8 +1,9 @@
 'use client';
 
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
+import { useDateLocale } from '@/lib/date-locale';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -111,6 +112,8 @@ export function PagamentosTable({
 }: PagamentosTableProps) {
   const t = useTranslations('Pagamentos');
   const tCommon = useTranslations('Common.actions');
+  const formatCurrency = useFormatCurrency();
+  const dateLocale = useDateLocale();
 
   const STATUS_LABELS: Record<PagamentoStatus, string> = {
     pendente: t('status.pending'),
@@ -119,14 +122,10 @@ export function PagamentosTable({
     cancelado: t('status.cancelled'),
   };
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
-
   const formatDate = (date: Date | string | null) => {
     if (!date) return '-';
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: ptBR });
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
   };
 
   const handleSelectAll = (checked: boolean) => {

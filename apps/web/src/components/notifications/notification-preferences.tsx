@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { Loader2, Bell, Mail, Smartphone, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -19,57 +20,6 @@ import {
   type UpdatePreferenceInput,
 } from '@/services/notifications'
 
-const NOTIFICATION_CATEGORIES: {
-  title: string
-  description: string
-  types: NotificationType[]
-}[] = [
-  {
-    title: 'Tickets',
-    description: 'Notificações sobre tickets e atendimentos',
-    types: [
-      'ticket_created',
-      'ticket_assigned',
-      'ticket_status_changed',
-      'ticket_comment_added',
-      'ticket_sla_warning',
-      'ticket_sla_breach',
-    ],
-  },
-  {
-    title: 'Vagas e Candidaturas',
-    description: 'Notificações sobre vagas e processos seletivos',
-    types: [
-      'vaga_created',
-      'vaga_expiring',
-      'vaga_no_candidates',
-      'candidatura_received',
-      'candidatura_approved',
-      'candidatura_rejected',
-    ],
-  },
-  {
-    title: 'Mensagens',
-    description: 'Notificações de comunicação',
-    types: ['message_received', 'conversation_created', 'shift_offer_received'],
-  },
-  {
-    title: 'Médicos',
-    description: 'Notificações sobre cadastro de médicos',
-    types: ['medico_registered', 'medico_approved', 'medico_documents_pending'],
-  },
-  {
-    title: 'Check-in/Check-out',
-    description: 'Lembretes e alertas de presença',
-    types: ['checkin_reminder', 'checkout_reminder', 'checkin_late', 'checkout_late'],
-  },
-  {
-    title: 'Comunicados',
-    description: 'Comunicados e avisos gerais',
-    types: ['comunicado_published'],
-  },
-]
-
 interface PreferenceState {
   [type: string]: {
     inApp: boolean
@@ -79,10 +29,62 @@ interface PreferenceState {
 }
 
 export function NotificationPreferences() {
+  const t = useTranslations('Notifications')
   const { data: preferences, isLoading } = useNotificationPreferences()
   const updatePreferences = useUpdatePreferences()
   const [localPreferences, setLocalPreferences] = useState<PreferenceState>({})
   const [hasChanges, setHasChanges] = useState(false)
+
+  const NOTIFICATION_CATEGORIES: {
+    title: string
+    description: string
+    types: NotificationType[]
+  }[] = [
+    {
+      title: t('preferences.categories.tickets'),
+      description: t('preferences.categories.ticketsDesc'),
+      types: [
+        'ticket_created',
+        'ticket_assigned',
+        'ticket_status_changed',
+        'ticket_comment_added',
+        'ticket_sla_warning',
+        'ticket_sla_breach',
+      ],
+    },
+    {
+      title: t('preferences.categories.vagasCandidaturas'),
+      description: t('preferences.categories.vagasCandidaturasDesc'),
+      types: [
+        'vaga_created',
+        'vaga_expiring',
+        'vaga_no_candidates',
+        'candidatura_received',
+        'candidatura_approved',
+        'candidatura_rejected',
+      ],
+    },
+    {
+      title: t('preferences.categories.messages'),
+      description: t('preferences.categories.messagesDesc'),
+      types: ['message_received', 'conversation_created', 'shift_offer_received'],
+    },
+    {
+      title: t('preferences.categories.medicos'),
+      description: t('preferences.categories.medicosDesc'),
+      types: ['medico_registered', 'medico_approved', 'medico_documents_pending'],
+    },
+    {
+      title: t('preferences.categories.checkinCheckout'),
+      description: t('preferences.categories.checkinCheckoutDesc'),
+      types: ['checkin_reminder', 'checkout_reminder', 'checkin_late', 'checkout_late'],
+    },
+    {
+      title: t('preferences.categories.comunicados'),
+      description: t('preferences.categories.comunicadosDesc'),
+      types: ['comunicado_published'],
+    },
+  ]
 
   useEffect(() => {
     if (preferences) {
@@ -132,13 +134,13 @@ export function NotificationPreferences() {
 
     try {
       await updatePreferences.mutateAsync(updates)
-      toast.success('Preferências salvas', {
-        description: 'Suas preferências de notificação foram atualizadas.',
+      toast.success(t('preferences.savedTitle'), {
+        description: t('preferences.savedDescription'),
       })
       setHasChanges(false)
     } catch {
-      toast.error('Erro ao salvar', {
-        description: 'Não foi possível salvar suas preferências.',
+      toast.error(t('preferences.errorTitle'), {
+        description: t('preferences.errorDescription'),
       })
     }
   }
@@ -155,9 +157,9 @@ export function NotificationPreferences() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Preferências de Notificação</h2>
+          <h2 className="text-lg font-semibold">{t('preferences.title')}</h2>
           <p className="text-sm text-muted-foreground">
-            Configure como deseja receber suas notificações
+            {t('preferences.description')}
           </p>
         </div>
         <Button
@@ -169,7 +171,7 @@ export function NotificationPreferences() {
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Salvar alterações
+          {t('preferences.save')}
         </Button>
       </div>
 
@@ -183,15 +185,15 @@ export function NotificationPreferences() {
             <CardContent>
               <div className="space-y-4">
                 <div className="grid grid-cols-4 gap-4 text-xs font-medium text-muted-foreground pb-2 border-b">
-                  <div>Tipo</div>
+                  <div>{t('preferences.type')}</div>
                   <div className="flex items-center gap-1">
-                    <Bell className="h-3 w-3" /> In-App
+                    <Bell className="h-3 w-3" /> {t('preferences.inApp')}
                   </div>
                   <div className="flex items-center gap-1">
-                    <Mail className="h-3 w-3" /> Email
+                    <Mail className="h-3 w-3" /> {t('preferences.email')}
                   </div>
                   <div className="flex items-center gap-1">
-                    <Smartphone className="h-3 w-3" /> Push
+                    <Smartphone className="h-3 w-3" /> {t('preferences.push')}
                   </div>
                 </div>
 
@@ -228,7 +230,7 @@ export function NotificationPreferences() {
       </div>
 
       <div className="text-xs text-muted-foreground">
-        <p>* Notificações push estarão disponíveis em breve.</p>
+        <p>{t('preferences.pushComingSoon')}</p>
       </div>
     </div>
   )

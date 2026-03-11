@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 import { format, setMonth, setYear } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { useTranslations } from 'next-intl'
+import { useDateLocale } from '@/lib/date-locale'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -55,21 +56,6 @@ const ChevronRightIcon = () => (
   </svg>
 )
 
-const MONTHS = [
-  'Janeiro',
-  'Fevereiro',
-  'Marco',
-  'Abril',
-  'Maio',
-  'Junho',
-  'Julho',
-  'Agosto',
-  'Setembro',
-  'Outubro',
-  'Novembro',
-  'Dezembro',
-]
-
 export interface MonthPickerProps {
   value?: Date
   onChange?: (date: Date) => void
@@ -80,9 +66,22 @@ export interface MonthPickerProps {
 function MonthPicker({
   value,
   onChange,
-  placeholder = 'Selecione um mes',
+  placeholder,
   className,
 }: MonthPickerProps) {
+  const t = useTranslations('Common')
+  const tg = useTranslations('Grades')
+  const dateLocale = useDateLocale()
+
+  const MONTHS = [
+    t('months.january'), t('months.february'), t('months.march'),
+    t('months.april'), t('months.may'), t('months.june'),
+    t('months.july'), t('months.august'), t('months.september'),
+    t('months.october'), t('months.november'), t('months.december'),
+  ]
+
+  const defaultPlaceholder = tg('form.selectMonth')
+
   const [open, setOpen] = React.useState(false)
   const [viewYear, setViewYear] = React.useState(() =>
     value ? value.getFullYear() : new Date().getFullYear()
@@ -118,8 +117,8 @@ function MonthPicker({
         >
           <CalendarIcon />
           {value
-            ? format(value, 'MMMM yyyy', { locale: ptBR })
-            : placeholder}
+            ? format(value, 'MMMM yyyy', { locale: dateLocale })
+            : placeholder || defaultPlaceholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[280px] p-3" align="start">

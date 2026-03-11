@@ -1,9 +1,9 @@
 'use client'
 
 import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import type { DateRange } from 'react-day-picker'
 import { cn } from '@/lib/utils'
+import { useDateLocale } from '@/lib/date-locale'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -41,6 +41,8 @@ function DateRangePicker({
   disabled,
   className,
 }: DateRangePickerProps) {
+  const dateLocale = useDateLocale()
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -57,11 +59,11 @@ function DateRangePicker({
           {value?.from ? (
             value.to ? (
               <>
-                {format(value.from, 'dd/MM/yyyy', { locale: ptBR })} -{' '}
-                {format(value.to, 'dd/MM/yyyy', { locale: ptBR })}
+                {format(value.from, 'dd/MM/yyyy', { locale: dateLocale })} -{' '}
+                {format(value.to, 'dd/MM/yyyy', { locale: dateLocale })}
               </>
             ) : (
-              format(value.from, 'dd/MM/yyyy', { locale: ptBR })
+              format(value.from, 'dd/MM/yyyy', { locale: dateLocale })
             )
           ) : (
             placeholder
@@ -75,7 +77,7 @@ function DateRangePicker({
           onSelect={onChange}
           numberOfMonths={2}
           initialFocus
-          locale={ptBR}
+          locale={dateLocale}
         />
       </PopoverContent>
     </Popover>

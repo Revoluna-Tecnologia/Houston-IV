@@ -1,8 +1,9 @@
 'use client';
 
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
+import { useDateLocale } from '@/lib/date-locale';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -125,6 +126,8 @@ export function VagasTable({
 }: VagasTableProps) {
   const t = useTranslations('Vagas');
   const tActions = useTranslations('Common.actions');
+  const formatCurrency = useFormatCurrency();
+  const dateLocale = useDateLocale();
 
   const STATUS_LABELS: Record<VagaStatus, string> = {
     aberta: t('status.open'),
@@ -133,13 +136,9 @@ export function VagasTable({
     cancelada: t('status.cancelled'),
   };
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
-
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: ptBR });
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
   };
 
   const getHospitalName = (hospitalId: string) => {
