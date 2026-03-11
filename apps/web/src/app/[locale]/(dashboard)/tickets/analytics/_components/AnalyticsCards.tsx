@@ -2,12 +2,15 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { TicketAnalytics } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface AnalyticsCardsProps {
   data: TicketAnalytics
 }
 
 export function AnalyticsCards({ data }: AnalyticsCardsProps) {
+  const t = useTranslations('Tickets')
+
   const formatHours = (hours: number | null) => {
     if (hours === null) return '-'
     if (hours < 1) return `${Math.round(hours * 60)}min`
@@ -19,7 +22,7 @@ export function AnalyticsCards({ data }: AnalyticsCardsProps) {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Total de Tickets</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('admin.totalTickets')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{data.totalTickets}</div>
@@ -28,7 +31,7 @@ export function AnalyticsCards({ data }: AnalyticsCardsProps) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Em Aberto</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('admin.openTickets')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-blue-600">{data.openTickets}</div>
@@ -37,7 +40,7 @@ export function AnalyticsCards({ data }: AnalyticsCardsProps) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Resolvidos</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('admin.resolvedTickets')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-green-600">{data.resolvedTickets}</div>
@@ -46,7 +49,7 @@ export function AnalyticsCards({ data }: AnalyticsCardsProps) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Tempo Medio de Resolucao</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('admin.avgResolutionTime')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">

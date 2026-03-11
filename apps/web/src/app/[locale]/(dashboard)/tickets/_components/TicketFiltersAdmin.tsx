@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -21,33 +22,6 @@ interface TicketFiltersAdminProps {
   onCategoryChange: (value: TicketCategory | 'all') => void
 }
 
-const statusOptions: { value: TicketStatus | 'all'; label: string }[] = [
-  { value: 'all', label: 'Todos os status' },
-  { value: TicketStatus.OPEN, label: 'Aberto' },
-  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
-  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
-  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
-  { value: TicketStatus.CLOSED, label: 'Fechado' },
-]
-
-const priorityOptions: { value: TicketPriority | 'all'; label: string }[] = [
-  { value: 'all', label: 'Todas as prioridades' },
-  { value: TicketPriority.LOW, label: 'Baixa' },
-  { value: TicketPriority.MEDIUM, label: 'Media' },
-  { value: TicketPriority.HIGH, label: 'Alta' },
-  { value: TicketPriority.CRITICAL, label: 'Critica' },
-]
-
-const categoryOptions: { value: TicketCategory | 'all'; label: string }[] = [
-  { value: 'all', label: 'Todas as categorias' },
-  { value: TicketCategory.UI, label: 'UI' },
-  { value: TicketCategory.FUNCTIONALITY, label: 'Funcionalidade' },
-  { value: TicketCategory.PERFORMANCE, label: 'Performance' },
-  { value: TicketCategory.SECURITY, label: 'Seguranca' },
-  { value: TicketCategory.API, label: 'API' },
-  { value: TicketCategory.OTHER, label: 'Outro' },
-]
-
 export function TicketFiltersAdmin({
   search,
   status,
@@ -58,10 +32,39 @@ export function TicketFiltersAdmin({
   onPriorityChange,
   onCategoryChange,
 }: TicketFiltersAdminProps) {
+  const t = useTranslations('Tickets')
+
+  const statusOptions: { value: TicketStatus | 'all'; label: string }[] = [
+    { value: 'all', label: t('admin.allStatuses') },
+    { value: TicketStatus.OPEN, label: 'Aberto' },
+    { value: TicketStatus.IN_REVIEW, label: t('admin.statusInReview') },
+    { value: TicketStatus.IN_PROGRESS, label: t('admin.statusInProgress') },
+    { value: TicketStatus.RESOLVED, label: t('admin.statusResolved') },
+    { value: TicketStatus.CLOSED, label: t('admin.statusClosed') },
+  ]
+
+  const priorityOptions: { value: TicketPriority | 'all'; label: string }[] = [
+    { value: 'all', label: t('admin.allPriorities') },
+    { value: TicketPriority.LOW, label: 'Baixa' },
+    { value: TicketPriority.MEDIUM, label: t('admin.priorityMedium') },
+    { value: TicketPriority.HIGH, label: 'Alta' },
+    { value: TicketPriority.CRITICAL, label: t('admin.priorityCritical') },
+  ]
+
+  const categoryOptions: { value: TicketCategory | 'all'; label: string }[] = [
+    { value: 'all', label: t('admin.allCategories') },
+    { value: TicketCategory.UI, label: 'UI' },
+    { value: TicketCategory.FUNCTIONALITY, label: t('admin.categoryFeature') },
+    { value: TicketCategory.PERFORMANCE, label: 'Performance' },
+    { value: TicketCategory.SECURITY, label: 'Seguranca' },
+    { value: TicketCategory.API, label: 'API' },
+    { value: TicketCategory.OTHER, label: 'Outro' },
+  ]
+
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6">
       <Input
-        placeholder="Buscar tickets..."
+        placeholder={t('admin.searchPlaceholder')}
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         className="max-w-xs"

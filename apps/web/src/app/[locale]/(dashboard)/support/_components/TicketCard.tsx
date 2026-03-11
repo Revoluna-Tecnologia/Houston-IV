@@ -4,28 +4,31 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { Ticket } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface TicketCardProps {
   ticket: Ticket
   onView: (ticket: Ticket) => void
 }
 
-const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  open: { label: 'Aberto', variant: 'default' },
-  in_review: { label: 'Em Revisao', variant: 'secondary' },
-  in_progress: { label: 'Em Andamento', variant: 'secondary' },
-  resolved: { label: 'Resolvido', variant: 'outline' },
-  closed: { label: 'Fechado', variant: 'outline' },
-}
-
-const priorityConfig: Record<string, { label: string; className: string }> = {
-  low: { label: 'Baixa', className: 'bg-gray-100 text-gray-800' },
-  medium: { label: 'Media', className: 'bg-blue-100 text-blue-800' },
-  high: { label: 'Alta', className: 'bg-orange-100 text-orange-800' },
-  critical: { label: 'Critica', className: 'bg-red-100 text-red-800' },
-}
-
 export function TicketCard({ ticket, onView }: TicketCardProps) {
+  const t = useTranslations('Support')
+
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    open: { label: t('status.open'), variant: 'default' },
+    in_review: { label: t('status.inReview'), variant: 'secondary' },
+    in_progress: { label: t('status.inProgress'), variant: 'secondary' },
+    resolved: { label: t('status.resolved'), variant: 'outline' },
+    closed: { label: t('status.closed'), variant: 'outline' },
+  }
+
+  const priorityConfig: Record<string, { label: string; className: string }> = {
+    low: { label: t('priority.low'), className: 'bg-gray-100 text-gray-800' },
+    medium: { label: t('priority.medium'), className: 'bg-blue-100 text-blue-800' },
+    high: { label: t('priority.high'), className: 'bg-orange-100 text-orange-800' },
+    critical: { label: t('priority.critical'), className: 'bg-red-100 text-red-800' },
+  }
+
   const status = statusConfig[ticket.status] || statusConfig.open
   const priority = priorityConfig[ticket.priority] || priorityConfig.medium
 
@@ -43,7 +46,7 @@ export function TicketCard({ ticket, onView }: TicketCardProps) {
           <div className="flex items-center gap-2">
             <span className={`text-xs px-2 py-1 rounded ${priority.className}`}>{priority.label}</span>
             {ticket.commentsCount ? (
-              <span className="text-xs text-muted-foreground">{ticket.commentsCount} comentarios</span>
+              <span className="text-xs text-muted-foreground">{ticket.commentsCount} {t('card.comments')}</span>
             ) : null}
           </div>
           <span className="text-xs text-muted-foreground">
@@ -51,11 +54,11 @@ export function TicketCard({ ticket, onView }: TicketCardProps) {
           </span>
         </div>
         {ticket.slaBreach && (
-          <div className="mt-2 text-xs text-red-600 font-medium">SLA violado</div>
+          <div className="mt-2 text-xs text-red-600 font-medium">{t('card.slaViolated')}</div>
         )}
         <div className="mt-3">
           <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onView(ticket) }}>
-            Ver Detalhes
+            {t('card.viewDetails')}
           </Button>
         </div>
       </CardContent>

@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { TicketStatus, TicketPriority } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface TicketFiltersProps {
   status: string
@@ -27,11 +28,13 @@ export function TicketFilters({
   onPriorityChange,
   onSearchChange,
 }: TicketFiltersProps) {
+  const t = useTranslations('Support')
+
   return (
     <div className="flex flex-wrap gap-4">
       <div className="flex-1 min-w-[200px]">
         <Input
-          placeholder="Buscar tickets..."
+          placeholder={t('filters.searchPlaceholder')}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
         />
@@ -42,12 +45,12 @@ export function TicketFilters({
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os Status</SelectItem>
-          <SelectItem value={TicketStatus.OPEN}>Aberto</SelectItem>
-          <SelectItem value={TicketStatus.IN_REVIEW}>Em Revisao</SelectItem>
-          <SelectItem value={TicketStatus.IN_PROGRESS}>Em Andamento</SelectItem>
-          <SelectItem value={TicketStatus.RESOLVED}>Resolvido</SelectItem>
-          <SelectItem value={TicketStatus.CLOSED}>Fechado</SelectItem>
+          <SelectItem value="all">{t('filters.allStatuses')}</SelectItem>
+          <SelectItem value={TicketStatus.OPEN}>{t('status.open')}</SelectItem>
+          <SelectItem value={TicketStatus.IN_REVIEW}>{t('status.inReview')}</SelectItem>
+          <SelectItem value={TicketStatus.IN_PROGRESS}>{t('status.inProgress')}</SelectItem>
+          <SelectItem value={TicketStatus.RESOLVED}>{t('status.resolved')}</SelectItem>
+          <SelectItem value={TicketStatus.CLOSED}>{t('status.closed')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -56,11 +59,11 @@ export function TicketFilters({
           <SelectValue placeholder="Prioridade" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todas Prioridades</SelectItem>
-          <SelectItem value={TicketPriority.LOW}>Baixa</SelectItem>
-          <SelectItem value={TicketPriority.MEDIUM}>Media</SelectItem>
-          <SelectItem value={TicketPriority.HIGH}>Alta</SelectItem>
-          <SelectItem value={TicketPriority.CRITICAL}>Critica</SelectItem>
+          <SelectItem value="all">{t('filters.allPriorities')}</SelectItem>
+          <SelectItem value={TicketPriority.LOW}>{t('priority.low')}</SelectItem>
+          <SelectItem value={TicketPriority.MEDIUM}>{t('priority.medium')}</SelectItem>
+          <SelectItem value={TicketPriority.HIGH}>{t('priority.high')}</SelectItem>
+          <SelectItem value={TicketPriority.CRITICAL}>{t('priority.critical')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

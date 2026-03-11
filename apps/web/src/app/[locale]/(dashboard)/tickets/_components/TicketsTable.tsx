@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -22,21 +23,6 @@ interface TicketsTableProps {
   onStatusChange: (id: string, status: TicketStatus) => void
 }
 
-const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  open: { label: 'Aberto', variant: 'default' },
-  in_review: { label: 'Em Revisao', variant: 'secondary' },
-  in_progress: { label: 'Em Andamento', variant: 'secondary' },
-  resolved: { label: 'Resolvido', variant: 'outline' },
-  closed: { label: 'Fechado', variant: 'outline' },
-}
-
-const priorityConfig: Record<string, { label: string; className: string }> = {
-  low: { label: 'Baixa', className: 'bg-gray-100 text-gray-800' },
-  medium: { label: 'Media', className: 'bg-blue-100 text-blue-800' },
-  high: { label: 'Alta', className: 'bg-orange-100 text-orange-800' },
-  critical: { label: 'Critica', className: 'bg-red-100 text-red-800' },
-}
-
 export function TicketsTable({
   tickets,
   selectedIds,
@@ -45,6 +31,23 @@ export function TicketsTable({
   onView,
   onStatusChange,
 }: TicketsTableProps) {
+  const t = useTranslations('Tickets')
+
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    open: { label: 'Aberto', variant: 'default' },
+    in_review: { label: t('admin.statusInReview'), variant: 'secondary' },
+    in_progress: { label: t('admin.statusInProgress'), variant: 'secondary' },
+    resolved: { label: t('admin.statusResolved'), variant: 'outline' },
+    closed: { label: t('admin.statusClosed'), variant: 'outline' },
+  }
+
+  const priorityConfig: Record<string, { label: string; className: string }> = {
+    low: { label: 'Baixa', className: 'bg-gray-100 text-gray-800' },
+    medium: { label: t('admin.priorityMedium'), className: 'bg-blue-100 text-blue-800' },
+    high: { label: 'Alta', className: 'bg-orange-100 text-orange-800' },
+    critical: { label: t('admin.priorityCritical'), className: 'bg-red-100 text-red-800' },
+  }
+
   const allSelected = tickets.length > 0 && selectedIds.length === tickets.length
 
   return (
@@ -57,13 +60,13 @@ export function TicketsTable({
               onCheckedChange={(checked) => onSelectAll(!!checked)}
             />
           </TableHead>
-          <TableHead>Titulo</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Prioridade</TableHead>
-          <TableHead>Categoria</TableHead>
-          <TableHead>Criado em</TableHead>
+          <TableHead>{t('admin.titleColumn')}</TableHead>
+          <TableHead>{t('admin.statusColumn')}</TableHead>
+          <TableHead>{t('admin.priorityColumn')}</TableHead>
+          <TableHead>{t('admin.categoryColumn')}</TableHead>
+          <TableHead>{t('admin.createdAtColumn')}</TableHead>
           <TableHead>SLA</TableHead>
-          <TableHead className="text-right">Acoes</TableHead>
+          <TableHead className="text-right">{t('admin.actionsColumn')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -97,7 +100,7 @@ export function TicketsTable({
               </TableCell>
               <TableCell>
                 {ticket.slaBreach ? (
-                  <Badge variant="destructive">Violado</Badge>
+                  <Badge variant="destructive">{t('admin.violated')}</Badge>
                 ) : ticket.slaDeadline ? (
                   <span className="text-xs text-muted-foreground">
                     {new Date(ticket.slaDeadline).toLocaleDateString('pt-BR')}
@@ -108,7 +111,7 @@ export function TicketsTable({
               </TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="sm" onClick={() => onView(ticket)}>
-                  Ver
+                  {t('admin.view')}
                 </Button>
               </TableCell>
             </TableRow>
@@ -117,7 +120,7 @@ export function TicketsTable({
         {tickets.length === 0 && (
           <TableRow>
             <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-              Nenhum ticket encontrado
+              {t('admin.noTicketsFound')}
             </TableCell>
           </TableRow>
         )}

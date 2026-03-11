@@ -10,12 +10,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { TicketAnalytics } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface TopAssigneesProps {
   data: TicketAnalytics['topAssignees']
 }
 
 export function TopAssignees({ data }: TopAssigneesProps) {
+  const t = useTranslations('Tickets')
+
   const formatHours = (hours: number | null) => {
     if (hours === null) return '-'
     if (hours < 1) return `${Math.round(hours * 60)}min`
@@ -26,22 +29,22 @@ export function TopAssignees({ data }: TopAssigneesProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top Responsaveis</CardTitle>
+        <CardTitle>{t('admin.topAssignees')}</CardTitle>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
           <p className="text-muted-foreground text-center py-4">
-            Nenhum responsavel atribuido
+            {t('admin.noAssignees')}
           </p>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Responsavel</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-                <TableHead className="text-right">Abertos</TableHead>
-                <TableHead className="text-right">Resolvidos</TableHead>
-                <TableHead className="text-right">Tempo Medio</TableHead>
+                <TableHead>{t('admin.assignee')}</TableHead>
+                <TableHead className="text-right">{t('admin.total')}</TableHead>
+                <TableHead className="text-right">{t('admin.openCount')}</TableHead>
+                <TableHead className="text-right">{t('admin.resolvedCount')}</TableHead>
+                <TableHead className="text-right">{t('admin.avgTime')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -2,21 +2,24 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { TicketAnalytics } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface TimelineChartProps {
   data: TicketAnalytics['timeline']
 }
 
 export function TimelineChart({ data }: TimelineChartProps) {
+  const t = useTranslations('Tickets')
+
   if (data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Timeline de Tickets</CardTitle>
+          <CardTitle>{t('admin.ticketsTimeline')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-center py-8">
-            Nenhum dado disponivel
+            {t('admin.noDataAvailable')}
           </p>
         </CardContent>
       </Card>
@@ -28,7 +31,7 @@ export function TimelineChart({ data }: TimelineChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Timeline de Tickets</CardTitle>
+        <CardTitle>{t('admin.ticketsTimeline')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-end gap-1 h-48">
@@ -41,12 +44,12 @@ export function TimelineChart({ data }: TimelineChartProps) {
                   <div
                     className="flex-1 bg-blue-400 rounded-t"
                     style={{ height: `${createdHeight}%` }}
-                    title={`Criados: ${item.created}`}
+                    title={`${t('admin.created')}: ${item.created}`}
                   />
                   <div
                     className="flex-1 bg-green-400 rounded-t"
                     style={{ height: `${resolvedHeight}%` }}
-                    title={`Resolvidos: ${item.resolved}`}
+                    title={`${t('admin.resolved')}: ${item.resolved}`}
                   />
                 </div>
                 <span className="text-xs text-muted-foreground truncate w-full text-center">
@@ -63,11 +66,11 @@ export function TimelineChart({ data }: TimelineChartProps) {
         <div className="flex items-center justify-center gap-6 mt-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-blue-400 rounded" />
-            <span className="text-sm">Criados</span>
+            <span className="text-sm">{t('admin.created')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-400 rounded" />
-            <span className="text-sm">Resolvidos</span>
+            <span className="text-sm">{t('admin.resolved')}</span>
           </div>
         </div>
       </CardContent>

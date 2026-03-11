@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { TicketPriority, TicketCategory, type CreateTicketDto } from '@/services/tickets'
+import { useTranslations } from 'next-intl'
 
 interface CreateTicketModalProps {
   open: boolean
@@ -29,6 +30,7 @@ interface CreateTicketModalProps {
 }
 
 export function CreateTicketModal({ open, onOpenChange, onSubmit, grupoId }: CreateTicketModalProps) {
+  const t = useTranslations('Support')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -67,27 +69,27 @@ export function CreateTicketModal({ open, onOpenChange, onSubmit, grupoId }: Cre
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Novo Ticket</DialogTitle>
+          <DialogTitle>{t('newTicket')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Titulo *</Label>
+            <Label htmlFor="title">{t('form.titleLabel')}</Label>
             <Input
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Descreva brevemente o problema"
+              placeholder={t('form.titlePlaceholder')}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Descricao *</Label>
+            <Label htmlFor="description">{t('form.descriptionLabel')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Descreva o problema em detalhes"
+              placeholder={t('form.descriptionPlaceholder')}
               rows={4}
               required
             />
@@ -104,10 +106,10 @@ export function CreateTicketModal({ open, onOpenChange, onSubmit, grupoId }: Cre
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={TicketPriority.LOW}>Baixa</SelectItem>
-                  <SelectItem value={TicketPriority.MEDIUM}>Media</SelectItem>
-                  <SelectItem value={TicketPriority.HIGH}>Alta</SelectItem>
-                  <SelectItem value={TicketPriority.CRITICAL}>Critica</SelectItem>
+                  <SelectItem value={TicketPriority.LOW}>{t('priority.low')}</SelectItem>
+                  <SelectItem value={TicketPriority.MEDIUM}>{t('priority.medium')}</SelectItem>
+                  <SelectItem value={TicketPriority.HIGH}>{t('priority.high')}</SelectItem>
+                  <SelectItem value={TicketPriority.CRITICAL}>{t('priority.critical')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -122,10 +124,10 @@ export function CreateTicketModal({ open, onOpenChange, onSubmit, grupoId }: Cre
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={TicketCategory.UI}>Interface</SelectItem>
-                  <SelectItem value={TicketCategory.FUNCTIONALITY}>Funcionalidade</SelectItem>
-                  <SelectItem value={TicketCategory.PERFORMANCE}>Performance</SelectItem>
-                  <SelectItem value={TicketCategory.SECURITY}>Seguranca</SelectItem>
+                  <SelectItem value={TicketCategory.UI}>{t('form.categoryInterface')}</SelectItem>
+                  <SelectItem value={TicketCategory.FUNCTIONALITY}>{t('form.categoryFeature')}</SelectItem>
+                  <SelectItem value={TicketCategory.PERFORMANCE}>{t('form.categoryPerformance')}</SelectItem>
+                  <SelectItem value={TicketCategory.SECURITY}>{t('form.categorySecurity')}</SelectItem>
                   <SelectItem value={TicketCategory.API}>API</SelectItem>
                   <SelectItem value={TicketCategory.OTHER}>Outro</SelectItem>
                 </SelectContent>
@@ -134,32 +136,32 @@ export function CreateTicketModal({ open, onOpenChange, onSubmit, grupoId }: Cre
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Localizacao (URL ou pagina)</Label>
+            <Label htmlFor="location">{t('form.locationLabel')}</Label>
             <Input
               id="location"
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              placeholder="/dashboard/vagas"
+              placeholder={t('form.locationPlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reproductionSteps">Passos para Reproducao</Label>
+            <Label htmlFor="reproductionSteps">{t('form.stepsLabel')}</Label>
             <Textarea
               id="reproductionSteps"
               value={formData.reproductionSteps}
               onChange={(e) => setFormData({ ...formData, reproductionSteps: e.target.value })}
-              placeholder="1. Acessar a pagina X&#10;2. Clicar no botao Y&#10;3. Erro aparece"
+              placeholder={t('form.stepsPlaceholder')}
               rows={3}
             />
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t('form.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Criando...' : 'Criar Ticket'}
+              {isSubmitting ? t('form.creating') : t('form.createButton')}
             </Button>
           </DialogFooter>
         </form>

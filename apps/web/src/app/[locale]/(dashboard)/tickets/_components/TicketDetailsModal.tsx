@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Dialog,
   DialogContent,
@@ -30,29 +31,6 @@ interface TicketDetailsModalProps {
   onArchive: (id: string) => Promise<void>
 }
 
-const statusOptions: { value: TicketStatus; label: string }[] = [
-  { value: TicketStatus.OPEN, label: 'Aberto' },
-  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
-  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
-  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
-  { value: TicketStatus.CLOSED, label: 'Fechado' },
-]
-
-const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  open: { label: 'Aberto', variant: 'default' },
-  in_review: { label: 'Em Revisao', variant: 'secondary' },
-  in_progress: { label: 'Em Andamento', variant: 'secondary' },
-  resolved: { label: 'Resolvido', variant: 'outline' },
-  closed: { label: 'Fechado', variant: 'outline' },
-}
-
-const priorityConfig: Record<string, { label: string; className: string }> = {
-  low: { label: 'Baixa', className: 'bg-gray-100 text-gray-800' },
-  medium: { label: 'Media', className: 'bg-blue-100 text-blue-800' },
-  high: { label: 'Alta', className: 'bg-orange-100 text-orange-800' },
-  critical: { label: 'Critica', className: 'bg-red-100 text-red-800' },
-}
-
 export function TicketDetailsModal({
   ticket,
   open,
@@ -61,9 +39,33 @@ export function TicketDetailsModal({
   onAssign,
   onArchive,
 }: TicketDetailsModalProps) {
+  const t = useTranslations('Tickets')
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { data: comments, create: createComment } = useTicketComments(ticket?.id || '')
+
+  const statusOptions: { value: TicketStatus; label: string }[] = [
+    { value: TicketStatus.OPEN, label: 'Aberto' },
+    { value: TicketStatus.IN_REVIEW, label: t('admin.statusInReview') },
+    { value: TicketStatus.IN_PROGRESS, label: t('admin.statusInProgress') },
+    { value: TicketStatus.RESOLVED, label: t('admin.statusResolved') },
+    { value: TicketStatus.CLOSED, label: t('admin.statusClosed') },
+  ]
+
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    open: { label: 'Aberto', variant: 'default' },
+    in_review: { label: t('admin.statusInReview'), variant: 'secondary' },
+    in_progress: { label: t('admin.statusInProgress'), variant: 'secondary' },
+    resolved: { label: t('admin.statusResolved'), variant: 'outline' },
+    closed: { label: t('admin.statusClosed'), variant: 'outline' },
+  }
+
+  const priorityConfig: Record<string, { label: string; className: string }> = {
+    low: { label: 'Baixa', className: 'bg-gray-100 text-gray-800' },
+    medium: { label: t('admin.priorityMedium'), className: 'bg-blue-100 text-blue-800' },
+    high: { label: 'Alta', className: 'bg-orange-100 text-orange-800' },
+    critical: { label: t('admin.priorityCritical'), className: 'bg-red-100 text-red-800' },
+  }
 
   const handleAddComment = useCallback(async () => {
     if (!newComment.trim() || !ticket) return
@@ -85,10 +87,10 @@ export function TicketDetailsModal({
   )
 
   const handleArchive = useCallback(async () => {
-    if (!ticket || !confirm('Tem certeza que deseja arquivar este ticket?')) return
+    if (!ticket || !confirm(t('admin.archiveTicketConfirm'))) return
     await onArchive(ticket.id)
     onOpenChange(false)
-  }, [ticket, onArchive, onOpenChange])
+  }, [ticket, onArchive, onOpenChange, t])
 
   if (!ticket) return null
 
@@ -105,7 +107,7 @@ export function TicketDetailsModal({
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 space-y-6">
             <div>
-              <h4 className="font-medium mb-2">Descricao</h4>
+              <h4 className="font-medium mb-2">{t('admin.description')}</h4>
               <p className="text-muted-foreground whitespace-pre-wrap">
                 {ticket.description}
               </p>
@@ -113,14 +115,14 @@ export function TicketDetailsModal({
 
             {ticket.location && (
               <div>
-                <h4 className="font-medium mb-1">Localizacao</h4>
+                <h4 className="font-medium mb-1">{t('admin.location')}</h4>
                 <p className="text-muted-foreground">{ticket.location}</p>
               </div>
             )}
 
             {ticket.reproductionSteps && (
               <div>
-                <h4 className="font-medium mb-1">Passos para Reproducao</h4>
+                <h4 className="font-medium mb-1">{t('admin.stepsToReproduce')}</h4>
                 <p className="text-muted-foreground whitespace-pre-wrap">
                   {ticket.reproductionSteps}
                 </p>
@@ -128,9 +130,9 @@ export function TicketDetailsModal({
             )}
 
             <div>
-              <h4 className="font-medium mb-2">Comentarios Internos ({comments.length})</h4>
+              <h4 className="font-medium mb-2">{t('admin.internalComments')} ({comments.length})</h4>
               {comments.length === 0 ? (
-                <p className="text-muted-foreground text-sm">Nenhum comentario</p>
+                <p className="text-muted-foreground text-sm">{t('admin.noComments')}</p>
               ) : (
                 <div className="space-y-3 max-h-48 overflow-y-auto">
                   {comments.map((comment) => (
@@ -149,7 +151,7 @@ export function TicketDetailsModal({
 
               <div className="mt-3">
                 <Textarea
-                  placeholder="Adicionar comentario interno..."
+                  placeholder={t('admin.addCommentPlaceholder')}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   rows={2}
@@ -160,7 +162,7 @@ export function TicketDetailsModal({
                     onClick={handleAddComment}
                     disabled={isSubmitting || !newComment.trim()}
                   >
-                    Comentar
+                    {t('admin.comment')}
                   </Button>
                 </div>
               </div>
@@ -203,17 +205,17 @@ export function TicketDetailsModal({
 
             {ticket.slaBreach && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <Badge variant="destructive">SLA Violado</Badge>
+                <Badge variant="destructive">{t('admin.slaViolated')}</Badge>
               </div>
             )}
 
             <div className="pt-4 border-t space-y-2">
               <p className="text-xs text-muted-foreground">
-                Criado em {new Date(ticket.createdAt).toLocaleDateString('pt-BR')}
+                {t('admin.createdAt')} {new Date(ticket.createdAt).toLocaleDateString('pt-BR')}
               </p>
               {ticket.resolvedAt && (
                 <p className="text-xs text-muted-foreground">
-                  Resolvido em {new Date(ticket.resolvedAt).toLocaleDateString('pt-BR')}
+                  {t('admin.resolvedAt')} {new Date(ticket.resolvedAt).toLocaleDateString('pt-BR')}
                 </p>
               )}
             </div>
@@ -225,7 +227,7 @@ export function TicketDetailsModal({
                 className="w-full"
                 onClick={handleArchive}
               >
-                Arquivar Ticket
+                {t('admin.archiveTicket')}
               </Button>
             </div>
           </div>

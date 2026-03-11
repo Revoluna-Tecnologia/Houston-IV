@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -17,31 +18,33 @@ interface BulkActionsBarProps {
   onClear: () => void
 }
 
-const statusOptions: { value: TicketStatus; label: string }[] = [
-  { value: TicketStatus.OPEN, label: 'Aberto' },
-  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
-  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
-  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
-  { value: TicketStatus.CLOSED, label: 'Fechado' },
-]
-
 export function BulkActionsBar({
   selectedCount,
   onStatusChange,
   onArchive,
   onClear,
 }: BulkActionsBarProps) {
+  const t = useTranslations('Tickets')
+
   if (selectedCount === 0) return null
+
+  const statusOptions: { value: TicketStatus; label: string }[] = [
+    { value: TicketStatus.OPEN, label: 'Aberto' },
+    { value: TicketStatus.IN_REVIEW, label: t('admin.statusInReview') },
+    { value: TicketStatus.IN_PROGRESS, label: t('admin.statusInProgress') },
+    { value: TicketStatus.RESOLVED, label: t('admin.statusResolved') },
+    { value: TicketStatus.CLOSED, label: t('admin.statusClosed') },
+  ]
 
   return (
     <div className="flex items-center gap-4 p-4 bg-muted rounded-lg mb-4">
       <span className="text-sm font-medium">
-        {selectedCount} ticket(s) selecionado(s)
+        {selectedCount} {t('admin.ticketsSelected')}
       </span>
 
       <Select onValueChange={onStatusChange}>
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Alterar status" />
+          <SelectValue placeholder={t('admin.changeStatus')} />
         </SelectTrigger>
         <SelectContent>
           {statusOptions.map((opt) => (
@@ -53,11 +56,11 @@ export function BulkActionsBar({
       </Select>
 
       <Button variant="outline" size="sm" onClick={onArchive}>
-        Arquivar
+        {t('admin.archive')}
       </Button>
 
       <Button variant="ghost" size="sm" onClick={onClear}>
-        Limpar selecao
+        {t('admin.clearSelection')}
       </Button>
     </div>
   )
