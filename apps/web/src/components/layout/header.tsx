@@ -5,6 +5,7 @@ import { Menu, User as UserIcon, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { NotificationBell } from '@/components/notifications/notification-bell';
+import { ThemeToggle } from '@/components/houston/theme-toggle';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -34,7 +35,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
   const { logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 lg:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:px-6">
       <Button
         variant="ghost"
         size="icon"
@@ -46,7 +47,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
       </Button>
 
       {title && (
-        <h1 className="text-lg font-semibold text-gray-900 hidden sm:block">
+        <h1 className="text-lg font-semibold text-foreground hidden sm:block">
           {title}
         </h1>
       )}
@@ -54,7 +55,8 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
       <div className="flex-1" />
 
       <div className="flex items-center gap-2">
-        <NotificationBell className="text-gray-500" />
+        <ThemeToggle />
+        <NotificationBell className="text-muted-foreground" />
 
         {user && (
           <DropdownMenu>
@@ -76,7 +78,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{user.name}</span>
-                  <span className="text-xs text-gray-500">{user.email}</span>
+                  <span className="text-xs text-muted-foreground">{user.email}</span>
                 </div>
               </div>
               <DropdownMenuSeparator />
