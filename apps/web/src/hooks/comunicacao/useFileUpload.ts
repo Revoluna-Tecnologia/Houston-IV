@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { messagesService } from '../../services/comunicacao/messages-service';
 
 const MAX_FILE_SIZE = 16 * 1024 * 1024; // 16MB
@@ -40,6 +41,7 @@ export interface UseFileUploadReturn {
 }
 
 export function useFileUpload(): UseFileUploadReturn {
+  const t = useTranslations('Hooks');
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<Error | null>(null);
@@ -52,8 +54,9 @@ export function useFileUpload(): UseFileUploadReturn {
   }, []);
 
   const validateFile = useCallback((file: File): { valid: boolean; error?: string } => {
+    const maxSizeMB = MAX_FILE_SIZE / 1024 / 1024;
     if (file.size > MAX_FILE_SIZE) {
-      return { valid: false, error: `Arquivo muito grande. Maximo permitido: ${MAX_FILE_SIZE / 1024 / 1024}MB` };
+      return { valid: false, error: t('fileUpload.fileTooLarge', { max: maxSizeMB }) };
     }
 
     const allAllowedTypes = [
@@ -64,11 +67,11 @@ export function useFileUpload(): UseFileUploadReturn {
     ];
 
     if (!allAllowedTypes.includes(file.type)) {
-      return { valid: false, error: `Tipo de arquivo nao permitido: ${file.type}` };
+      return { valid: false, error: t('fileUpload.fileTypeNotAllowed', { type: file.type }) };
     }
 
     return { valid: true };
-  }, []);
+  }, [t]);
 
   const upload = useCallback(async (file: File): Promise<UploadedFile> => {
     const validation = validateFile(file);

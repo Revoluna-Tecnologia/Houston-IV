@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useDateLocale } from '@/lib/date-locale';
 import type { Conversation, ConversationType } from '@/services/comunicacao/types';
 
 const UserIcon = () => (
@@ -76,6 +76,7 @@ export function ConversationItem({
   onClick,
 }: ConversationItemProps) {
   const t = useTranslations('Comunicacao');
+  const dateLocale = useDateLocale();
 
   const displayName = useMemo(() => {
     if (conversation.name) {
@@ -102,7 +103,7 @@ export function ConversationItem({
     try {
       return formatDistanceToNow(new Date(conversation.lastMessageAt), {
         addSuffix: false,
-        locale: ptBR,
+        locale: dateLocale,
       });
     } catch {
       return null;

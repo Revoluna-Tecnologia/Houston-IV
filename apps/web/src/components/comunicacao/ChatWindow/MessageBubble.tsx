@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useDateLocale } from '@/lib/date-locale';
 import type { Message, MessageType, MessageStatus } from '@/services/comunicacao/types';
 
 const CheckIcon = () => (
@@ -95,10 +95,11 @@ export function MessageBubble({
   className,
 }: MessageBubbleProps) {
   const t = useTranslations('Comunicacao');
+  const dateLocale = useDateLocale();
 
   const formattedTime = useMemo(() => {
     try {
-      return format(new Date(message.createdAt), 'HH:mm', { locale: ptBR });
+      return format(new Date(message.createdAt), 'HH:mm', { locale: dateLocale });
     } catch {
       return '';
     }

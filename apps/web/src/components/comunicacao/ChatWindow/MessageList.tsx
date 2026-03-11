@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format, isToday, isYesterday, isSameDay } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useDateLocale } from '@/lib/date-locale';
 import { MessageBubble } from './MessageBubble';
 import type { Message, OptimisticMessage } from '../../../services/comunicacao/types';
 
@@ -149,6 +149,7 @@ export function MessageList({
 }
 
 function DateSeparator({ date }: { date: Date }) {
+  const dateLocale = useDateLocale();
   const label = useMemo(() => {
     if (isToday(date)) {
       return 'Hoje';
@@ -156,8 +157,8 @@ function DateSeparator({ date }: { date: Date }) {
     if (isYesterday(date)) {
       return 'Ontem';
     }
-    return format(date, "dd 'de' MMMM", { locale: ptBR });
-  }, [date]);
+    return format(date, "dd 'de' MMMM", { locale: dateLocale });
+  }, [date, dateLocale]);
 
   return (
     <div className="my-4 flex items-center justify-center">

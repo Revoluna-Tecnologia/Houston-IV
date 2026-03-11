@@ -2,8 +2,8 @@
 
 import { useMemo, memo, useCallback } from 'react';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
+import { useDateLocale } from '@/lib/date-locale';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
@@ -121,11 +121,6 @@ const STATUS_VARIANTS: Record<CandidaturaStatus, StatusBadgeVariant> = {
   rejeitada: 'error',
 };
 
-const formatDate = (date: Date | string) => {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return format(d, 'dd/MM/yyyy', { locale: ptBR });
-};
-
 export const CandidaturasTable = memo(function CandidaturasTable({
   data,
   sorting,
@@ -140,6 +135,13 @@ export const CandidaturasTable = memo(function CandidaturasTable({
   onRejeitar,
   onView,
 }: CandidaturasTableProps) {
+  const dateLocale = useDateLocale();
+
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
+  };
+
   const handleSelectAll = useCallback((checked: boolean) => {
     if (checked) {
       onSelectionChange(data.map((c) => c.id));

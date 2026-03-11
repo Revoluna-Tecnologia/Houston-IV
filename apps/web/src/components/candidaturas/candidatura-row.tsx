@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
+import { useDateLocale } from '@/lib/date-locale';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge, type StatusBadgeVariant } from '@/components/houston';
@@ -105,6 +106,8 @@ export function CandidaturaRow({
 }: CandidaturaRowProps) {
   const t = useTranslations('Candidaturas');
   const tCommon = useTranslations('Common.actions');
+  const formatCurrency = useFormatCurrency();
+  const dateLocale = useDateLocale();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const STATUS_LABELS: Record<CandidaturaStatus, string> = {
@@ -115,11 +118,7 @@ export function CandidaturaRow({
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: ptBR });
-  };
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
   };
 
   const isPendente = candidatura.status === 'pendente';

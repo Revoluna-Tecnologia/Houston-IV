@@ -11,6 +11,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -47,6 +48,7 @@ export function ShiftOfferForm({
 }: ShiftOfferFormProps) {
   const t = useTranslations('Comunicacao');
   const tActions = useTranslations('Common.actions');
+  const formatCurrency = useFormatCurrency();
   const [expiresInHours, setExpiresInHours] = useState('24');
   const [error, setError] = useState<string | null>(null);
 
@@ -74,13 +76,6 @@ export function ShiftOfferForm({
     },
     [conversationId, vagaId, recipientMedicoId, expiresInHours, onSubmit, t]
   );
-
-  const formatCurrency = (value: number): string => {
-    return value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    });
-  };
 
   return (
     <form onSubmit={handleSubmit} className={cn('space-y-4', className)}>

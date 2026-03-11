@@ -7,6 +7,8 @@
  */
 
 import { memo, useCallback } from 'react';
+import { useTranslations, useFormatter } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -78,17 +80,6 @@ const DollarIcon = () => (
   </svg>
 );
 
-const statusConfig: Record<
-  ShiftOfferStatus,
-  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
-> = {
-  [ShiftOfferStatus.PENDING]: { label: 'Pendente', variant: 'outline' },
-  [ShiftOfferStatus.ACCEPTED]: { label: 'Aceito', variant: 'default' },
-  [ShiftOfferStatus.REJECTED]: { label: 'Recusado', variant: 'destructive' },
-  [ShiftOfferStatus.EXPIRED]: { label: 'Expirado', variant: 'secondary' },
-  [ShiftOfferStatus.CANCELLED]: { label: 'Cancelado', variant: 'secondary' },
-};
-
 export interface ShiftOfferCardProps {
   offer: ShiftOffer;
   isOwner?: boolean;
@@ -106,6 +97,21 @@ function ShiftOfferCardComponent({
   onCancel,
   className,
 }: ShiftOfferCardProps) {
+  const t = useTranslations('Comunicacao');
+  const formatCurrency = useFormatCurrency();
+  const format = useFormatter();
+
+  const statusConfig: Record<
+    ShiftOfferStatus,
+    { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
+  > = {
+    [ShiftOfferStatus.PENDING]: { label: t('shiftOffer.statusPending'), variant: 'outline' },
+    [ShiftOfferStatus.ACCEPTED]: { label: t('shiftOffer.statusAccepted'), variant: 'default' },
+    [ShiftOfferStatus.REJECTED]: { label: t('shiftOffer.statusRejected'), variant: 'destructive' },
+    [ShiftOfferStatus.EXPIRED]: { label: t('shiftOffer.statusExpired'), variant: 'secondary' },
+    [ShiftOfferStatus.CANCELLED]: { label: t('shiftOffer.statusCanceled'), variant: 'secondary' },
+  };
+
   const config = statusConfig[offer.status];
   const vaga = offer.vaga;
 
@@ -141,13 +147,6 @@ function ShiftOfferCardComponent({
     });
   };
 
-  const formatCurrency = (value: number): string => {
-    return value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    });
-  };
-
   const isPending = offer.status === ShiftOfferStatus.PENDING;
   const showActions = isPending && (isOwner || (!isOwner && onAccept));
 
@@ -174,7 +173,7 @@ function ShiftOfferCardComponent({
       <div className="mb-3 flex items-start justify-between">
         <div>
           <h4 className="font-semibold">
-            {hospitalName || 'Oferta de Plantão'}
+            {hospitalName || t('shiftOffer.shiftOfferTitle')}
           </h4>
           {setorName && (
             <p className="text-sm text-muted-foreground">{setorName}</p>
@@ -233,7 +232,7 @@ function ShiftOfferCardComponent({
               onClick={handleCancel}
               className="w-full"
             >
-              Cancelar oferta
+              {t('shiftOffer.cancelOfferButton')}
             </Button>
           ) : (
             <>
@@ -243,10 +242,10 @@ function ShiftOfferCardComponent({
                 onClick={handleReject}
                 className="flex-1"
               >
-                Recusar
+                {t('shiftOffer.reject')}
               </Button>
               <Button size="sm" onClick={handleAccept} className="flex-1">
-                Aceitar
+                {t('shiftOffer.accept')}
               </Button>
             </>
           )}
@@ -256,20 +255,20 @@ function ShiftOfferCardComponent({
       {/* Response info */}
       {offer.status === ShiftOfferStatus.ACCEPTED && offer.respondedAt && (
         <p className="mt-2 text-xs text-green-600">
-          Aceito em {new Date(offer.respondedAt).toLocaleString('pt-BR')}
+          {t('shiftOffer.acceptedAt')} {format.dateTime(new Date(offer.respondedAt), { dateStyle: 'short', timeStyle: 'short' })}
         </p>
       )}
 
       {offer.status === ShiftOfferStatus.REJECTED && offer.respondedAt && (
         <p className="mt-2 text-xs text-red-600">
-          Recusado em {new Date(offer.respondedAt).toLocaleString('pt-BR')}
+          {t('shiftOffer.rejectedAt')} {format.dateTime(new Date(offer.respondedAt), { dateStyle: 'short', timeStyle: 'short' })}
         </p>
       )}
 
       {/* Expiry info */}
       {isPending && offer.expiresAt && (
         <p className="mt-2 text-xs text-muted-foreground">
-          Expira em {new Date(offer.expiresAt).toLocaleString('pt-BR')}
+          {t('shiftOffer.expiresAt')} {format.dateTime(new Date(offer.expiresAt), { dateStyle: 'short', timeStyle: 'short' })}
         </p>
       )}
     </div>
