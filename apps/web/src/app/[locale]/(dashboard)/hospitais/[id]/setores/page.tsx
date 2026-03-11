@@ -1,7 +1,8 @@
 'use client'
 
 import { use, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +18,7 @@ interface PageProps {
 export default function HospitalSetoresPage({ params }: PageProps) {
   const { id } = use(params)
   const router = useRouter()
+  const t = useTranslations('Hospitais')
   const [hospital, setHospital] = useState<Hospital | null>(null)
   const [setores, setSetores] = useState<Setor[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -32,7 +34,7 @@ export default function HospitalSetoresPage({ params }: PageProps) {
         setHospital(hospitalData)
         setSetores(Array.isArray(setoresData) ? setoresData : [])
       } catch {
-        setError('Hospital nao encontrado')
+        setError(t('detail.hospitalNotFound'))
       } finally {
         setIsLoading(false)
       }
@@ -52,9 +54,9 @@ export default function HospitalSetoresPage({ params }: PageProps) {
   if (error || !hospital) {
     return (
       <div className="p-6">
-        <div className="text-center text-red-600">{error || 'Hospital nao encontrado'}</div>
+        <div className="text-center text-red-600">{error || t('detail.hospitalNotFound')}</div>
         <Button className="mt-4" variant="outline" onClick={() => router.push('/hospitais')}>
-          Voltar
+          {t('detail.back')}
         </Button>
       </div>
     )
@@ -67,7 +69,7 @@ export default function HospitalSetoresPage({ params }: PageProps) {
           <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Voltar
+          {t('detail.back')}
         </Button>
       </div>
 
@@ -78,7 +80,7 @@ export default function HospitalSetoresPage({ params }: PageProps) {
               <CardTitle className="text-xl">{hospital.nome}</CardTitle>
               <div className="flex items-center gap-2 mt-2">
                 <Badge variant={hospital.ativo ? 'default' : 'outline'}>
-                  {hospital.ativo ? 'Ativo' : 'Inativo'}
+                  {hospital.ativo ? t('detail.active') : t('detail.inactive')}
                 </Badge>
                 {hospital.cidade && (
                   <span className="text-sm text-muted-foreground">
@@ -93,25 +95,25 @@ export default function HospitalSetoresPage({ params }: PageProps) {
           <div className="grid grid-cols-2 gap-4 text-sm">
             {hospital.cnpj && (
               <div>
-                <span className="font-medium text-muted-foreground">CNPJ</span>
+                <span className="font-medium text-muted-foreground">{t('detail.cnpj')}</span>
                 <p>{hospital.cnpj}</p>
               </div>
             )}
             {hospital.telefone && (
               <div>
-                <span className="font-medium text-muted-foreground">Telefone</span>
+                <span className="font-medium text-muted-foreground">{t('detail.phone')}</span>
                 <p>{hospital.telefone}</p>
               </div>
             )}
             {hospital.email && (
               <div>
-                <span className="font-medium text-muted-foreground">Email</span>
+                <span className="font-medium text-muted-foreground">{t('detail.email')}</span>
                 <p>{hospital.email}</p>
               </div>
             )}
             {hospital.endereco && (
               <div>
-                <span className="font-medium text-muted-foreground">Endereco</span>
+                <span className="font-medium text-muted-foreground">{t('detail.address')}</span>
                 <p>{hospital.endereco}</p>
               </div>
             )}
@@ -121,11 +123,11 @@ export default function HospitalSetoresPage({ params }: PageProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Setores ({setores.length})</CardTitle>
+          <CardTitle className="text-lg">{t('detail.sectors')} ({setores.length})</CardTitle>
         </CardHeader>
         <CardContent>
           {setores.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">Nenhum setor cadastrado</p>
+            <p className="text-muted-foreground text-center py-4">{t('detail.noSectors')}</p>
           ) : (
             <div className="divide-y">
               {setores.map((setor) => (
@@ -137,7 +139,7 @@ export default function HospitalSetoresPage({ params }: PageProps) {
                     )}
                   </div>
                   <Badge variant={setor.ativo ? 'default' : 'outline'}>
-                    {setor.ativo ? 'Ativo' : 'Inativo'}
+                    {setor.ativo ? t('detail.active') : t('detail.inactive')}
                   </Badge>
                 </div>
               ))}

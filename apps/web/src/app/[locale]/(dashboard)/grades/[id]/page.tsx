@@ -1,7 +1,8 @@
 'use client'
 
 import { use, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,23 +15,27 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline' }> = {
-  rascunho: { label: 'Rascunho', variant: 'secondary' },
-  publicada: { label: 'Publicada', variant: 'default' },
-  arquivada: { label: 'Arquivada', variant: 'outline' },
-}
-
-const MESES = [
-  'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-]
-
 export default function GradeDetailPage({ params }: PageProps) {
   const { id } = use(params)
   const router = useRouter()
+  const t = useTranslations('Grades')
+  const tc = useTranslations('Common')
   const [grade, setGrade] = useState<Grade | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline' }> = {
+    rascunho: { label: t('statusLabels.draft'), variant: 'secondary' },
+    publicada: { label: t('statusLabels.published'), variant: 'default' },
+    arquivada: { label: t('statusLabels.archived'), variant: 'outline' },
+  }
+
+  const MESES = [
+    tc('months.january'), tc('months.february'), tc('months.march'),
+    tc('months.april'), tc('months.may'), tc('months.june'),
+    tc('months.july'), tc('months.august'), tc('months.september'),
+    tc('months.october'), tc('months.november'), tc('months.december'),
+  ]
 
   useEffect(() => {
     async function load() {
@@ -38,7 +43,7 @@ export default function GradeDetailPage({ params }: PageProps) {
         const data = await gradesService.getById(id)
         setGrade(data)
       } catch {
-        setError('Grade nao encontrada')
+        setError(t('detail.gradeNotFound'))
       } finally {
         setIsLoading(false)
       }
@@ -58,9 +63,9 @@ export default function GradeDetailPage({ params }: PageProps) {
   if (error || !grade) {
     return (
       <div className="p-6">
-        <div className="text-center text-red-600">{error || 'Grade nao encontrada'}</div>
+        <div className="text-center text-red-600">{error || t('detail.gradeNotFound')}</div>
         <Button className="mt-4" variant="outline" onClick={() => router.push('/grades')}>
-          Voltar
+          {t('detail.back')}
         </Button>
       </div>
     )
@@ -75,7 +80,7 @@ export default function GradeDetailPage({ params }: PageProps) {
           <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Voltar
+          {t('detail.back')}
         </Button>
       </div>
 
@@ -107,7 +112,7 @@ export default function GradeDetailPage({ params }: PageProps) {
               <p>{grade.setorId}</p>
             </div>
             <div>
-              <h4 className="font-medium text-sm text-muted-foreground">Periodo</h4>
+              <h4 className="font-medium text-sm text-muted-foreground">{t('detail.period')}</h4>
               <p>{MESES[grade.mes - 1]} de {grade.ano}</p>
             </div>
             <div>

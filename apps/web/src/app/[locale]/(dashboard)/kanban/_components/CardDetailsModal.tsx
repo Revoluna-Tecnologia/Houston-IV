@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ interface CardDetailsModalProps {
 }
 
 export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAddLink, onDelete }: CardDetailsModalProps) {
+  const t = useTranslations('Kanban')
   const [newComment, setNewComment] = useState('')
   const [newLinkTitle, setNewLinkTitle] = useState('')
   const [newLinkUrl, setNewLinkUrl] = useState('')
@@ -54,7 +56,7 @@ export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAdd
   }
 
   const handleDelete = async () => {
-    if (confirm('Tem certeza que deseja excluir este card?')) {
+    if (confirm(t('card.deleteConfirm'))) {
       await onDelete(card.id)
       onOpenChange(false)
     }
@@ -70,7 +72,7 @@ export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAdd
         <div className="space-y-6">
           {card.description && (
             <div>
-              <h4 className="font-medium mb-2">Descricao</h4>
+              <h4 className="font-medium mb-2">{t('card.description')}</h4>
               <p className="text-muted-foreground">{card.description}</p>
             </div>
           )}
@@ -112,10 +114,10 @@ export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAdd
           )}
 
           <div>
-            <h4 className="font-medium mb-2">Adicionar Link</h4>
+            <h4 className="font-medium mb-2">{t('card.addLink')}</h4>
             <div className="flex gap-2">
               <Input
-                placeholder="Titulo"
+                placeholder={t('card.linkTitlePlaceholder')}
                 value={newLinkTitle}
                 onChange={(e) => setNewLinkTitle(e.target.value)}
                 className="flex-1"
@@ -127,14 +129,14 @@ export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAdd
                 className="flex-1"
               />
               <Button onClick={handleAddLink} disabled={isSubmitting}>
-                Adicionar
+                {t('card.add')}
               </Button>
             </div>
           </div>
 
           {card.timeline && card.timeline.length > 0 && (
             <div>
-              <h4 className="font-medium mb-2">Historico</h4>
+              <h4 className="font-medium mb-2">{t('card.history')}</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {card.timeline.map((entry) => (
                   <div key={entry.id} className="text-sm p-2 bg-muted rounded">
@@ -149,26 +151,26 @@ export function CardDetailsModal({ card, open, onOpenChange, onAddComment, onAdd
           )}
 
           <div>
-            <h4 className="font-medium mb-2">Adicionar Comentario</h4>
+            <h4 className="font-medium mb-2">{t('card.addComment')}</h4>
             <Textarea
-              placeholder="Escreva um comentario..."
+              placeholder={t('card.commentPlaceholder')}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               rows={2}
             />
             <div className="flex justify-end mt-2">
               <Button onClick={handleAddComment} disabled={isSubmitting || !newComment.trim()}>
-                Comentar
+                {t('card.comment')}
               </Button>
             </div>
           </div>
 
           <div className="flex justify-between items-center pt-4 border-t">
             <span className="text-xs text-muted-foreground">
-              Criado em {new Date(card.createdAt).toLocaleDateString('pt-BR')}
+              {t('card.createdAt')} {new Date(card.createdAt).toLocaleDateString('pt-BR')}
             </span>
             <Button variant="destructive" size="sm" onClick={handleDelete}>
-              Excluir Card
+              {t('card.deleteCard')}
             </Button>
           </div>
         </div>

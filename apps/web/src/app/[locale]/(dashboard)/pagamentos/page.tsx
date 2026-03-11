@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { useFormatCurrency } from '@/lib/format-currency';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
@@ -177,9 +178,7 @@ export default function PagamentosPage() {
     setSelectedIds([]);
   }, []);
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
+  const formatCurrency = useFormatCurrency();
 
   if (isLoading || isLoadingMedicos || isLoadingHospitais) {
     return (

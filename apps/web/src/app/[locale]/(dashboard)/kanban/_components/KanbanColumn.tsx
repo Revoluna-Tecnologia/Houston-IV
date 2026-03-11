@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { KanbanCard } from '@/services/kanban'
 import { KanbanCardItem } from './KanbanCardItem'
@@ -13,6 +14,8 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ id, title, cards, onCardClick, onMoveCard }: KanbanColumnProps) {
+  const t = useTranslations('Kanban')
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
     e.currentTarget.classList.add('bg-muted/50')
@@ -53,7 +56,7 @@ export function KanbanColumn({ id, title, cards, onCardClick, onMoveCard }: Kanb
           ))}
           {cards.length === 0 && (
             <div className="text-center text-sm text-muted-foreground py-8">
-              Arraste cards para ca
+              {t('card.dragHere')}
             </div>
           )}
         </CardContent>

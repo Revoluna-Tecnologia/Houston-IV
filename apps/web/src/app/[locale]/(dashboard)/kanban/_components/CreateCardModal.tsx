@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Dialog,
   DialogContent,
@@ -29,15 +30,8 @@ interface CreateCardModalProps {
   defaultStatus?: string
 }
 
-const STATUSES = [
-  { value: 'backlog', label: 'Backlog' },
-  { value: 'todo', label: 'A Fazer' },
-  { value: 'in_progress', label: 'Em Andamento' },
-  { value: 'review', label: 'Revisao' },
-  { value: 'done', label: 'Concluido' },
-]
-
 export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, defaultStatus = 'backlog' }: CreateCardModalProps) {
+  const t = useTranslations('Kanban')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -45,6 +39,14 @@ export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, default
     status: defaultStatus,
     tab: KanbanTab.PROJETOS,
   })
+
+  const STATUSES = [
+    { value: 'backlog', label: 'Backlog' },
+    { value: 'todo', label: t('card.statusTodo') },
+    { value: 'in_progress', label: t('card.statusInProgress') },
+    { value: 'review', label: t('card.statusReview') },
+    { value: 'done', label: t('card.statusDone') },
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,27 +73,27 @@ export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, default
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Novo Card</DialogTitle>
+          <DialogTitle>{t('newCard')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Titulo *</Label>
+            <Label htmlFor="title">{t('card.titleLabel')}</Label>
             <Input
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Nome da tarefa"
+              placeholder={t('card.titlePlaceholder')}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Descricao</Label>
+            <Label htmlFor="description">{t('card.description')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Descreva a tarefa..."
+              placeholder={t('card.descriptionPlaceholder')}
               rows={3}
             />
           </div>
@@ -117,7 +119,7 @@ export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, default
             </div>
 
             <div className="space-y-2">
-              <Label>Aba</Label>
+              <Label>{t('card.tab')}</Label>
               <Select
                 value={formData.tab}
                 onValueChange={(v) => setFormData({ ...formData, tab: v as KanbanTab })}
@@ -126,8 +128,8 @@ export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, default
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={KanbanTab.PROJETOS}>Projetos</SelectItem>
-                  <SelectItem value={KanbanTab.FINANCEIRO}>Financeiro</SelectItem>
+                  <SelectItem value={KanbanTab.PROJETOS}>{t('tabs.projects')}</SelectItem>
+                  <SelectItem value={KanbanTab.FINANCEIRO}>{t('tabs.financial')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -135,10 +137,10 @@ export function CreateCardModal({ open, onOpenChange, onSubmit, grupoId, default
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t('card.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Criando...' : 'Criar Card'}
+              {isSubmitting ? t('card.creating') : t('card.createCard')}
             </Button>
           </DialogFooter>
         </form>
