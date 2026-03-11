@@ -1,11 +1,13 @@
 'use client';
 
 import { memo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Menu, User as UserIcon, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { ThemeToggle } from '@/components/houston/theme-toggle';
+import { LanguageSwitcher } from '@/components/houston/language-switcher';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -33,6 +35,7 @@ interface HeaderProps {
 
 export const Header = memo(function Header({ user, onMenuClick, title }: HeaderProps) {
   const { logout } = useAuth();
+  const t = useTranslations('Header');
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:px-6">
@@ -43,7 +46,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
         onClick={onMenuClick}
       >
         <Menu className="h-5 w-5" />
-        <span className="sr-only">Abrir menu</span>
+        <span className="sr-only">{t('openMenu')}</span>
       </Button>
 
       {title && (
@@ -55,6 +58,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
       <div className="flex-1" />
 
       <div className="flex items-center gap-2">
+        <LanguageSwitcher />
         <ThemeToggle />
         <NotificationBell className="text-muted-foreground" />
 
@@ -84,16 +88,16 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
                 <UserIcon className="mr-2 h-4 w-4" />
-                Perfil
+                {t('profile')}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
-                Configuracoes
+                {t('settings')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Sair
+                {t('logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

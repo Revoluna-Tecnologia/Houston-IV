@@ -2,8 +2,9 @@
 
 import { useSession, signIn, signOut, signUp } from '@/lib/auth-client'
 import { authClient } from '@/lib/auth-client'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { useCallback, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import type { User } from '../services/types'
 import { UserRole } from '../services/types'
 
@@ -23,6 +24,7 @@ export interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const { data: session, isPending, refetch } = useSession()
   const router = useRouter()
+  const t = useTranslations('Hooks.auth')
 
   const login = useCallback(async (email: string, password: string) => {
     const result = await signIn.email({
@@ -32,14 +34,14 @@ export function useAuth(): UseAuthReturn {
     })
 
     if (result.error) {
-      throw new Error(result.error.message || 'Erro ao fazer login')
+      throw new Error(result.error.message || t('loginError'))
     }
 
     // Refetch session to update auth state before redirecting
     await refetch()
 
     router.replace('/')
-  }, [router, refetch])
+  }, [router, refetch, t])
 
   const logout = useCallback(async () => {
     await signOut({
@@ -60,11 +62,11 @@ export function useAuth(): UseAuthReturn {
     })
 
     if (result.error) {
-      throw new Error(result.error.message || 'Erro ao criar conta')
+      throw new Error(result.error.message || t('signupError'))
     }
 
     router.replace('/')
-  }, [router])
+  }, [router, t])
 
   const loginWithGoogle = useCallback(async () => {
     await signIn.social({

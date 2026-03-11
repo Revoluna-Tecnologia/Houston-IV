@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
 import {
   LayoutDashboard,
   Calendar,
@@ -25,23 +25,23 @@ import {
 import { useAuth } from '../../hooks';
 import { UserRole, type User } from '../../services';
 
-interface NavItem {
+interface NavItemConfig {
   href: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   adminOnly?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { href: '/', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
-  { href: '/vagas', label: 'Vagas', icon: <Calendar className="h-5 w-5" /> },
-  { href: '/candidaturas', label: 'Candidaturas', icon: <Users className="h-5 w-5" /> },
-  { href: '/medicos', label: 'Medicos', icon: <Stethoscope className="h-5 w-5" /> },
-  { href: '/hospitais', label: 'Hospitais', icon: <Building2 className="h-5 w-5" /> },
-  { href: '/escalistas', label: 'Escalistas', icon: <ClipboardList className="h-5 w-5" /> },
-  { href: '/grades', label: 'Grades', icon: <Grid3X3 className="h-5 w-5" /> },
-  { href: '/pagamentos', label: 'Pagamentos', icon: <DollarSign className="h-5 w-5" /> },
-  { href: '/admin/users', label: 'Usuarios', icon: <UserCog className="h-5 w-5" />, adminOnly: true },
+const navItemConfigs: NavItemConfig[] = [
+  { href: '/', labelKey: 'dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
+  { href: '/vagas', labelKey: 'vagas', icon: <Calendar className="h-5 w-5" /> },
+  { href: '/candidaturas', labelKey: 'candidaturas', icon: <Users className="h-5 w-5" /> },
+  { href: '/medicos', labelKey: 'medicos', icon: <Stethoscope className="h-5 w-5" /> },
+  { href: '/hospitais', labelKey: 'hospitais', icon: <Building2 className="h-5 w-5" /> },
+  { href: '/escalistas', labelKey: 'escalistas', icon: <ClipboardList className="h-5 w-5" /> },
+  { href: '/grades', labelKey: 'grades', icon: <Grid3X3 className="h-5 w-5" /> },
+  { href: '/pagamentos', labelKey: 'pagamentos', icon: <DollarSign className="h-5 w-5" /> },
+  { href: '/admin/users', labelKey: 'users', icon: <UserCog className="h-5 w-5" />, adminOnly: true },
 ];
 
 function getInitials(name: string): string {
@@ -62,10 +62,11 @@ interface MobileNavProps {
 export function MobileNav({ user, open, onOpenChange }: MobileNavProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const t = useTranslations('Navigation');
 
   const isAdmin = user?.role === UserRole.ADMINISTRADOR;
 
-  const filteredNavItems = navItems.filter((item) => !item.adminOnly || isAdmin);
+  const filteredNavItems = navItemConfigs.filter((item) => !item.adminOnly || isAdmin);
 
   const handleLinkClick = () => {
     onOpenChange(false);
@@ -81,7 +82,7 @@ export function MobileNav({ user, open, onOpenChange }: MobileNavProps) {
       <SheetContent side="left" className="w-72 p-0">
         <SheetHeader className="h-16 px-6 border-b border-border flex flex-row items-center">
           <SheetTitle className="text-xl font-semibold text-primary-500">
-            Houston IV
+            {t('brand')}
           </SheetTitle>
         </SheetHeader>
 
@@ -104,7 +105,7 @@ export function MobileNav({ user, open, onOpenChange }: MobileNavProps) {
                 <span className={isActive ? 'text-primary-500' : 'text-muted-foreground'}>
                   {item.icon}
                 </span>
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}
