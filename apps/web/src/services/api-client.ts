@@ -40,21 +40,28 @@ class ApiClient {
   }
 
   private buildUrl(path: string, params?: Record<string, unknown>): string {
-    const url = new URL(`${this.baseUrl}${path}`);
+    let fullPath = `${this.baseUrl}${path}`;
+
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           if (Array.isArray(value)) {
-            value.forEach((v) => url.searchParams.append(key, String(v)));
+            value.forEach((v) => searchParams.append(key, String(v)));
           } else if (typeof value === 'object') {
-            url.searchParams.append(key, JSON.stringify(value));
+            searchParams.append(key, JSON.stringify(value));
           } else {
-            url.searchParams.append(key, String(value));
+            searchParams.append(key, String(value));
           }
         }
       });
+      const query = searchParams.toString();
+      if (query) {
+        fullPath += (fullPath.includes('?') ? '&' : '?') + query;
+      }
     }
-    return url.toString();
+
+    return fullPath;
   }
 
   private async applyRequestInterceptors(config: RequestInit): Promise<RequestInit> {

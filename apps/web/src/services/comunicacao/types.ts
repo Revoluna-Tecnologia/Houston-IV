@@ -139,20 +139,19 @@ export interface Message {
 
 export interface Contact {
   id: string;
-  grupoId: string;
-  phoneNumber: string;
+  ownerId: string;
   name: string;
-  medicoId?: string;
+  phoneNumber: string;
+  email?: string;
+  avatarUrl?: string;
+  linkedUserId?: string;
+  linkedMedicoId?: string;
+  linkedMedicoName?: string;
   isFavorite: boolean;
   isBlocked: boolean;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
-  // Relations
-  medico?: {
-    id: string;
-    nome: string;
-    especialidade?: string;
-  };
 }
 
 export interface WhatsAppInstance {
@@ -230,15 +229,24 @@ export interface SendMessageDto {
 }
 
 export interface CreateContactDto {
-  phoneNumber: string;
   name: string;
-  medicoId?: string;
+  phoneNumber: string;
+  email?: string;
+  avatarUrl?: string;
+  linkedUserId?: string;
+  linkedMedicoId?: string;
+  isFavorite?: boolean;
+  notes?: string;
 }
 
 export interface UpdateContactDto {
   name?: string;
+  email?: string;
+  avatarUrl?: string;
+  linkedMedicoId?: string;
   isFavorite?: boolean;
   isBlocked?: boolean;
+  notes?: string;
 }
 
 export interface CreateWhatsAppInstanceDto {
@@ -276,10 +284,15 @@ export interface MessageQueryDto {
 
 export interface ContactQueryDto {
   search?: string;
-  isFavorite?: boolean;
-  isBlocked?: boolean;
+  favoritesOnly?: boolean;
+  blockedOnly?: boolean;
   page?: number;
   limit?: number;
+}
+
+export interface ContactListResponse {
+  data: Contact[];
+  total: number;
 }
 
 export interface ShiftOfferQueryDto {

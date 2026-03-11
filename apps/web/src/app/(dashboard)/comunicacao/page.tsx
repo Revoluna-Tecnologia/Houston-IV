@@ -78,7 +78,8 @@ export default function ComunicacaoPage() {
     contacts,
     isLoading: isLoadingContacts,
     create: createContact,
-    update: updateContact,
+    toggleFavorite: toggleContactFavorite,
+    toggleBlock: toggleContactBlock,
   } = useContacts();
 
   const {
@@ -147,16 +148,16 @@ export default function ComunicacaoPage() {
 
   const handleToggleFavorite = useCallback(
     async (contact: Contact) => {
-      await updateContact(contact.id, { isFavorite: !contact.isFavorite });
+      await toggleContactFavorite(contact.id);
     },
-    [updateContact]
+    [toggleContactFavorite]
   );
 
   const handleToggleBlock = useCallback(
     async (contact: Contact) => {
-      await updateContact(contact.id, { isBlocked: !contact.isBlocked });
+      await toggleContactBlock(contact.id);
     },
-    [updateContact]
+    [toggleContactBlock]
   );
 
   const handleAddContact = useCallback(

@@ -31,8 +31,6 @@ export interface UseContactsReturn {
   delete: (id: string) => Promise<void>;
   toggleFavorite: (id: string) => Promise<void>;
   toggleBlock: (id: string) => Promise<void>;
-  getByPhone: (phoneNumber: string) => Promise<Contact | null>;
-  importFromMedicos: () => Promise<number>;
 }
 
 export function useContacts(options: UseContactsOptions = {}): UseContactsReturn {
@@ -81,30 +79,14 @@ export function useContacts(options: UseContactsOptions = {}): UseContactsReturn
   }, []);
 
   const toggleFavorite = useCallback(async (id: string): Promise<void> => {
-    const contact = contacts.find((c) => c.id === id);
-    if (contact) {
-      const updated = await contactsService.toggleFavorite(id, !contact.isFavorite);
-      setContacts((prev) => prev.map((c) => (c.id === id ? updated : c)));
-    }
-  }, [contacts]);
-
-  const toggleBlock = useCallback(async (id: string): Promise<void> => {
-    const contact = contacts.find((c) => c.id === id);
-    if (contact) {
-      const updated = await contactsService.toggleBlock(id, !contact.isBlocked);
-      setContacts((prev) => prev.map((c) => (c.id === id ? updated : c)));
-    }
-  }, [contacts]);
-
-  const getByPhone = useCallback(async (phoneNumber: string): Promise<Contact | null> => {
-    return contactsService.getByPhone(phoneNumber);
+    const updated = await contactsService.toggleFavorite(id);
+    setContacts((prev) => prev.map((c) => (c.id === id ? updated : c)));
   }, []);
 
-  const importFromMedicos = useCallback(async (): Promise<number> => {
-    const result = await contactsService.importFromMedicos();
-    await fetchContacts();
-    return result.imported;
-  }, [fetchContacts]);
+  const toggleBlock = useCallback(async (id: string): Promise<void> => {
+    const updated = await contactsService.toggleBlock(id);
+    setContacts((prev) => prev.map((c) => (c.id === id ? updated : c)));
+  }, []);
 
   const favorites = useMemo(() => contacts.filter((c) => c.isFavorite), [contacts]);
   const blocked = useMemo(() => contacts.filter((c) => c.isBlocked), [contacts]);
@@ -121,7 +103,5 @@ export function useContacts(options: UseContactsOptions = {}): UseContactsReturn
     delete: deleteContact,
     toggleFavorite,
     toggleBlock,
-    getByPhone,
-    importFromMedicos,
   };
 }

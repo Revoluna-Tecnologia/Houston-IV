@@ -9,7 +9,7 @@ import type {
   CreateContactDto,
   UpdateContactDto,
   ContactQueryDto,
-  PaginatedResponse,
+  ContactListResponse,
 } from './types';
 
 const BASE_PATH = '/contacts';
@@ -18,8 +18,8 @@ class ContactsService {
   /**
    * Lista todos os contatos
    */
-  async getAll(params?: ContactQueryDto): Promise<PaginatedResponse<Contact>> {
-    return apiClient.get<PaginatedResponse<Contact>>(BASE_PATH, params as Record<string, unknown>);
+  async getAll(params?: ContactQueryDto): Promise<ContactListResponse> {
+    return apiClient.get<ContactListResponse>(BASE_PATH, params as Record<string, unknown>);
   }
 
   /**
@@ -30,17 +30,6 @@ class ContactsService {
   }
 
   /**
-   * Busca um contato por numero de telefone
-   */
-  async getByPhone(phoneNumber: string): Promise<Contact | null> {
-    try {
-      return await apiClient.get<Contact>(`${BASE_PATH}/phone/${encodeURIComponent(phoneNumber)}`);
-    } catch {
-      return null;
-    }
-  }
-
-  /**
    * Cria um novo contato
    */
   async create(data: CreateContactDto): Promise<Contact> {
@@ -48,10 +37,10 @@ class ContactsService {
   }
 
   /**
-   * Atualiza um contato
+   * Atualiza um contato (PUT)
    */
   async update(id: string, data: UpdateContactDto): Promise<Contact> {
-    return apiClient.patch<Contact>(`${BASE_PATH}/${id}`, data);
+    return apiClient.put<Contact>(`${BASE_PATH}/${id}`, data);
   }
 
   /**
@@ -62,24 +51,17 @@ class ContactsService {
   }
 
   /**
-   * Marca/desmarca contato como favorito
+   * Alterna favorito (PATCH /contacts/:id/favorite)
    */
-  async toggleFavorite(id: string, isFavorite: boolean): Promise<Contact> {
-    return apiClient.patch<Contact>(`${BASE_PATH}/${id}`, { isFavorite });
+  async toggleFavorite(id: string): Promise<Contact> {
+    return apiClient.patch<Contact>(`${BASE_PATH}/${id}/favorite`);
   }
 
   /**
-   * Bloqueia/desbloqueia um contato
+   * Alterna bloqueio (PATCH /contacts/:id/block)
    */
-  async toggleBlock(id: string, isBlocked: boolean): Promise<Contact> {
-    return apiClient.patch<Contact>(`${BASE_PATH}/${id}`, { isBlocked });
-  }
-
-  /**
-   * Importa contatos de medicos do grupo
-   */
-  async importFromMedicos(): Promise<{ imported: number }> {
-    return apiClient.post<{ imported: number }>(`${BASE_PATH}/import-medicos`);
+  async toggleBlock(id: string): Promise<Contact> {
+    return apiClient.patch<Contact>(`${BASE_PATH}/${id}/block`);
   }
 }
 

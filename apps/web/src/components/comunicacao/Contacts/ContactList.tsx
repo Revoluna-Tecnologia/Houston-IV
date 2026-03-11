@@ -151,16 +151,15 @@ export function ContactList({
 
         {/* Search */}
         <div className="relative mb-3">
-          <SearchIcon />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <SearchIcon />
+          </span>
           <Input
             placeholder="Buscar contatos..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-9"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-            <SearchIcon />
-          </span>
         </div>
 
         {/* Filters */}
