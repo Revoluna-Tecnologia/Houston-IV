@@ -6,8 +6,8 @@
 
 Construído com excelência arquitetural, cobertura abrangente de testes e infraestrutura pronta para produção
 
-[![Tests](https://img.shields.io/badge/🧪_testes-175_arquivos-brightgreen?style=for-the-badge)](./RELATORIO_STATUS_ATUAL.md)
-[![Coverage](https://img.shields.io/badge/📊_cobertura_backend-73.69%25-success?style=for-the-badge)](./RELATORIO_STATUS_ATUAL.md)
+[![Tests](https://img.shields.io/badge/🧪_testes-175_arquivos-brightgreen?style=for-the-badge)](./docs/RELATORIO_ANALISE_COMPLETA.md)
+[![Coverage](https://img.shields.io/badge/📊_cobertura_backend-73.69%25-success?style=for-the-badge)](./docs/RELATORIO_ANALISE_COMPLETA.md)
 [![TypeScript](https://img.shields.io/badge/💎_TypeScript-100%25-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](.)
 [![License](https://img.shields.io/badge/📄_licença-Private-red?style=for-the-badge)](.)
 
@@ -32,7 +32,7 @@ Houston IV é uma **reescrita completa** do sistema de gestão de escalas médic
 | **🌐 Endpoints API** | 121+ endpoints HTTP |
 | **📦 Módulos** | 21 principais + 3 sub-módulos |
 | **🎨 Componentes** | 99+ componentes React |
-| **💾 Modelos de Dados** | 21 entidades Prisma |
+| **💾 Modelos de Dados** | 35 entidades Prisma |
 
 </div>
 
@@ -290,7 +290,7 @@ Houston IV segue **Domain-Driven Design** com padrões de **Clean Architecture**
 | ![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=flat&logo=turborepo&logoColor=white) | Sistema de build monorepo com cache |
 | ![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat&logo=pnpm&logoColor=white) | Gerenciador de pacotes rápido e eficiente |
 | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) | Containerização & desenvolvimento local |
-| ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white) | Pipeline CI/CD (pronto) |
+| ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white) | Pipeline CI/CD |
 
 </div>
 
@@ -377,7 +377,7 @@ pnpm test:all
 ### 💎 Qualidade de Código
 
 - **💎 TypeScript** - 100% da codebase tipada
-- **📏 ESLint** - Regras de linting rigorosas com oxlint
+- **📏 oxlint** - Linting ultrarrápido baseado em Rust
 - **✨ Prettier** - Formatação consistente de código
 - **🐶 Husky** - Hooks pre-commit para quality gates
 - **🧪 Vitest** - Execução rápida de testes com cobertura
@@ -704,7 +704,7 @@ Seguimos padrões rigorosos de qualidade:
 - [ ] Testes passando (`pnpm test:all`)
 - [ ] Cobertura mantida
 - [ ] TypeScript modo strict
-- [ ] Sem erros ESLint
+- [ ] Sem erros de lint (oxlint)
 - [ ] Documentação atualizada
 - [ ] CHANGELOG.md atualizado
 
@@ -712,10 +712,9 @@ Seguimos padrões rigorosos de qualidade:
 
 ## 📚 Documentação
 
-- [📊 Relatório Técnico](./RELATORIO_STATUS_ATUAL.md) - Análise completa do sistema
-- [🏗️ Especificações Técnicas](./RELATORIO_TECNICO.md) - Deep-dive na arquitetura
+- [📊 Relatório de Análise Completa](./docs/RELATORIO_ANALISE_COMPLETA.md) - Análise completa do sistema
+- [🗺️ Roadmap de Implementação](./docs/ROADMAP_IMPLEMENTACAO.md) - Plano de desenvolvimento
 - [📖 Documentação da API](http://localhost:3001/api/docs) - Swagger/OpenAPI
-- [⚡ Relatório de Otimizações](./OTIMIZACOES_APLICADAS_FINAL.md) - Melhorias de performance
 
 ---
 
