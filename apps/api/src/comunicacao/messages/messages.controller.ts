@@ -10,15 +10,22 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+  Logger,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import {
   ApiTags,
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiConsumes,
 } from '@nestjs/swagger'
 import { MessagesService } from './messages.service'
+import { StorageService } from '../../storage/storage.service'
 import {
   SendMessageDto,
   MessageQueryDto,
@@ -33,7 +40,12 @@ import { AppPermission, AuthenticatedUser } from '../../auth/types/auth.types'
 @ApiBearerAuth()
 @Controller('messages')
 export class MessagesController {
-  constructor(private readonly service: MessagesService) {}
+  private readonly logger = new Logger(MessagesController.name)
+
+  constructor(
+    private readonly service: MessagesService,
+    private readonly storageService: StorageService,
+  ) {}
 
   @Post()
   @RequirePermissions(AppPermission.COMUNICACAO_INSERT)
@@ -100,6 +112,34 @@ export class MessagesController {
     @CurrentUser() user: AuthenticatedUser
   ): Promise<void> {
     return this.service.markAsRead(conversationId, user)
+  }
+
+  @Post('upload')
+  @RequirePermissions(AppPermission.COMUNICACAO_INSERT)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Upload de mídia para mensagem' })
+  @ApiResponse({ status: 201, description: 'Upload realizado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Arquivo não fornecido ou inválido' })
+  async uploadMedia(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Arquivo não fornecido')
+    }
+
+    this.logger.log(`Upload de mídia: ${file.originalname} (${file.mimetype})`)
+
+    const result = await this.storageService.uploadBuffer(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      'messages',
+    )
+
+    return {
+      url: result.url,
+      mimeType: result.mimeType,
+      fileName: result.fileName,
+    }
   }
 
   @Delete(':id')

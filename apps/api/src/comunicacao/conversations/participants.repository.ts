@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ChatParticipant, ParticipantRole } from '@prisma/client'
 
-// Tipo de participante com médico incluído
+// Tipo de participante com médico e user incluídos
 export type ParticipantWithMedico = ChatParticipant & {
   medico?: {
     id: string
     nome: string
     telefone: string | null
+  } | null
+  user?: {
+    id: string
+    image: string | null
   } | null
 }
 
@@ -50,6 +54,12 @@ export class ParticipantsRepository {
             telefone: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            image: true,
+          },
+        },
       },
     })
   }
@@ -84,6 +94,12 @@ export class ParticipantsRepository {
             telefone: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            image: true,
+          },
+        },
       },
     })
   }
@@ -111,6 +127,12 @@ export class ParticipantsRepository {
             telefone: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            image: true,
+          },
+        },
       },
     })
   }
@@ -136,6 +158,12 @@ export class ParticipantsRepository {
             telefone: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            image: true,
+          },
+        },
       },
     })
   }
@@ -158,6 +186,12 @@ export class ParticipantsRepository {
             id: true,
             nome: true,
             telefone: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            image: true,
           },
         },
       },

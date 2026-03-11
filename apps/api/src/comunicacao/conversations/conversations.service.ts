@@ -476,7 +476,7 @@ export class ConversationsService {
       phoneNumber: participant.phoneNumber,
       role: participant.role,
       name: participant.medico?.nome,
-      avatarUrl: undefined, // TODO: Implementar avatar
+      avatarUrl: participant.user?.image ?? undefined,
       userId: participant.userId || undefined,
       medicoId: participant.medicoId || undefined,
       isMuted: participant.isMuted,

@@ -5,9 +5,10 @@ import { MessagesRepository } from './messages.repository'
 import { MessagesGateway } from './messages.gateway'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { ConversationsModule } from '../conversations/conversations.module'
+import { StorageModule } from '../../storage/storage.module'
 
 @Module({
-  imports: [PrismaModule, ConversationsModule],
+  imports: [PrismaModule, ConversationsModule, StorageModule],
   controllers: [MessagesController],
   providers: [MessagesService, MessagesRepository, MessagesGateway],
   exports: [MessagesService, MessagesRepository, MessagesGateway],

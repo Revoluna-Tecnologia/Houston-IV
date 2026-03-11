@@ -144,8 +144,23 @@ export class ShiftOffersService {
 
     this.logger.log(`Shift offer ${id} ${dto.action}ed by ${user.id}`)
 
-    // Enviar mensagem de resposta
-    // TODO: Implementar envio de mensagem de resposta na conversa
+    // Enviar mensagem de resposta na conversa
+    if (offer.conversationId) {
+      try {
+        const statusText = dto.action === 'accept' ? 'aceita' : 'recusada'
+        await this.messagesService.send(
+          {
+            conversationId: offer.conversationId,
+            content: `Oferta de plantão ${statusText}.`,
+            messageType: MessageType.system,
+          },
+          user,
+        )
+        this.logger.log(`Mensagem de resposta enviada para conversa ${offer.conversationId}`)
+      } catch (error) {
+        this.logger.warn(`Falha ao enviar mensagem de resposta: ${error}`)
+      }
+    }
 
     const updated = await this.repository.findById(id)
     return this.toResponseDto(updated!, user.id)
