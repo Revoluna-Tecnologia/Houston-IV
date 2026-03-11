@@ -12,6 +12,8 @@ import {
   ClipboardList,
   Grid3X3,
   DollarSign,
+  MessageSquare,
+  Ticket,
   UserCog,
   LogOut,
 } from 'lucide-react';
@@ -36,6 +38,8 @@ const navItems: NavItem[] = [
   { href: '/escalistas', label: 'Escalistas', icon: <ClipboardList className="h-5 w-5" /> },
   { href: '/grades', label: 'Grades', icon: <Grid3X3 className="h-5 w-5" /> },
   { href: '/pagamentos', label: 'Pagamentos', icon: <DollarSign className="h-5 w-5" /> },
+  { href: '/comunicacao', label: 'Comunicação', icon: <MessageSquare className="h-5 w-5" /> },
+  { href: '/tickets', label: 'Tickets', icon: <Ticket className="h-5 w-5" /> },
   { href: '/admin/users', label: 'Usuarios', icon: <UserCog className="h-5 w-5" />, adminOnly: true },
 ];
 
