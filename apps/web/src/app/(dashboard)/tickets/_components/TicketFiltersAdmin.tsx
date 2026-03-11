@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { TicketStatus, TicketPriority, TicketCategory } from '@/services/tickets'
+import { TicketStatus, TicketPriority, TicketCategory } from '@/services/tickets'
 
 interface TicketFiltersAdminProps {
   search: string
@@ -23,29 +23,29 @@ interface TicketFiltersAdminProps {
 
 const statusOptions: { value: TicketStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'Todos os status' },
-  { value: 'open', label: 'Aberto' },
-  { value: 'in_review', label: 'Em Revisao' },
-  { value: 'in_progress', label: 'Em Andamento' },
-  { value: 'resolved', label: 'Resolvido' },
-  { value: 'closed', label: 'Fechado' },
+  { value: TicketStatus.OPEN, label: 'Aberto' },
+  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
+  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
+  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
+  { value: TicketStatus.CLOSED, label: 'Fechado' },
 ]
 
 const priorityOptions: { value: TicketPriority | 'all'; label: string }[] = [
   { value: 'all', label: 'Todas as prioridades' },
-  { value: 'low', label: 'Baixa' },
-  { value: 'medium', label: 'Media' },
-  { value: 'high', label: 'Alta' },
-  { value: 'critical', label: 'Critica' },
+  { value: TicketPriority.LOW, label: 'Baixa' },
+  { value: TicketPriority.MEDIUM, label: 'Media' },
+  { value: TicketPriority.HIGH, label: 'Alta' },
+  { value: TicketPriority.CRITICAL, label: 'Critica' },
 ]
 
 const categoryOptions: { value: TicketCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'Todas as categorias' },
-  { value: 'ui', label: 'UI' },
-  { value: 'functionality', label: 'Funcionalidade' },
-  { value: 'performance', label: 'Performance' },
-  { value: 'security', label: 'Seguranca' },
-  { value: 'api', label: 'API' },
-  { value: 'other', label: 'Outro' },
+  { value: TicketCategory.UI, label: 'UI' },
+  { value: TicketCategory.FUNCTIONALITY, label: 'Funcionalidade' },
+  { value: TicketCategory.PERFORMANCE, label: 'Performance' },
+  { value: TicketCategory.SECURITY, label: 'Seguranca' },
+  { value: TicketCategory.API, label: 'API' },
+  { value: TicketCategory.OTHER, label: 'Outro' },
 ]
 
 export function TicketFiltersAdmin({

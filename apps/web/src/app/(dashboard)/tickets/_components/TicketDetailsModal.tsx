@@ -18,7 +18,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useTicketComments } from '@/hooks/tickets/use-ticket-comments'
-import type { Ticket, TicketStatus } from '@/services/tickets'
+import { TicketStatus } from '@/services/tickets'
+import type { Ticket } from '@/services/tickets'
 
 interface TicketDetailsModalProps {
   ticket: Ticket | null
@@ -30,11 +31,11 @@ interface TicketDetailsModalProps {
 }
 
 const statusOptions: { value: TicketStatus; label: string }[] = [
-  { value: 'open', label: 'Aberto' },
-  { value: 'in_review', label: 'Em Revisao' },
-  { value: 'in_progress', label: 'Em Andamento' },
-  { value: 'resolved', label: 'Resolvido' },
-  { value: 'closed', label: 'Fechado' },
+  { value: TicketStatus.OPEN, label: 'Aberto' },
+  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
+  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
+  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
+  { value: TicketStatus.CLOSED, label: 'Fechado' },
 ]
 
 const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {

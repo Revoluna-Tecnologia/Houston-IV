@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { TicketStatus } from '@/services/tickets'
+import { TicketStatus } from '@/services/tickets'
 
 interface BulkActionsBarProps {
   selectedCount: number
@@ -18,11 +18,11 @@ interface BulkActionsBarProps {
 }
 
 const statusOptions: { value: TicketStatus; label: string }[] = [
-  { value: 'open', label: 'Aberto' },
-  { value: 'in_review', label: 'Em Revisao' },
-  { value: 'in_progress', label: 'Em Andamento' },
-  { value: 'resolved', label: 'Resolvido' },
-  { value: 'closed', label: 'Fechado' },
+  { value: TicketStatus.OPEN, label: 'Aberto' },
+  { value: TicketStatus.IN_REVIEW, label: 'Em Revisao' },
+  { value: TicketStatus.IN_PROGRESS, label: 'Em Andamento' },
+  { value: TicketStatus.RESOLVED, label: 'Resolvido' },
+  { value: TicketStatus.CLOSED, label: 'Fechado' },
 ]
 
 export function BulkActionsBar({
