@@ -33,7 +33,10 @@ const nextConfig: NextConfig = {
 
   // Turbopack configuration
   turbopack: {
-    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js'],
+    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.css'],
+    resolveAlias: {
+      tailwindcss: require.resolve('tailwindcss/index.css', { paths: [__dirname] }),
+    },
   },
 
   // Proxy API requests to the NestJS backend
