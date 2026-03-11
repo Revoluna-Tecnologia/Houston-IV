@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Loader2, Bell, Mail, Smartphone, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { useToast } from '@/hooks/use-toast'
 import {
   useNotificationPreferences,
   useUpdatePreferences,
@@ -79,7 +79,6 @@ interface PreferenceState {
 }
 
 export function NotificationPreferences() {
-  const { toast } = useToast()
   const { data: preferences, isLoading } = useNotificationPreferences()
   const updatePreferences = useUpdatePreferences()
   const [localPreferences, setLocalPreferences] = useState<PreferenceState>({})
@@ -133,16 +132,13 @@ export function NotificationPreferences() {
 
     try {
       await updatePreferences.mutateAsync(updates)
-      toast({
-        title: 'Preferências salvas',
+      toast.success('Preferências salvas', {
         description: 'Suas preferências de notificação foram atualizadas.',
       })
       setHasChanges(false)
     } catch {
-      toast({
-        title: 'Erro ao salvar',
+      toast.error('Erro ao salvar', {
         description: 'Não foi possível salvar suas preferências.',
-        variant: 'destructive',
       })
     }
   }
