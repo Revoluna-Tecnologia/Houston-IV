@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -9,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Hospital, GradeStatus } from '../../services/types';
+import type { Hospital, GradeStatus } from '@/services/types';
 
 const XIcon = () => (
   <svg
@@ -43,27 +44,10 @@ export interface GradesFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'rascunho', label: 'Rascunho' },
-  { value: 'publicada', label: 'Publicada' },
-  { value: 'arquivada', label: 'Arquivada' },
-];
-
-const MESES = [
-  { value: 1, label: 'Janeiro' },
-  { value: 2, label: 'Fevereiro' },
-  { value: 3, label: 'Marco' },
-  { value: 4, label: 'Abril' },
-  { value: 5, label: 'Maio' },
-  { value: 6, label: 'Junho' },
-  { value: 7, label: 'Julho' },
-  { value: 8, label: 'Agosto' },
-  { value: 9, label: 'Setembro' },
-  { value: 10, label: 'Outubro' },
-  { value: 11, label: 'Novembro' },
-  { value: 12, label: 'Dezembro' },
-];
+const MONTH_KEYS = [
+  'january', 'february', 'march', 'april', 'may', 'june',
+  'july', 'august', 'september', 'october', 'november', 'december',
+] as const;
 
 const currentYear = new Date().getFullYear();
 const ANOS = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
@@ -75,6 +59,11 @@ export function GradesFilters({
   onChange,
   isLoading,
 }: GradesFiltersProps) {
+  const t = useTranslations('Grades.filters');
+  const tStatus = useTranslations('Grades.statusLabels');
+  const tMonths = useTranslations('Common.months');
+  const tCommon = useTranslations('Common.actions');
+  const tStatusCommon = useTranslations('Common.status');
   const [localValue, setLocalValue] = useState<GradesFiltersValue>(value);
 
   useEffect(() => {
@@ -120,10 +109,10 @@ export function GradesFilters({
         onValueChange={(v) => handleChange('hospitalId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Hospital" />
+          <SelectValue placeholder={t('hospital')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os hospitais</SelectItem>
+          <SelectItem value="all">{t('allHospitals')}</SelectItem>
           {hospitais.map((hospital) => (
             <SelectItem key={hospital.id} value={hospital.id}>
               {hospital.nome}
@@ -138,10 +127,10 @@ export function GradesFilters({
         disabled={!localValue.hospitalId || localValue.hospitalId === 'all'}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Setor" />
+          <SelectValue placeholder={t('sector')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os setores</SelectItem>
+          <SelectItem value="all">{t('allSectors')}</SelectItem>
           {filteredSetores.map((setor) => (
             <SelectItem key={setor.id} value={setor.id}>
               {setor.nome}
@@ -155,14 +144,13 @@ export function GradesFilters({
         onValueChange={(v) => handleChange('status', v)}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tStatusCommon('all')}</SelectItem>
+          <SelectItem value="rascunho">{tStatus('draft')}</SelectItem>
+          <SelectItem value="publicada">{tStatus('published')}</SelectItem>
+          <SelectItem value="arquivada">{tStatus('archived')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -171,13 +159,13 @@ export function GradesFilters({
         onValueChange={(v) => handleChange('mes', v === 'all' ? undefined : parseInt(v))}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Mes" />
+          <SelectValue placeholder={t('month')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os meses</SelectItem>
-          {MESES.map((mes) => (
-            <SelectItem key={mes.value} value={mes.value.toString()}>
-              {mes.label}
+          <SelectItem value="all">{t('allMonths')}</SelectItem>
+          {MONTH_KEYS.map((key, index) => (
+            <SelectItem key={index + 1} value={(index + 1).toString()}>
+              {tMonths(key)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -188,10 +176,10 @@ export function GradesFilters({
         onValueChange={(v) => handleChange('ano', v === 'all' ? undefined : parseInt(v))}
       >
         <SelectTrigger className="w-[120px]">
-          <SelectValue placeholder="Ano" />
+          <SelectValue placeholder={t('year')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os anos</SelectItem>
+          <SelectItem value="all">{t('allYears')}</SelectItem>
           {ANOS.map((ano) => (
             <SelectItem key={ano} value={ano.toString()}>
               {ano}
@@ -203,7 +191,7 @@ export function GradesFilters({
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('clearFilters')}
         </Button>
       )}
     </div>

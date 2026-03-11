@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,22 +17,24 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Modal } from '@/components/houston';
-import type { UserRole } from '../../../services/types';
-import type { CreateUserDto } from '../../../services/users-service';
+import type { UserRole } from '@/services/types';
+import type { CreateUserDto } from '@/services/users-service';
 
-const createUserSchema = z.object({
-  nome: z.string().min(1, 'Nome e obrigatorio'),
-  email: z.string().email('Email invalido'),
-  password: z.string().min(8, 'Senha deve ter no minimo 8 caracteres'),
-  confirmPassword: z.string(),
-  role: z.string().min(1, 'Funcao e obrigatoria'),
-  grupoIds: z.array(z.string()),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'As senhas nao coincidem',
-  path: ['confirmPassword'],
-});
+function createUserSchema(t: (key: string) => string) {
+  return z.object({
+    nome: z.string().min(1, t('nameRequired')),
+    email: z.string().email(t('invalidEmail')),
+    password: z.string().min(8, t('passwordMin')),
+    confirmPassword: z.string(),
+    role: z.string().min(1, t('roleRequired')),
+    grupoIds: z.array(z.string()),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('passwordsDontMatch'),
+    path: ['confirmPassword'],
+  });
+}
 
-type CreateUserFormData = z.infer<typeof createUserSchema>;
+type CreateUserFormData = z.infer<ReturnType<typeof createUserSchema>>;
 
 export interface CreateUserModalProps {
   open: boolean;
@@ -40,21 +43,19 @@ export interface CreateUserModalProps {
   grupos: { id: string; nome: string }[];
 }
 
-const ROLE_OPTIONS = [
-  { value: 'administrador', label: 'Administrador' },
-  { value: 'moderador', label: 'Moderador' },
-  { value: 'gestor', label: 'Gestor' },
-  { value: 'coordenador', label: 'Coordenador' },
-  { value: 'escalista', label: 'Escalista' },
-];
-
 export function CreateUserModal({
   open,
   onOpenChange,
   onSubmit,
   grupos,
 }: CreateUserModalProps) {
+  const t = useTranslations('Admin.users.form');
+  const tValidation = useTranslations('Admin.users.validation');
+  const tCommon = useTranslations('Common.actions');
+  const tRoles = useTranslations('Common.roles');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(() => createUserSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -64,7 +65,7 @@ export function CreateUserModal({
     reset,
     formState: { errors },
   } = useForm<CreateUserFormData>({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       nome: '',
       email: '',
@@ -116,16 +117,16 @@ export function CreateUserModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Novo Usuario"
-      description="Preencha os dados para criar um novo usuario"
+      title={t('createTitle')}
+      description={t('createDescription')}
       size="lg"
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome">Nome</Label>
+          <Label htmlFor="nome">{t('name')}</Label>
           <Input
             id="nome"
-            placeholder="Nome completo"
+            placeholder={t('namePlaceholder')}
             {...register('nome')}
           />
           {errors.nome && (
@@ -138,7 +139,7 @@ export function CreateUserModal({
           <Input
             id="email"
             type="email"
-            placeholder="email@exemplo.com"
+            placeholder={t('emailPlaceholder')}
             {...register('email')}
           />
           {errors.email && (
@@ -148,7 +149,7 @@ export function CreateUserModal({
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password">{t('password')}</Label>
             <Input
               id="password"
               type="password"
@@ -161,7 +162,7 @@ export function CreateUserModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirmar Senha</Label>
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -175,20 +176,20 @@ export function CreateUserModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="role">Funcao</Label>
+          <Label htmlFor="role">{t('role')}</Label>
           <Select
             value={watchedRole}
             onValueChange={(value) => setValue('role', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione a funcao" />
+              <SelectValue placeholder={t('selectRole')} />
             </SelectTrigger>
             <SelectContent>
-              {ROLE_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              <SelectItem value="administrador">{tRoles('administrator')}</SelectItem>
+              <SelectItem value="moderador">{tRoles('moderator')}</SelectItem>
+              <SelectItem value="gestor">{tRoles('manager')}</SelectItem>
+              <SelectItem value="coordenador">{tRoles('coordinator')}</SelectItem>
+              <SelectItem value="escalista">{tRoles('scheduler')}</SelectItem>
             </SelectContent>
           </Select>
           {errors.role && (
@@ -197,7 +198,7 @@ export function CreateUserModal({
         </div>
 
         <div className="space-y-2">
-          <Label>Grupos</Label>
+          <Label>{t('groups')}</Label>
           <div className="border rounded-lg p-4 space-y-2 max-h-[200px] overflow-y-auto">
             {grupos.map((grupo) => (
               <label
@@ -216,10 +217,10 @@ export function CreateUserModal({
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="outline" onClick={handleClose}>
-            Cancelar
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Criando...' : 'Criar Usuario'}
+            {isSubmitting ? tCommon('creating') : t('createButton')}
           </Button>
         </div>
       </form>

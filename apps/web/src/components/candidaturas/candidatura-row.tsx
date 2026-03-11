@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge, type StatusBadgeVariant } from '@/components/houston';
-import type { Candidatura, CandidaturaStatus, Vaga, Medico, Hospital } from '../../services/types';
+import type { Candidatura, CandidaturaStatus, Vaga, Medico, Hospital } from '@/services/types';
 
 const ChevronDownIcon = () => (
   <svg
@@ -88,12 +89,6 @@ export interface CandidaturaRowProps {
   onView: () => void;
 }
 
-const STATUS_LABELS: Record<CandidaturaStatus, string> = {
-  pendente: 'Pendente',
-  aprovada: 'Aprovada',
-  rejeitada: 'Rejeitada',
-};
-
 const STATUS_VARIANTS: Record<CandidaturaStatus, StatusBadgeVariant> = {
   pendente: 'pending',
   aprovada: 'success',
@@ -108,7 +103,15 @@ export function CandidaturaRow({
   onRejeitar,
   onView,
 }: CandidaturaRowProps) {
+  const t = useTranslations('Candidaturas');
+  const tCommon = useTranslations('Common.actions');
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const STATUS_LABELS: Record<CandidaturaStatus, string> = {
+    pendente: t('status.pending'),
+    aprovada: t('status.approved'),
+    rejeitada: t('status.rejected'),
+  };
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -140,12 +143,12 @@ export function CandidaturaRow({
 
         <div className="flex-1 grid grid-cols-4 gap-4">
           <div>
-            <span className="text-sm text-gray-500">Data</span>
+            <span className="text-sm text-gray-500">{t('row.date')}</span>
             <p className="font-medium">{formatDate(candidatura.createdAt)}</p>
           </div>
 
           <div>
-            <span className="text-sm text-gray-500">Vaga</span>
+            <span className="text-sm text-gray-500">{t('row.vaga')}</span>
             <p className="font-medium">{candidatura.hospitalNome || '-'}</p>
             <p className="text-sm text-gray-500">
               {candidatura.setorNome || '-'} - {candidatura.vaga?.horaInicio || '-'} - {candidatura.vaga?.horaFim || '-'}
@@ -153,7 +156,7 @@ export function CandidaturaRow({
           </div>
 
           <div>
-            <span className="text-sm text-gray-500">Medico</span>
+            <span className="text-sm text-gray-500">{t('row.medico')}</span>
             <p className="font-medium">{candidatura.medicoNome || '-'}</p>
             <p className="text-sm text-gray-500">{candidatura.medicoCrm || '-'}</p>
           </div>
@@ -174,7 +177,7 @@ export function CandidaturaRow({
                     className="text-green-600 border-green-600 hover:bg-green-50"
                   >
                     <CheckIcon />
-                    Aprovar
+                    {tCommon('approve')}
                   </Button>
                   <Button
                     variant="outline"
@@ -183,12 +186,12 @@ export function CandidaturaRow({
                     className="text-red-600 border-red-600 hover:bg-red-50"
                   >
                     <XIcon />
-                    Rejeitar
+                    {tCommon('reject')}
                   </Button>
                 </>
               )}
               <Button variant="ghost" size="sm" onClick={onView}>
-                Ver
+                {tCommon('view')}
               </Button>
             </div>
           </div>
@@ -199,15 +202,15 @@ export function CandidaturaRow({
         <div className="border-t bg-gray-50 p-4">
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <p className="text-sm text-gray-500">Valor da Vaga</p>
+              <p className="text-sm text-gray-500">{t('row.vagaValue')}</p>
               <p className="font-medium">{candidatura.vaga ? formatCurrency(candidatura.vaga.valor) : '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Data da Vaga</p>
+              <p className="text-sm text-gray-500">{t('row.vagaDate')}</p>
               <p className="font-medium">{candidatura.vaga ? formatDate(candidatura.vaga.data) : '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Candidatura Enviada</p>
+              <p className="text-sm text-gray-500">{t('row.sentDate')}</p>
               <p className="font-medium">{formatDate(candidatura.createdAt)}</p>
             </div>
           </div>
@@ -215,15 +218,15 @@ export function CandidaturaRow({
           {candidatura.medico && (
             <div className="mt-4 grid grid-cols-3 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Email do Medico</p>
+                <p className="text-sm text-gray-500">{t('row.medicoEmail')}</p>
                 <p className="font-medium">{candidatura.medico.email || '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Telefone do Medico</p>
+                <p className="text-sm text-gray-500">{t('row.medicoPhone')}</p>
                 <p className="font-medium">{candidatura.medico.telefone || '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">CRM/UF</p>
+                <p className="text-sm text-gray-500">{t('row.crmUf')}</p>
                 <p className="font-medium">{candidatura.medico.crm}/{candidatura.medico.crmUf}</p>
               </div>
             </div>

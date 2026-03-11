@@ -1,23 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '../../hooks';
 
-const loginSchema = z.object({
-  email: z.string().email('E-mail invalido'),
-  password: z.string().min(8, 'A senha deve ter no minimo 8 caracteres'),
-  rememberMe: z.boolean().optional(),
-});
+function createLoginSchema(t: (key: string) => string) {
+  return z.object({
+    email: z.string().email(t('invalidEmail')),
+    password: z.string().min(8, t('minPassword')),
+    rememberMe: z.boolean().optional(),
+  });
+}
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<ReturnType<typeof createLoginSchema>>;
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -56,12 +59,18 @@ function MagicLinkIcon({ className }: { className?: string }) {
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
   const { login, loginWithGoogle, loginWithMicrosoft, loginWithMagicLink } = useAuth();
+  const t = useTranslations('Auth.login');
+  const tErrors = useTranslations('Auth.loginErrors');
+  const tMagicLink = useTranslations('Auth.magicLink');
+  const tValidation = useTranslations('Common.validation');
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showMagicLinkInput, setShowMagicLinkInput] = useState(false);
   const [magicLinkEmail, setMagicLinkEmail] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
+
+  const loginSchema = useMemo(() => createLoginSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -87,16 +96,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       if (err instanceof Error) {
         const message = err.message;
         if (message === 'ACESSO_NEGADO_NAO_ESCALISTA') {
-          setError('Sua conta nao esta registrada como escalista. Entre em contato com o administrador.');
+          setError(tErrors('accessDenied'));
         } else if (message === 'ESCALISTA_STATUS_PENDENTE') {
-          setError('Seu cadastro esta pendente de aprovacao. Voce recebera um e-mail assim que for aprovado.');
+          setError(tErrors('pendingApproval'));
         } else if (message === 'ESCALISTA_STATUS_INATIVO') {
-          setError('Sua conta foi desativada. Entre em contato com o administrador para mais informacoes.');
+          setError(tErrors('inactive'));
         } else {
           setError(message);
         }
       } else {
-        setError('Ocorreu um erro ao fazer login. Tente novamente.');
+        setError(tErrors('generic'));
       }
     } finally {
       setIsLoading(false);
@@ -109,7 +118,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     try {
       await loginWithGoogle();
     } catch {
-      setError('Erro ao fazer login com Google');
+      setError(tErrors('googleError'));
     } finally {
       setIsSocialLoading(null);
     }
@@ -121,7 +130,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     try {
       await loginWithMicrosoft();
     } catch {
-      setError('Erro ao fazer login com Microsoft');
+      setError(tErrors('microsoftError'));
     } finally {
       setIsSocialLoading(null);
     }
@@ -129,7 +138,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   const handleMagicLinkLogin = async () => {
     if (!magicLinkEmail) {
-      setError('Digite seu e-mail para receber o link');
+      setError(tMagicLink('enterEmail'));
       return;
     }
     setIsSocialLoading('magiclink');
@@ -138,7 +147,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       await loginWithMagicLink(magicLinkEmail);
       setMagicLinkSent(true);
     } catch {
-      setError('Erro ao enviar link magico');
+      setError(tMagicLink('error'));
     } finally {
       setIsSocialLoading(null);
     }
@@ -149,18 +158,18 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       <div className="space-y-4">
         {magicLinkSent ? (
           <div className="p-4 rounded-md bg-green-50 border border-green-200">
-            <p className="text-sm text-green-700 text-center">
-              Enviamos um link para <strong>{magicLinkEmail}</strong>. Verifique sua caixa de entrada.
-            </p>
+            <p className="text-sm text-green-700 text-center"
+              dangerouslySetInnerHTML={{ __html: tMagicLink('sent', { email: magicLinkEmail }) }}
+            />
           </div>
         ) : (
           <>
             <div className="space-y-2">
-              <Label htmlFor="magicLinkEmail" className="text-sm font-thin">E-mail</Label>
+              <Label htmlFor="magicLinkEmail" className="text-sm font-thin">{tMagicLink('emailLabel')}</Label>
               <Input
                 id="magicLinkEmail"
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={tMagicLink('placeholder')}
                 value={magicLinkEmail}
                 onChange={(e) => setMagicLinkEmail(e.target.value)}
                 disabled={isSocialLoading === 'magiclink'}
@@ -177,7 +186,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               onClick={handleMagicLinkLogin}
               disabled={isSocialLoading === 'magiclink'}
             >
-              {isSocialLoading === 'magiclink' ? 'Enviando...' : 'Enviar link magico'}
+              {isSocialLoading === 'magiclink' ? tMagicLink('submitting') : tMagicLink('submit')}
             </Button>
           </>
         )}
@@ -191,7 +200,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             setError(null);
           }}
         >
-          Voltar para login
+          {tMagicLink('backToLogin')}
         </Button>
       </div>
     );
@@ -207,7 +216,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm font-thin">E-mail</Label>
+          <Label htmlFor="email" className="text-sm font-thin">{t('email')}</Label>
           <Input
             id="email"
             type="email"
@@ -220,7 +229,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm font-thin">Senha</Label>
+          <Label htmlFor="password" className="text-sm font-thin">{t('password')}</Label>
           <Input
             id="password"
             type="password"
@@ -238,7 +247,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             {...register('rememberMe')}
           />
           <Label htmlFor="rememberMe" className="text-sm font-thin cursor-pointer">
-            Lembrar de mim
+            {t('rememberMe')}
           </Label>
         </div>
 
@@ -247,12 +256,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             href="/auth/forgot-password"
             className="text-sm text-primary hover:underline font-thin"
           >
-            Esqueci minha senha
+            {t('forgotPassword')}
           </Link>
         </div>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Entrando...' : 'Entrar'}
+          {isLoading ? t('submitting') : t('submit')}
         </Button>
       </form>
 
@@ -261,7 +270,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">ou continue com</span>
+          <span className="bg-background px-2 text-muted-foreground">{t('orContinueWith')}</span>
         </div>
       </div>
 

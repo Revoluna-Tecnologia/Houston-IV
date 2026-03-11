@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -17,7 +18,7 @@ import {
   type SortingState,
   type StatusBadgeVariant,
 } from '@/components/houston';
-import type { Pagamento, PagamentoStatus } from '../../services/types';
+import type { Pagamento, PagamentoStatus } from '@/services/types';
 
 const MoreVerticalIcon = () => (
   <svg
@@ -88,13 +89,6 @@ export interface PagamentosTableProps {
   onPagar: (pagamento: PagamentoWithRelations) => void;
 }
 
-const STATUS_LABELS: Record<PagamentoStatus, string> = {
-  pendente: 'Pendente',
-  autorizado: 'Autorizado',
-  pago: 'Pago',
-  cancelado: 'Cancelado',
-};
-
 const STATUS_VARIANTS: Record<PagamentoStatus, StatusBadgeVariant> = {
   pendente: 'warning',
   autorizado: 'info',
@@ -115,6 +109,16 @@ export function PagamentosTable({
   onAutorizar,
   onPagar,
 }: PagamentosTableProps) {
+  const t = useTranslations('Pagamentos');
+  const tCommon = useTranslations('Common.actions');
+
+  const STATUS_LABELS: Record<PagamentoStatus, string> = {
+    pendente: t('status.pending'),
+    autorizado: t('status.authorized'),
+    pago: t('status.paid'),
+    cancelado: t('status.cancelled'),
+  };
+
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
@@ -150,21 +154,21 @@ export function PagamentosTable({
         <Checkbox
           checked={allSelected}
           onCheckedChange={handleSelectAll}
-          aria-label="Selecionar todos"
+          aria-label={t('table.selectAll')}
         />
       ),
       cell: (row) => (
         <Checkbox
           checked={selectedIds.includes(row.id)}
           onCheckedChange={(checked) => handleSelectOne(row.id, checked as boolean)}
-          aria-label="Selecionar linha"
+          aria-label={t('table.selectRow')}
         />
       ),
       className: 'w-12',
     },
     {
       id: 'vaga',
-      header: 'Vaga',
+      header: t('table.vaga'),
       cell: (row) => (
         <div className="flex flex-col">
           <span className="font-medium">{row.hospitalNome || '-'}</span>
@@ -175,7 +179,7 @@ export function PagamentosTable({
     },
     {
       id: 'medico',
-      header: 'Medico',
+      header: t('table.medico'),
       cell: (row) => (
         <div className="flex flex-col">
           <span className="font-medium">{row.medicoNome || '-'}</span>
@@ -186,7 +190,7 @@ export function PagamentosTable({
     },
     {
       id: 'valor',
-      header: 'Valor',
+      header: t('table.value'),
       accessorKey: 'valor',
       sortable: true,
       cell: (row) => (
@@ -207,7 +211,7 @@ export function PagamentosTable({
     },
     {
       id: 'acoes',
-      header: 'Acoes',
+      header: t('table.actions'),
       cell: (row) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -219,13 +223,13 @@ export function PagamentosTable({
             {row.status === 'pendente' && (
               <DropdownMenuItem onClick={() => onAutorizar(row)}>
                 <CheckIcon />
-                Autorizar
+                {tCommon('authorize')}
               </DropdownMenuItem>
             )}
             {row.status === 'autorizado' && (
               <DropdownMenuItem onClick={() => onPagar(row)}>
                 <DollarSignIcon />
-                Pagar
+                {tCommon('pay')}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -246,7 +250,7 @@ export function PagamentosTable({
         totalCount,
       }}
       onPageChange={onPageChange}
-      emptyMessage="Nenhum pagamento encontrado"
+      emptyMessage={t('noPagamentos')}
     />
   );
 }

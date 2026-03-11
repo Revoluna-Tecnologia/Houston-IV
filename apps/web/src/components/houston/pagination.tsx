@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -104,6 +105,8 @@ function Pagination({
   siblingCount = 1,
   className,
 }: PaginationProps) {
+  const t = useTranslations('Common')
+
   const paginationRange = generatePaginationRange(
     currentPage,
     totalPages,
@@ -129,14 +132,14 @@ function Pagination({
   return (
     <nav
       className={cn('flex items-center justify-center gap-1', className)}
-      aria-label="Paginacao"
+      aria-label={t('pagination.label')}
     >
       <Button
         variant="ghost"
         size="icon"
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        aria-label="Pagina anterior"
+        aria-label={t('pagination.previous')}
       >
         <ChevronLeftIcon />
       </Button>
@@ -161,7 +164,7 @@ function Pagination({
             variant={isCurrentPage ? 'default' : 'ghost'}
             size="icon"
             onClick={() => onPageChange(page)}
-            aria-label={`Pagina ${page}`}
+            aria-label={t('pagination.goToPage', { page })}
             aria-current={isCurrentPage ? 'page' : undefined}
             className={cn(
               isCurrentPage && 'bg-primary-500 text-white hover:bg-primary-600'
@@ -177,7 +180,7 @@ function Pagination({
         size="icon"
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        aria-label="Proxima pagina"
+        aria-label={t('pagination.next')}
       >
         <ChevronRightIcon />
       </Button>

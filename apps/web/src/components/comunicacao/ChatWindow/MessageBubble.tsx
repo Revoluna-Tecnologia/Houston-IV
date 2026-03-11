@@ -7,10 +7,11 @@
  */
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import type { Message, MessageType, MessageStatus } from '../../../services/comunicacao/types';
+import type { Message, MessageType, MessageStatus } from '@/services/comunicacao/types';
 
 const CheckIcon = () => (
   <svg
@@ -93,6 +94,8 @@ export function MessageBubble({
   onDelete,
   className,
 }: MessageBubbleProps) {
+  const t = useTranslations('Comunicacao');
+
   const formattedTime = useMemo(() => {
     try {
       return format(new Date(message.createdAt), 'HH:mm', { locale: ptBR });
@@ -166,7 +169,7 @@ export function MessageBubble({
               type="button"
               onClick={() => onReply(message)}
               className="rounded p-1 hover:bg-muted"
-              title="Responder"
+              title={t('chat.reply')}
             >
               <ReplyIcon />
             </button>
@@ -176,7 +179,7 @@ export function MessageBubble({
               type="button"
               onClick={() => onDelete(message.id)}
               className="rounded p-1 hover:bg-muted"
-              title="Excluir"
+              title={t('chat.deleteMessage')}
             >
               <TrashIcon />
             </button>
@@ -194,8 +197,10 @@ function MessageContent({
   message: Message;
   isDeleted: boolean;
 }) {
+  const t = useTranslations('Comunicacao');
+
   if (isDeleted) {
-    return <p className="text-sm">Mensagem excluida</p>;
+    return <p className="text-sm">{t('chat.messageDeleted')}</p>;
   }
 
   switch (message.messageType as MessageType) {
@@ -205,7 +210,7 @@ function MessageContent({
           {message.metadata?.mediaUrl && (
             <img
               src={message.metadata.mediaUrl}
-              alt={message.metadata.caption || 'Imagem'}
+              alt={message.metadata.caption || t('chat.image')}
               className="max-h-60 rounded-lg object-cover"
             />
           )}
@@ -243,7 +248,7 @@ function MessageContent({
         >
           <FileIcon />
           <span className="truncate text-sm">
-            {message.metadata?.fileName || 'Arquivo'}
+            {message.metadata?.fileName || t('chat.file')}
           </span>
         </a>
       );
@@ -252,7 +257,7 @@ function MessageContent({
       return (
         <div className="rounded-lg bg-background/10 p-3">
           <p className="text-xs font-medium uppercase opacity-70">
-            Oferta de Plantao
+            {t('chat.shiftOffer')}
           </p>
           <p className="mt-1 text-sm">{message.content}</p>
         </div>

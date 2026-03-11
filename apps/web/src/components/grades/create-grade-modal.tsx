@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,20 +16,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Modal } from '@/components/houston';
-import type { Hospital, CreateGradeDto } from '../../services/types';
+import type { Hospital, CreateGradeDto } from '@/services/types';
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 
-const createGradeSchema = z.object({
-  nome: z.string().min(1, 'Nome e obrigatorio'),
-  hospitalId: z.string().min(1, 'Hospital e obrigatorio'),
-  setorId: z.string().min(1, 'Setor e obrigatorio'),
-  mes: z.number().min(1).max(12),
-  ano: z.number().min(currentYear - 2).max(currentYear + 2),
-});
+function createGradeSchema(t: (key: string) => string) {
+  return z.object({
+    nome: z.string().min(1, t('nameRequired')),
+    hospitalId: z.string().min(1, t('hospitalRequired')),
+    setorId: z.string().min(1, t('sectorRequired')),
+    mes: z.number().min(1).max(12),
+    ano: z.number().min(currentYear - 2).max(currentYear + 2),
+  });
+}
 
-type CreateGradeFormData = z.infer<typeof createGradeSchema>;
+type CreateGradeFormData = z.infer<ReturnType<typeof createGradeSchema>>;
 
 export interface CreateGradeModalProps {
   open: boolean;
@@ -38,20 +41,10 @@ export interface CreateGradeModalProps {
   setores: { id: string; nome: string; hospitalId: string }[];
 }
 
-const MESES = [
-  { value: 1, label: 'Janeiro' },
-  { value: 2, label: 'Fevereiro' },
-  { value: 3, label: 'Marco' },
-  { value: 4, label: 'Abril' },
-  { value: 5, label: 'Maio' },
-  { value: 6, label: 'Junho' },
-  { value: 7, label: 'Julho' },
-  { value: 8, label: 'Agosto' },
-  { value: 9, label: 'Setembro' },
-  { value: 10, label: 'Outubro' },
-  { value: 11, label: 'Novembro' },
-  { value: 12, label: 'Dezembro' },
-];
+const MONTH_KEYS = [
+  'january', 'february', 'march', 'april', 'may', 'june',
+  'july', 'august', 'september', 'october', 'november', 'december',
+] as const;
 
 const ANOS = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
 
@@ -62,7 +55,13 @@ export function CreateGradeModal({
   hospitais,
   setores,
 }: CreateGradeModalProps) {
+  const t = useTranslations('Grades.form');
+  const tValidation = useTranslations('Grades.validation');
+  const tCommon = useTranslations('Common.actions');
+  const tMonths = useTranslations('Common.months');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(() => createGradeSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -72,7 +71,7 @@ export function CreateGradeModal({
     reset,
     formState: { errors },
   } = useForm<CreateGradeFormData>({
-    resolver: zodResolver(createGradeSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       nome: '',
       hospitalId: '',
@@ -119,16 +118,16 @@ export function CreateGradeModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Nova Grade"
-      description="Preencha os dados para criar uma nova grade"
+      title={t('createTitle')}
+      description={t('createDescription')}
       size="lg"
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome">Nome</Label>
+          <Label htmlFor="nome">{t('name')}</Label>
           <Input
             id="nome"
-            placeholder="Nome da grade"
+            placeholder={t('namePlaceholder')}
             {...register('nome')}
           />
           {errors.nome && (
@@ -138,7 +137,7 @@ export function CreateGradeModal({
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="hospitalId">Hospital</Label>
+            <Label htmlFor="hospitalId">{t('hospital')}</Label>
             <Select
               value={watchedHospitalId}
               onValueChange={(value) => {
@@ -147,7 +146,7 @@ export function CreateGradeModal({
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o hospital" />
+                <SelectValue placeholder={t('selectHospital')} />
               </SelectTrigger>
               <SelectContent>
                 {hospitais.map((hospital) => (
@@ -163,14 +162,14 @@ export function CreateGradeModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="setorId">Setor</Label>
+            <Label htmlFor="setorId">{t('sector')}</Label>
             <Select
               value={watch('setorId')}
               onValueChange={(value) => setValue('setorId', value)}
               disabled={!watchedHospitalId}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o setor" />
+                <SelectValue placeholder={t('selectSector')} />
               </SelectTrigger>
               <SelectContent>
                 {filteredSetores.map((setor) => (
@@ -188,18 +187,18 @@ export function CreateGradeModal({
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="mes">Mes</Label>
+            <Label htmlFor="mes">{t('month')}</Label>
             <Select
               value={watchedMes?.toString()}
               onValueChange={(value) => setValue('mes', parseInt(value))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o mes" />
+                <SelectValue placeholder={t('selectMonth')} />
               </SelectTrigger>
               <SelectContent>
-                {MESES.map((mes) => (
-                  <SelectItem key={mes.value} value={mes.value.toString()}>
-                    {mes.label}
+                {MONTH_KEYS.map((key, index) => (
+                  <SelectItem key={index + 1} value={(index + 1).toString()}>
+                    {tMonths(key)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -210,13 +209,13 @@ export function CreateGradeModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ano">Ano</Label>
+            <Label htmlFor="ano">{t('year')}</Label>
             <Select
               value={watchedAno?.toString()}
               onValueChange={(value) => setValue('ano', parseInt(value))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o ano" />
+                <SelectValue placeholder={t('selectYear')} />
               </SelectTrigger>
               <SelectContent>
                 {ANOS.map((ano) => (
@@ -234,10 +233,10 @@ export function CreateGradeModal({
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="outline" onClick={handleClose}>
-            Cancelar
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Criando...' : 'Criar Grade'}
+            {isSubmitting ? tCommon('creating') : t('createButton')}
           </Button>
         </div>
       </form>

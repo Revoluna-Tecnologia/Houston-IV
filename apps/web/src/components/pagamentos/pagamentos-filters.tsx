@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { DateRangePicker } from '@/components/houston';
 import type { DateRange } from 'react-day-picker';
-import type { Medico, Hospital, PagamentoStatus } from '../../services/types';
+import type { Medico, Hospital, PagamentoStatus } from '@/services/types';
 
 const XIcon = () => (
   <svg
@@ -44,14 +45,6 @@ export interface PagamentosFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'pendente', label: 'Pendentes' },
-  { value: 'autorizado', label: 'Autorizados' },
-  { value: 'pago', label: 'Pagos' },
-  { value: 'cancelado', label: 'Cancelados' },
-];
-
 export function PagamentosFilters({
   medicos,
   hospitais,
@@ -59,6 +52,10 @@ export function PagamentosFilters({
   onChange,
   isLoading,
 }: PagamentosFiltersProps) {
+  const t = useTranslations('Pagamentos.filters');
+  const tStatus = useTranslations('Pagamentos.status');
+  const tCommon = useTranslations('Common.actions');
+  const tStatusCommon = useTranslations('Common.status');
   const [localValue, setLocalValue] = useState<PagamentosFiltersValue>(value);
 
   useEffect(() => {
@@ -95,14 +92,14 @@ export function PagamentosFilters({
         onValueChange={(v) => handleChange('status', v)}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tStatusCommon('all')}</SelectItem>
+          <SelectItem value="pendente">{tStatus('allPending')}</SelectItem>
+          <SelectItem value="autorizado">{tStatus('allAuthorized')}</SelectItem>
+          <SelectItem value="pago">{tStatus('allPaid')}</SelectItem>
+          <SelectItem value="cancelado">{tStatus('allCancelled')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -111,10 +108,10 @@ export function PagamentosFilters({
         onValueChange={(v) => handleChange('medicoId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Medico" />
+          <SelectValue placeholder={t('medico')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os medicos</SelectItem>
+          <SelectItem value="all">{t('allMedicos')}</SelectItem>
           {medicos.map((medico) => (
             <SelectItem key={medico.id} value={medico.id}>
               {medico.nome}
@@ -128,10 +125,10 @@ export function PagamentosFilters({
         onValueChange={(v) => handleChange('hospitalId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Hospital" />
+          <SelectValue placeholder={t('hospital')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os hospitais</SelectItem>
+          <SelectItem value="all">{t('allHospitals')}</SelectItem>
           {hospitais.map((hospital) => (
             <SelectItem key={hospital.id} value={hospital.id}>
               {hospital.nome}
@@ -143,14 +140,14 @@ export function PagamentosFilters({
       <DateRangePicker
         value={localValue.dateRange}
         onChange={(range) => handleChange('dateRange', range)}
-        placeholder="Periodo"
+        placeholder={t('period')}
         className="w-[280px]"
       />
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('clearFilters')}
         </Button>
       )}
     </div>

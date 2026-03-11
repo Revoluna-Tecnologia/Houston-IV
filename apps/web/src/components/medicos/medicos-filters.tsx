@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -57,18 +58,14 @@ export interface MedicosFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'ativo', label: 'Ativos' },
-  { value: 'inativo', label: 'Inativos' },
-];
-
 export function MedicosFilters({
   especialidades,
   value,
   onChange,
   isLoading,
 }: MedicosFiltersProps) {
+  const t = useTranslations('Medicos.filters');
+  const tCommon = useTranslations('Common');
   const [localValue, setLocalValue] = useState<MedicosFiltersValue>(value);
 
   useEffect(() => {
@@ -103,7 +100,7 @@ export function MedicosFilters({
           <SearchIcon />
         </div>
         <Input
-          placeholder="Buscar por nome ou CRM..."
+          placeholder={t('searchPlaceholder')}
           value={localValue.search}
           onChange={(e) => handleChange('search', e.target.value)}
           className="pl-9"
@@ -115,10 +112,10 @@ export function MedicosFilters({
         onValueChange={(v) => handleChange('especialidadeId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Especialidade" />
+          <SelectValue placeholder={t('specialty')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todas as especialidades</SelectItem>
+          <SelectItem value="all">{t('allSpecialties')}</SelectItem>
           {especialidades.map((esp) => (
             <SelectItem key={esp.id} value={esp.id}>
               {esp.nome}
@@ -132,21 +129,19 @@ export function MedicosFilters({
         onValueChange={(v) => handleChange('status', v)}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tCommon('status.all')}</SelectItem>
+          <SelectItem value="ativo">{tCommon('status.active')}</SelectItem>
+          <SelectItem value="inativo">{tCommon('status.inactive')}</SelectItem>
         </SelectContent>
       </Select>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('actions.clearFilters')}
         </Button>
       )}
     </div>

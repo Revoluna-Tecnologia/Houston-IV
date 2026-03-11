@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -102,13 +103,6 @@ export interface VagasTableProps {
   onDelete: (vaga: VagaWithRelations) => void;
 }
 
-const STATUS_LABELS: Record<VagaStatus, string> = {
-  aberta: 'Aberta',
-  anunciada: 'Anunciada',
-  fechada: 'Fechada',
-  cancelada: 'Cancelada',
-};
-
 const STATUS_VARIANTS: Record<VagaStatus, StatusBadgeVariant> = {
   aberta: 'warning',
   anunciada: 'info',
@@ -129,6 +123,16 @@ export function VagasTable({
   onEdit,
   onDelete,
 }: VagasTableProps) {
+  const t = useTranslations('Vagas');
+  const tActions = useTranslations('Common.actions');
+
+  const STATUS_LABELS: Record<VagaStatus, string> = {
+    aberta: t('status.open'),
+    anunciada: t('status.announced'),
+    fechada: t('status.closed'),
+    cancelada: t('status.cancelled'),
+  };
+
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
@@ -146,38 +150,38 @@ export function VagasTable({
   const columns: ColumnDef<VagaWithRelations>[] = [
     {
       id: 'data',
-      header: 'Data',
+      header: t('table.date'),
       accessorKey: 'data',
       sortable: true,
       cell: (row) => formatDate(row.data),
     },
     {
       id: 'hospital',
-      header: 'Hospital',
+      header: t('table.hospital'),
       cell: (row) => row.hospitalNome || getHospitalName(row.hospitalId),
       sortable: true,
     },
     {
       id: 'setor',
-      header: 'Setor',
+      header: t('table.sector'),
       cell: (row) => row.setorNome || '-',
       sortable: true,
     },
     {
       id: 'horario',
-      header: 'Horario',
+      header: t('table.schedule'),
       cell: (row) => `${row.horaInicio} - ${row.horaFim}`,
     },
     {
       id: 'valor',
-      header: 'Valor',
+      header: t('table.value'),
       accessorKey: 'valor',
       sortable: true,
       cell: (row) => formatCurrency(row.valor || 0),
     },
     {
       id: 'status',
-      header: 'Status',
+      header: t('table.status'),
       accessorKey: 'status',
       sortable: true,
       cell: (row) => (
@@ -189,7 +193,7 @@ export function VagasTable({
     },
     {
       id: 'acoes',
-      header: 'Acoes',
+      header: t('table.actions'),
       cell: (row) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -200,18 +204,18 @@ export function VagasTable({
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onView(row)}>
               <EyeIcon />
-              Ver
+              {tActions('view')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(row)}>
               <EditIcon />
-              Editar
+              {tActions('edit')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => onDelete(row)}
               className="text-red-600"
             >
               <TrashIcon />
-              Deletar
+              {tActions('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -231,7 +235,7 @@ export function VagasTable({
         totalCount,
       }}
       onPageChange={onPageChange}
-      emptyMessage="Nenhuma vaga encontrada"
+      emptyMessage={t('noVagas')}
     />
   );
 }

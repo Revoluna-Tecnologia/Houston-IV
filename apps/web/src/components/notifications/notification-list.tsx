@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Bell, CheckCheck, Loader2, Inbox } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -23,6 +24,7 @@ export function NotificationList({
   onNotificationClick,
   maxHeight = '400px',
 }: NotificationListProps) {
+  const t = useTranslations('Notifications')
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
   const { data, isLoading, error } = useNotifications({
     read: filter === 'unread' ? false : undefined,
@@ -57,7 +59,7 @@ export function NotificationList({
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <Bell className="h-10 w-10 text-muted-foreground mb-2" />
         <p className="text-sm text-muted-foreground">
-          Erro ao carregar notificações
+          {t('loadError')}
         </p>
       </div>
     )
@@ -75,10 +77,10 @@ export function NotificationList({
         >
           <TabsList className="h-8">
             <TabsTrigger value="all" className="text-xs px-3">
-              Todas
+              {t('tabs.all')}
             </TabsTrigger>
             <TabsTrigger value="unread" className="text-xs px-3">
-              Não lidas
+              {t('tabs.unread')}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -92,7 +94,7 @@ export function NotificationList({
             className="text-xs"
           >
             <CheckCheck className="h-4 w-4 mr-1" />
-            Marcar todas como lidas
+            {t('markAllRead')}
           </Button>
         )}
       </div>
@@ -103,8 +105,8 @@ export function NotificationList({
             <Inbox className="h-10 w-10 text-muted-foreground mb-2" />
             <p className="text-sm text-muted-foreground">
               {filter === 'unread'
-                ? 'Nenhuma notificação não lida'
-                : 'Nenhuma notificação'}
+                ? t('empty.unread')
+                : t('empty.all')}
             </p>
           </div>
         ) : (
@@ -125,7 +127,7 @@ export function NotificationList({
       {data && data.totalPages > 1 && (
         <div className="px-4 py-3 border-t text-center">
           <Button variant="link" size="sm" className="text-xs">
-            Ver todas as notificações
+            {t('viewAll')}
           </Button>
         </div>
       )}

@@ -7,12 +7,13 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { ConversationSearch } from './ConversationSearch';
 import { ConversationItem } from './ConversationItem';
-import type { Conversation, ConversationType } from '../../../services/comunicacao/types';
+import type { Conversation, ConversationType } from '@/services/comunicacao/types';
 
 const PlusIcon = () => (
   <svg
@@ -66,6 +67,7 @@ export function ConversationList({
   onCreateNew,
   className,
 }: ConversationListProps) {
+  const t = useTranslations('Comunicacao');
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
 
@@ -116,20 +118,20 @@ export function ConversationList({
   );
 
   const filterButtons: { key: FilterType; label: string }[] = [
-    { key: 'all', label: 'Todas' },
-    { key: 'direct', label: 'Diretas' },
-    { key: 'group', label: 'Grupos' },
-    { key: 'archived', label: 'Arquivadas' },
+    { key: 'all', label: t('conversations.filterAll') },
+    { key: 'direct', label: t('conversations.filterDirect') },
+    { key: 'group', label: t('conversations.filterGroup') },
+    { key: 'archived', label: t('conversations.filterArchived') },
   ];
 
   return (
     <div className={cn('flex h-full flex-col', className)}>
       {/* Header */}
       <div className="flex items-center justify-between border-b p-4">
-        <h2 className="text-lg font-semibold">Conversas</h2>
+        <h2 className="text-lg font-semibold">{t('conversations.title')}</h2>
         <Button size="sm" onClick={onCreateNew}>
           <PlusIcon />
-          <span className="ml-1 hidden sm:inline">Nova</span>
+          <span className="ml-1 hidden sm:inline">{t('conversations.new')}</span>
         </Button>
       </div>
 
@@ -194,16 +196,18 @@ function ConversationListSkeleton() {
 }
 
 function EmptyState({ filter, hasSearch }: { filter: FilterType; hasSearch: boolean }) {
-  let message = 'Nenhuma conversa encontrada';
+  const t = useTranslations('Comunicacao');
+
+  let message = t('conversations.emptyDefault');
 
   if (hasSearch) {
-    message = 'Nenhuma conversa corresponde a busca';
+    message = t('conversations.emptySearch');
   } else if (filter === 'archived') {
-    message = 'Nenhuma conversa arquivada';
+    message = t('conversations.emptyArchived');
   } else if (filter === 'direct') {
-    message = 'Nenhuma conversa direta';
+    message = t('conversations.emptyDirect');
   } else if (filter === 'group') {
-    message = 'Nenhum grupo encontrado';
+    message = t('conversations.emptyGroup');
   }
 
   return (

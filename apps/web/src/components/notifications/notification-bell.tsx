@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +22,7 @@ export function NotificationBell({
   onNotificationClick,
   className,
 }: NotificationBellProps) {
+  const t = useTranslations('Notifications')
   const { data: unreadData } = useUnreadCount()
   const unreadCount = unreadData?.count ?? 0
 
@@ -31,7 +33,7 @@ export function NotificationBell({
           variant="ghost"
           size="icon"
           className={cn('relative', className)}
-          aria-label="Notificações"
+          aria-label={t('title')}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
@@ -47,10 +49,10 @@ export function NotificationBell({
         sideOffset={8}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/50">
-          <h3 className="font-semibold">Notificações</h3>
+          <h3 className="font-semibold">{t('title')}</h3>
           {unreadCount > 0 && (
             <span className="text-xs text-muted-foreground">
-              {unreadCount} não lida{unreadCount !== 1 && 's'}
+              {t('unread', { count: unreadCount })}
             </span>
           )}
         </div>

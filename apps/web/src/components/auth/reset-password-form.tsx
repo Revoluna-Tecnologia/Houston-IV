@@ -1,31 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { resetPassword } from '@/lib/auth-client'
 
-const resetPasswordSchema = z.object({
-  password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
-  confirmPassword: z.string().min(8, 'A confirmação de senha deve ter no mínimo 8 caracteres'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'As senhas não coincidem',
-  path: ['confirmPassword'],
-})
+function createResetPasswordSchema(t: (key: string) => string) {
+  return z.object({
+    password: z.string().min(8, t('minPassword')),
+    confirmPassword: z.string().min(8, t('minConfirm')),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('passwordsDontMatch'),
+    path: ['confirmPassword'],
+  })
+}
 
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
+type ResetPasswordFormData = z.infer<ReturnType<typeof createResetPasswordSchema>>
 
 interface ResetPasswordFormProps {
   token: string
 }
 
-function getPasswordStrength(password: string): { score: number; label: string; color: string } {
+function getPasswordStrength(password: string, t: (key: string) => string): { score: number; label: string; color: string } {
   let score = 0
 
   if (password.length >= 8) score += 1
@@ -34,17 +37,22 @@ function getPasswordStrength(password: string): { score: number; label: string; 
   if (/\d/.test(password)) score += 1
   if (/[^a-zA-Z0-9]/.test(password)) score += 1
 
-  if (score <= 1) return { score: 20, label: 'Muito fraca', color: 'bg-red-500' }
-  if (score === 2) return { score: 40, label: 'Fraca', color: 'bg-orange-500' }
-  if (score === 3) return { score: 60, label: 'Razoável', color: 'bg-yellow-500' }
-  if (score === 4) return { score: 80, label: 'Forte', color: 'bg-green-400' }
-  return { score: 100, label: 'Muito forte', color: 'bg-green-600' }
+  if (score <= 1) return { score: 20, label: t('veryWeak'), color: 'bg-red-500' }
+  if (score === 2) return { score: 40, label: t('weak'), color: 'bg-orange-500' }
+  if (score === 3) return { score: 60, label: t('fair'), color: 'bg-yellow-500' }
+  if (score === 4) return { score: 80, label: t('strong'), color: 'bg-green-400' }
+  return { score: 100, label: t('veryStrong'), color: 'bg-green-600' }
 }
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter()
+  const t = useTranslations('Auth.resetPassword')
+  const tValidation = useTranslations('Auth.resetPassword.validation')
+  const tStrength = useTranslations('Auth.resetPassword.strength')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const resetPasswordSchema = useMemo(() => createResetPasswordSchema(tValidation), [tValidation])
 
   const {
     register,
@@ -60,7 +68,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   })
 
   const password = watch('password')
-  const passwordStrength = getPasswordStrength(password || '')
+  const passwordStrength = getPasswordStrength(password || '', tStrength)
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     setIsLoading(true)
@@ -76,7 +84,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       if (err instanceof Error) {
         setError(err.message)
       } else {
-        setError('Ocorreu um erro ao redefinir a senha. Tente novamente.')
+        setError(t('error'))
       }
     } finally {
       setIsLoading(false)
@@ -92,7 +100,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="password">Nova senha</Label>
+        <Label htmlFor="password">{t('newPassword')}</Label>
         <Input
           id="password"
           type="password"
@@ -104,7 +112,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           <div className="space-y-1">
             <Progress value={passwordStrength.score} className="h-2" />
             <p className={`text-xs ${passwordStrength.score >= 60 ? 'text-green-600' : 'text-gray-500'}`}>
-              Força da senha: {passwordStrength.label}
+              {tStrength('label')}{passwordStrength.label}
             </p>
           </div>
         )}
@@ -114,7 +122,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+        <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
         <Input
           id="confirmPassword"
           type="password"
@@ -128,7 +136,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Redefinindo...' : 'Redefinir senha'}
+        {isLoading ? t('submitting') : t('submit')}
       </Button>
     </form>
   )

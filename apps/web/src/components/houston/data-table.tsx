@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import {
   Table,
@@ -99,8 +100,10 @@ function DataTable<T>({
   pagination,
   onPageChange,
   className,
-  emptyMessage = 'Nenhum resultado encontrado',
+  emptyMessage,
 }: DataTableProps<T>) {
+  const t = useTranslations('Common')
+
   const handleSort = (columnId: string) => {
     if (!onSort) return
 
@@ -165,7 +168,7 @@ function DataTable<T>({
           {data.length === 0 ? (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                {emptyMessage}
+                {emptyMessage ?? t('dataTable.noResults')}
               </TableCell>
             </TableRow>
           ) : (
@@ -185,12 +188,14 @@ function DataTable<T>({
       {pagination && totalPages > 1 && (
         <div className="flex items-center justify-between px-2">
           <div className="text-sm text-gray-700">
-            Mostrando {pagination.pageIndex * pagination.pageSize + 1} a{' '}
-            {Math.min(
-              (pagination.pageIndex + 1) * pagination.pageSize,
-              pagination.totalCount
-            )}{' '}
-            de {pagination.totalCount} resultados
+            {t('dataTable.showing', {
+              from: pagination.pageIndex * pagination.pageSize + 1,
+              to: Math.min(
+                (pagination.pageIndex + 1) * pagination.pageSize,
+                pagination.totalCount
+              ),
+              total: pagination.totalCount,
+            })}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -199,10 +204,10 @@ function DataTable<T>({
               onClick={() => onPageChange?.(pagination.pageIndex - 1)}
               disabled={pagination.pageIndex === 0}
             >
-              Anterior
+              {t('dataTable.previous')}
             </Button>
             <span className="text-sm text-gray-700">
-              Pagina {pagination.pageIndex + 1} de {totalPages}
+              {t('dataTable.pageOf', { page: pagination.pageIndex + 1, total: totalPages })}
             </span>
             <Button
               variant="outline"
@@ -210,7 +215,7 @@ function DataTable<T>({
               onClick={() => onPageChange?.(pagination.pageIndex + 1)}
               disabled={pagination.pageIndex >= totalPages - 1}
             >
-              Proximo
+              {t('dataTable.next')}
             </Button>
           </div>
         </div>

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,17 +18,19 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Modal } from '@/components/houston';
-import type { User, UserRole } from '../../../services/types';
-import type { UpdateUserDto } from '../../../services/users-service';
+import type { User, UserRole } from '@/services/types';
+import type { UpdateUserDto } from '@/services/users-service';
 
-const editUserSchema = z.object({
-  nome: z.string().min(1, 'Nome e obrigatorio'),
-  role: z.string().min(1, 'Funcao e obrigatoria'),
-  grupoIds: z.array(z.string()),
-  ativo: z.boolean(),
-});
+function createEditUserSchema(t: (key: string) => string) {
+  return z.object({
+    nome: z.string().min(1, t('nameRequired')),
+    role: z.string().min(1, t('roleRequired')),
+    grupoIds: z.array(z.string()),
+    ativo: z.boolean(),
+  });
+}
 
-type EditUserFormData = z.infer<typeof editUserSchema>;
+type EditUserFormData = z.infer<ReturnType<typeof createEditUserSchema>>;
 
 export interface EditUserModalProps {
   open: boolean;
@@ -37,14 +40,6 @@ export interface EditUserModalProps {
   grupos: { id: string; nome: string }[];
 }
 
-const ROLE_OPTIONS = [
-  { value: 'administrador', label: 'Administrador' },
-  { value: 'moderador', label: 'Moderador' },
-  { value: 'gestor', label: 'Gestor' },
-  { value: 'coordenador', label: 'Coordenador' },
-  { value: 'escalista', label: 'Escalista' },
-];
-
 export function EditUserModal({
   open,
   onOpenChange,
@@ -52,7 +47,13 @@ export function EditUserModal({
   onSubmit,
   grupos,
 }: EditUserModalProps) {
+  const t = useTranslations('Admin.users.form');
+  const tValidation = useTranslations('Admin.users.validation');
+  const tCommon = useTranslations('Common.actions');
+  const tRoles = useTranslations('Common.roles');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(() => createEditUserSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -62,7 +63,7 @@ export function EditUserModal({
     reset,
     formState: { errors },
   } = useForm<EditUserFormData>({
-    resolver: zodResolver(editUserSchema),
+    resolver: zodResolver(schema),
   });
 
   useEffect(() => {
@@ -118,16 +119,16 @@ export function EditUserModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Editar Usuario"
-      description="Atualize os dados do usuario"
+      title={t('editTitle')}
+      description={t('editDescription')}
       size="lg"
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome">Nome</Label>
+          <Label htmlFor="nome">{t('name')}</Label>
           <Input
             id="nome"
-            placeholder="Nome completo"
+            placeholder={t('namePlaceholder')}
             {...register('nome')}
           />
           {errors.nome && (
@@ -144,24 +145,24 @@ export function EditUserModal({
             disabled
             className="bg-gray-50"
           />
-          <p className="text-xs text-gray-500">O email nao pode ser alterado</p>
+          <p className="text-xs text-gray-500">{t('emailReadonly')}</p>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="role">Funcao</Label>
+          <Label htmlFor="role">{t('role')}</Label>
           <Select
             value={watchedRole}
             onValueChange={(value) => setValue('role', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione a funcao" />
+              <SelectValue placeholder={t('selectRole')} />
             </SelectTrigger>
             <SelectContent>
-              {ROLE_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              <SelectItem value="administrador">{tRoles('administrator')}</SelectItem>
+              <SelectItem value="moderador">{tRoles('moderator')}</SelectItem>
+              <SelectItem value="gestor">{tRoles('manager')}</SelectItem>
+              <SelectItem value="coordenador">{tRoles('coordinator')}</SelectItem>
+              <SelectItem value="escalista">{tRoles('scheduler')}</SelectItem>
             </SelectContent>
           </Select>
           {errors.role && (
@@ -170,7 +171,7 @@ export function EditUserModal({
         </div>
 
         <div className="space-y-2">
-          <Label>Grupos</Label>
+          <Label>{t('groups')}</Label>
           <div className="border rounded-lg p-4 space-y-2 max-h-[200px] overflow-y-auto">
             {grupos.map((grupo) => (
               <label
@@ -192,15 +193,15 @@ export function EditUserModal({
             checked={watchedAtivo}
             onCheckedChange={(checked) => setValue('ativo', checked)}
           />
-          <Label>Usuario ativo</Label>
+          <Label>{t('activeSwitch')}</Label>
         </div>
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="outline" onClick={handleClose}>
-            Cancelar
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar Alteracoes'}
+            {isSubmitting ? tCommon('saving') : tCommon('saveChanges')}
           </Button>
         </div>
       </form>

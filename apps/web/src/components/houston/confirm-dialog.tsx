@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import {
   Dialog,
   DialogContent,
@@ -28,11 +29,13 @@ function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmText = 'Confirmar',
-  cancelText = 'Cancelar',
+  confirmText,
+  cancelText,
   onConfirm,
   variant = 'default',
 }: ConfirmDialogProps) {
+  const t = useTranslations('Common.actions')
+
   const handleConfirm = () => {
     onConfirm()
     onOpenChange(false)
@@ -47,13 +50,13 @@ function ConfirmDialog({
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {cancelText}
+            {cancelText ?? t('cancel')}
           </Button>
           <Button
             variant={variant === 'destructive' ? 'destructive' : 'default'}
             onClick={handleConfirm}
           >
-            {confirmText}
+            {confirmText ?? t('confirm')}
           </Button>
         </DialogFooter>
       </DialogContent>

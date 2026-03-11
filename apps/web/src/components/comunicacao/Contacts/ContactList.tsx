@@ -7,12 +7,13 @@
  */
 
 import { useState, useMemo, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { ContactItem } from './ContactItem';
-import type { Contact } from '../../../services/comunicacao/types';
+import type { Contact } from '@/services/comunicacao/types';
 
 const SearchIcon = () => (
   <svg
@@ -87,6 +88,7 @@ export function ContactList({
   onAddContact,
   className,
 }: ContactListProps) {
+  const t = useTranslations('Comunicacao');
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
 
@@ -132,9 +134,9 @@ export function ContactList({
   );
 
   const filterButtons: { type: FilterType; label: string }[] = [
-    { type: 'all', label: 'Todos' },
-    { type: 'favorites', label: 'Favoritos' },
-    { type: 'blocked', label: 'Bloqueados' },
+    { type: 'all', label: t('contacts.filterAll') },
+    { type: 'favorites', label: t('contacts.filterFavorites') },
+    { type: 'blocked', label: t('contacts.filterBlocked') },
   ];
 
   return (
@@ -142,10 +144,10 @@ export function ContactList({
       {/* Header */}
       <div className="border-b p-4">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Contatos</h2>
+          <h2 className="text-lg font-semibold">{t('contacts.title')}</h2>
           <Button size="sm" onClick={onAddContact}>
             <PlusIcon />
-            <span className="ml-2">Adicionar</span>
+            <span className="ml-2">{t('contacts.add')}</span>
           </Button>
         </div>
 
@@ -155,7 +157,7 @@ export function ContactList({
             <SearchIcon />
           </span>
           <Input
-            placeholder="Buscar contatos..."
+            placeholder={t('contacts.searchPlaceholder')}
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-9"
@@ -196,22 +198,22 @@ export function ContactList({
             <UserIcon />
             <p className="mt-4 font-medium">
               {searchQuery
-                ? 'Nenhum contato encontrado'
+                ? t('contacts.emptySearch')
                 : filter === 'favorites'
-                  ? 'Nenhum favorito'
+                  ? t('contacts.emptyFavorites')
                   : filter === 'blocked'
-                    ? 'Nenhum bloqueado'
-                    : 'Nenhum contato'}
+                    ? t('contacts.emptyBlocked')
+                    : t('contacts.emptyDefault')}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {searchQuery
-                ? 'Tente uma busca diferente'
-                : 'Adicione contatos para iniciar conversas'}
+                ? t('contacts.emptySearchHint')
+                : t('contacts.emptyHint')}
             </p>
             {!searchQuery && filter === 'all' && (
               <Button className="mt-4" onClick={onAddContact}>
                 <PlusIcon />
-                <span className="ml-2">Adicionar contato</span>
+                <span className="ml-2">{t('contacts.addContact')}</span>
               </Button>
             )}
           </div>
@@ -235,7 +237,7 @@ export function ContactList({
       {/* Footer with count */}
       {!isLoading && contacts.length > 0 && (
         <div className="border-t p-3 text-center text-sm text-muted-foreground">
-          {filteredContacts.length} de {contacts.length} contatos
+          {t('contacts.count', { filtered: filteredContacts.length, total: contacts.length })}
         </div>
       )}
     </div>

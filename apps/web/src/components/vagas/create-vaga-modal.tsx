@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,18 +19,20 @@ import {
 import { Modal, DatePicker } from '@/components/houston';
 import type { Hospital, CreateVagaDto } from '../../services/types';
 
-const createVagaSchema = z.object({
-  data: z.date({ required_error: 'Data e obrigatoria' }),
-  horaInicio: z.string().min(1, 'Hora de inicio e obrigatoria'),
-  horaFim: z.string().min(1, 'Hora de fim e obrigatoria'),
-  valor: z.number().min(0, 'Valor deve ser maior ou igual a zero'),
-  hospitalId: z.string().min(1, 'Hospital e obrigatorio'),
-  setorId: z.string().min(1, 'Setor e obrigatorio'),
-  especialidadeId: z.string().min(1, 'Especialidade e obrigatoria'),
-  observacoes: z.string().optional(),
-});
+function createVagaSchema(t: (key: string) => string) {
+  return z.object({
+    data: z.date({ required_error: t('dateRequired') }),
+    horaInicio: z.string().min(1, t('startTimeRequired')),
+    horaFim: z.string().min(1, t('endTimeRequired')),
+    valor: z.number().min(0, t('valueMin')),
+    hospitalId: z.string().min(1, t('hospitalRequired')),
+    setorId: z.string().min(1, t('sectorRequired')),
+    especialidadeId: z.string().min(1, t('specialtyRequired')),
+    observacoes: z.string().optional(),
+  });
+}
 
-type CreateVagaFormData = z.infer<typeof createVagaSchema>;
+type CreateVagaFormData = z.infer<ReturnType<typeof createVagaSchema>>;
 
 export interface CreateVagaModalProps {
   open: boolean;
@@ -48,7 +51,12 @@ export function CreateVagaModal({
   setores,
   especialidades,
 }: CreateVagaModalProps) {
+  const t = useTranslations('Vagas.form');
+  const tValidation = useTranslations('Vagas.validation');
+  const tCommon = useTranslations('Common.actions');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(() => createVagaSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -58,7 +66,7 @@ export function CreateVagaModal({
     reset,
     formState: { errors },
   } = useForm<CreateVagaFormData>({
-    resolver: zodResolver(createVagaSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       horaInicio: '',
       horaFim: '',
@@ -109,18 +117,18 @@ export function CreateVagaModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Nova Vaga"
-      description="Preencha os dados para criar uma nova vaga"
+      title={t('createTitle')}
+      description={t('createDescription')}
       size="lg"
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="data">Data</Label>
+            <Label htmlFor="data">{t('date')}</Label>
             <DatePicker
               value={watchedData}
               onChange={(date) => setValue('data', date as Date)}
-              placeholder="Selecione a data"
+              placeholder={t('selectDate')}
               className="w-full"
             />
             {errors.data && (
@@ -130,7 +138,7 @@ export function CreateVagaModal({
 
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label htmlFor="horaInicio">Hora Inicio</Label>
+              <Label htmlFor="horaInicio">{t('startTime')}</Label>
               <Input
                 id="horaInicio"
                 type="time"
@@ -141,7 +149,7 @@ export function CreateVagaModal({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="horaFim">Hora Fim</Label>
+              <Label htmlFor="horaFim">{t('endTime')}</Label>
               <Input
                 id="horaFim"
                 type="time"
@@ -155,7 +163,7 @@ export function CreateVagaModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="valor">Valor</Label>
+          <Label htmlFor="valor">{t('value')}</Label>
           <Input
             id="valor"
             type="number"
@@ -169,7 +177,7 @@ export function CreateVagaModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="hospitalId">Hospital</Label>
+          <Label htmlFor="hospitalId">{t('hospital')}</Label>
           <Select
             value={watchedHospitalId}
             onValueChange={(value) => {
@@ -178,7 +186,7 @@ export function CreateVagaModal({
             }}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione o hospital" />
+              <SelectValue placeholder={t('selectHospital')} />
             </SelectTrigger>
             <SelectContent>
               {hospitals.map((hospital) => (
@@ -194,14 +202,14 @@ export function CreateVagaModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="setorId">Setor</Label>
+          <Label htmlFor="setorId">{t('sector')}</Label>
           <Select
             value={watch('setorId')}
             onValueChange={(value) => setValue('setorId', value)}
             disabled={!watchedHospitalId}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione o setor" />
+              <SelectValue placeholder={t('selectSector')} />
             </SelectTrigger>
             <SelectContent>
               {filteredSetores.map((setor) => (
@@ -217,13 +225,13 @@ export function CreateVagaModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="especialidadeId">Especialidade</Label>
+          <Label htmlFor="especialidadeId">{t('specialty')}</Label>
           <Select
             value={watch('especialidadeId')}
             onValueChange={(value) => setValue('especialidadeId', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione a especialidade" />
+              <SelectValue placeholder={t('selectSpecialty')} />
             </SelectTrigger>
             <SelectContent>
               {especialidades.map((esp) => (
@@ -239,20 +247,20 @@ export function CreateVagaModal({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="observacoes">Observacoes</Label>
+          <Label htmlFor="observacoes">{t('notes')}</Label>
           <Textarea
             id="observacoes"
-            placeholder="Observacoes adicionais..."
+            placeholder={t('notesPlaceholder')}
             {...register('observacoes')}
           />
         </div>
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="outline" onClick={handleClose}>
-            Cancelar
+            {tCommon('cancel')}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Criando...' : 'Criar Vaga'}
+            {isSubmitting ? tCommon('creating') : t('createButton')}
           </Button>
         </div>
       </form>

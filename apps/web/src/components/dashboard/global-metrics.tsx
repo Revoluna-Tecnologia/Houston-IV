@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { StatCard } from './stat-card';
 import type { Vaga, Pagamento } from '../../services/types';
 
@@ -143,6 +144,8 @@ export interface GlobalMetricsProps {
 }
 
 export function GlobalMetrics({ vagas, pagamentos, isLoading: _isLoading }: GlobalMetricsProps) {
+  const t = useTranslations('Dashboard.metrics');
+
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
@@ -174,37 +177,37 @@ export function GlobalMetrics({ vagas, pagamentos, isLoading: _isLoading }: Glob
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <StatCard
           icon={<BriefcaseIcon />}
-          label="Total de Vagas"
+          label={t('totalVagas')}
           value={totalVagas}
           variant="default"
         />
         <StatCard
           icon={<ClockIcon />}
-          label="Vagas Abertas"
+          label={t('vagasAbertas')}
           value={vagasAbertas}
           variant="warning"
         />
         <StatCard
           icon={<CheckCircleIcon />}
-          label="Vagas Fechadas"
+          label={t('vagasFechadas')}
           value={vagasFechadas}
           variant="success"
         />
         <StatCard
           icon={<ClockIcon />}
-          label="Tempo Medio"
+          label={t('tempoMedio')}
           value={`${tempoMedio}h`}
           variant="info"
         />
         <StatCard
           icon={<UsersIcon />}
-          label="Candidaturas"
+          label={t('candidaturas')}
           value={candidaturasCount}
           variant="default"
         />
         <StatCard
           icon={<AlertTriangleIcon />}
-          label="Vagas Urgentes"
+          label={t('vagasUrgentes')}
           value={vagasUrgentes}
           variant="error"
         />
@@ -213,13 +216,13 @@ export function GlobalMetrics({ vagas, pagamentos, isLoading: _isLoading }: Glob
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <StatCard
           icon={<DollarSignIcon />}
-          label="Folha de Pagamento"
+          label={t('folhaPagamento')}
           value={formatCurrency(folhaPagamento)}
           variant="success"
         />
         <StatCard
           icon={<AlertOctagonIcon />}
-          label="Risco Operacional"
+          label={t('riscoOperacional')}
           value={formatCurrency(riscoOperacional)}
           variant="error"
         />

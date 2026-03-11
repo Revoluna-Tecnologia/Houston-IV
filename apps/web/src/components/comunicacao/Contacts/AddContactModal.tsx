@@ -6,6 +6,7 @@
  * SRP: Responsavel pelo container modal, delegando form para AddContactForm
  */
 
+import { useTranslations } from 'next-intl';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { AddContactForm } from './AddContactForm';
-import type { CreateContactDto } from '../../../services/comunicacao/types';
+import type { CreateContactDto } from '@/services/comunicacao/types';
 
 export interface AddContactModalProps {
   isOpen: boolean;
@@ -29,13 +30,15 @@ export function AddContactModal({
   onClose,
   onSubmit,
 }: AddContactModalProps) {
+  const t = useTranslations('Comunicacao');
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Adicionar contato</DialogTitle>
+          <DialogTitle>{t('contacts.addContactTitle')}</DialogTitle>
           <DialogDescription>
-            Adicione um novo contato para iniciar conversas
+            {t('contacts.addContactDescription')}
           </DialogDescription>
         </DialogHeader>
 

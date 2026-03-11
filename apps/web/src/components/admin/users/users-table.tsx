@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,7 +14,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@/components/houston';
-import type { User, UserRole } from '../../../services/types';
+import type { User, UserRole } from '@/services/types';
 
 const MoreVerticalIcon = () => (
   <svg
@@ -113,12 +114,12 @@ export interface UsersTableProps {
   onDeactivate: (user: UserWithRelations) => void;
 }
 
-const ROLE_LABELS: Record<UserRole, string> = {
-  administrador: 'Administrador',
-  moderador: 'Moderador',
-  gestor: 'Gestor',
-  coordenador: 'Coordenador',
-  escalista: 'Escalista',
+const ROLE_KEYS: Record<UserRole, string> = {
+  administrador: 'administrator',
+  moderador: 'moderator',
+  gestor: 'manager',
+  coordenador: 'coordinator',
+  escalista: 'scheduler',
 };
 
 export function UsersTable({
@@ -134,10 +135,15 @@ export function UsersTable({
   onActivate,
   onDeactivate,
 }: UsersTableProps) {
+  const t = useTranslations('Admin.users');
+  const tRoles = useTranslations('Common.roles');
+  const tCommon = useTranslations('Common.actions');
+  const tStatus = useTranslations('Common.status');
+
   const columns: ColumnDef<UserWithRelations>[] = [
     {
       id: 'name',
-      header: 'Nome',
+      header: t('table.name'),
       accessorKey: 'name',
       sortable: true,
     },
@@ -149,18 +155,18 @@ export function UsersTable({
     },
     {
       id: 'role',
-      header: 'Funcao',
+      header: t('table.role'),
       accessorKey: 'role',
       sortable: true,
       cell: (row) => (
         <span className="px-2 py-1 rounded-full text-xs bg-primary-100 text-primary-700">
-          {ROLE_LABELS[row.role]}
+          {tRoles(ROLE_KEYS[row.role])}
         </span>
       ),
     },
     {
       id: 'grupos',
-      header: 'Grupos',
+      header: t('table.groups'),
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.gruposNomes && row.gruposNomes.length > 0 ? (
@@ -185,14 +191,14 @@ export function UsersTable({
       sortable: true,
       cell: (row) => (
         <StatusBadge
-          status={row.ativo ? 'Ativo' : 'Inativo'}
+          status={row.ativo ? tStatus('active') : tStatus('inactive')}
           variant={row.ativo ? 'success' : 'error'}
         />
       ),
     },
     {
       id: 'acoes',
-      header: 'Acoes',
+      header: t('table.actions'),
       cell: (row) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -203,17 +209,17 @@ export function UsersTable({
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(row)}>
               <EditIcon />
-              Editar
+              {tCommon('edit')}
             </DropdownMenuItem>
             {row.ativo ? (
               <DropdownMenuItem onClick={() => onDeactivate(row)}>
                 <XIcon />
-                Desativar
+                {tCommon('deactivate')}
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem onClick={() => onActivate(row)}>
                 <CheckIcon />
-                Ativar
+                {tCommon('activate')}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
@@ -221,7 +227,7 @@ export function UsersTable({
               className="text-red-600"
             >
               <TrashIcon />
-              Deletar
+              {tCommon('delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -241,7 +247,7 @@ export function UsersTable({
         totalCount,
       }}
       onPageChange={onPageChange}
-      emptyMessage="Nenhum usuario encontrado"
+      emptyMessage={t('noUsers')}
     />
   );
 }

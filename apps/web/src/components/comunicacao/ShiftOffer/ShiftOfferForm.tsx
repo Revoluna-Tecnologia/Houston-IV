@@ -10,11 +10,12 @@
  */
 
 import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import type { CreateShiftOfferDto } from '../../../services/comunicacao/types';
+import type { CreateShiftOfferDto } from '@/services/comunicacao/types';
 
 export interface ShiftOfferFormProps {
   conversationId: string;
@@ -44,6 +45,8 @@ export function ShiftOfferForm({
   onCancel,
   className,
 }: ShiftOfferFormProps) {
+  const t = useTranslations('Comunicacao');
+  const tActions = useTranslations('Common.actions');
   const [expiresInHours, setExpiresInHours] = useState('24');
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +57,7 @@ export function ShiftOfferForm({
 
       const hours = parseInt(expiresInHours, 10);
       if (isNaN(hours) || hours < 1 || hours > 168) {
-        setError('Validade deve ser entre 1 e 168 horas (7 dias)');
+        setError(t('shiftOffer.validationHours'));
         return;
       }
 
@@ -66,10 +69,10 @@ export function ShiftOfferForm({
           expiresInHours: hours,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao enviar oferta');
+        setError(err instanceof Error ? err.message : t('shiftOffer.sendError'));
       }
     },
-    [conversationId, vagaId, recipientMedicoId, expiresInHours, onSubmit]
+    [conversationId, vagaId, recipientMedicoId, expiresInHours, onSubmit, t]
   );
 
   const formatCurrency = (value: number): string => {
@@ -84,32 +87,32 @@ export function ShiftOfferForm({
       {/* Vaga Info */}
       {vagaInfo && (
         <div className="rounded-lg bg-muted p-4 space-y-2">
-          <p className="font-medium">Detalhes da Vaga</p>
+          <p className="font-medium">{t('shiftOffer.vagaDetails')}</p>
           {vagaInfo.hospital && (
             <p className="text-sm">
-              <span className="text-muted-foreground">Hospital:</span> {vagaInfo.hospital}
+              <span className="text-muted-foreground">{t('shiftOffer.hospital')}:</span> {vagaInfo.hospital}
             </p>
           )}
           {vagaInfo.setor && (
             <p className="text-sm">
-              <span className="text-muted-foreground">Setor:</span> {vagaInfo.setor}
+              <span className="text-muted-foreground">{t('shiftOffer.sector')}:</span> {vagaInfo.setor}
             </p>
           )}
           {vagaInfo.data && (
             <p className="text-sm">
-              <span className="text-muted-foreground">Data:</span>{' '}
+              <span className="text-muted-foreground">{t('shiftOffer.date')}:</span>{' '}
               {new Date(vagaInfo.data).toLocaleDateString('pt-BR')}
             </p>
           )}
           {vagaInfo.horaInicio && vagaInfo.horaFim && (
             <p className="text-sm">
-              <span className="text-muted-foreground">Horário:</span>{' '}
+              <span className="text-muted-foreground">{t('shiftOffer.schedule')}:</span>{' '}
               {vagaInfo.horaInicio} - {vagaInfo.horaFim}
             </p>
           )}
           {vagaInfo.valor !== undefined && (
             <p className="text-sm font-medium text-green-600">
-              Valor: {formatCurrency(vagaInfo.valor)}
+              {t('shiftOffer.value')}: {formatCurrency(vagaInfo.valor)}
             </p>
           )}
         </div>
@@ -117,7 +120,7 @@ export function ShiftOfferForm({
 
       {/* Expiration */}
       <div className="space-y-2">
-        <Label htmlFor="expires">Validade da oferta (horas)</Label>
+        <Label htmlFor="expires">{t('shiftOffer.expirationLabel')}</Label>
         <Input
           id="expires"
           type="number"
@@ -128,7 +131,7 @@ export function ShiftOfferForm({
           disabled={isSubmitting}
         />
         <p className="text-xs text-muted-foreground">
-          A oferta expira automaticamente após esse período
+          {t('shiftOffer.expirationHint')}
         </p>
       </div>
 
@@ -145,10 +148,10 @@ export function ShiftOfferForm({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Cancelar
+          {tActions('cancel')}
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Enviando...' : 'Enviar oferta'}
+          {isSubmitting ? t('shiftOffer.sending') : t('shiftOffer.sendOffer')}
         </Button>
       </div>
     </form>

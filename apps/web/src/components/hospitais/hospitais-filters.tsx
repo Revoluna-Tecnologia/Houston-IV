@@ -1,45 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 
 const SearchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="h-4 w-4"
-  >
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 );
 
 const XIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="h-4 w-4"
-  >
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
@@ -57,23 +34,12 @@ export interface HospitaisFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'ativo', label: 'Ativos' },
-  { value: 'inativo', label: 'Inativos' },
-];
-
-export function HospitaisFilters({
-  grupos,
-  value,
-  onChange,
-  isLoading,
-}: HospitaisFiltersProps) {
+export function HospitaisFilters({ grupos, value, onChange, isLoading }: HospitaisFiltersProps) {
+  const t = useTranslations('Hospitais.filters');
+  const tCommon = useTranslations('Common');
   const [localValue, setLocalValue] = useState<HospitaisFiltersValue>(value);
 
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+  useEffect(() => { setLocalValue(value); }, [value]);
 
   const handleChange = (key: keyof HospitaisFiltersValue, newValue: unknown) => {
     const updated = { ...localValue, [key]: newValue };
@@ -82,80 +48,42 @@ export function HospitaisFilters({
   };
 
   const handleClear = () => {
-    const cleared: HospitaisFiltersValue = {
-      grupoId: 'all',
-      cidade: '',
-      status: 'all',
-      search: '',
-    };
+    const cleared: HospitaisFiltersValue = { grupoId: 'all', cidade: '', status: 'all', search: '' };
     setLocalValue(cleared);
     onChange(cleared);
   };
 
-  const hasFilters =
-    localValue.grupoId !== 'all' ||
-    localValue.cidade !== '' ||
-    localValue.status !== 'all' ||
-    localValue.search !== '';
+  const hasFilters = localValue.grupoId !== 'all' || localValue.cidade !== '' || localValue.status !== 'all' || localValue.search !== '';
 
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg border bg-background p-4">
-      <Select
-        value={localValue.grupoId}
-        onValueChange={(v) => handleChange('grupoId', v)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Grupo" />
-        </SelectTrigger>
+      <Select value={localValue.grupoId} onValueChange={(v) => handleChange('grupoId', v)}>
+        <SelectTrigger className="w-[180px]"><SelectValue placeholder={t('group')} /></SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os grupos</SelectItem>
-          {grupos.map((grupo) => (
-            <SelectItem key={grupo.id} value={grupo.id}>
-              {grupo.nome}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{t('allGroups')}</SelectItem>
+          {grupos.map((grupo) => (<SelectItem key={grupo.id} value={grupo.id}>{grupo.nome}</SelectItem>))}
         </SelectContent>
       </Select>
 
-      <Input
-        placeholder="Filtrar por cidade..."
-        value={localValue.cidade}
-        onChange={(e) => handleChange('cidade', e.target.value)}
-        className="w-[180px]"
-      />
+      <Input placeholder={t('cityPlaceholder')} value={localValue.cidade} onChange={(e) => handleChange('cidade', e.target.value)} className="w-[180px]" />
 
-      <Select
-        value={localValue.status}
-        onValueChange={(v) => handleChange('status', v)}
-      >
-        <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
+      <Select value={localValue.status} onValueChange={(v) => handleChange('status', v)}>
+        <SelectTrigger className="w-[150px]"><SelectValue placeholder={t('status')} /></SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tCommon('status.all')}</SelectItem>
+          <SelectItem value="ativo">{tCommon('status.active')}</SelectItem>
+          <SelectItem value="inativo">{tCommon('status.inactive')}</SelectItem>
         </SelectContent>
       </Select>
 
       <div className="relative flex-1 min-w-[200px]">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <SearchIcon />
-        </div>
-        <Input
-          placeholder="Buscar por nome, CNPJ..."
-          value={localValue.search}
-          onChange={(e) => handleChange('search', e.target.value)}
-          className="pl-9"
-        />
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></div>
+        <Input placeholder={t('searchPlaceholder')} value={localValue.search} onChange={(e) => handleChange('search', e.target.value)} className="pl-9" />
       </div>
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
-          <XIcon />
-          Limpar filtros
+          <XIcon />{tCommon('actions.clearFilters')}
         </Button>
       )}
     </div>

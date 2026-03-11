@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -62,14 +63,6 @@ export interface VagasFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todas' },
-  { value: 'aberta', label: 'Abertas' },
-  { value: 'anunciada', label: 'Anunciadas' },
-  { value: 'fechada', label: 'Fechadas' },
-  { value: 'cancelada', label: 'Canceladas' },
-];
-
 export function VagasFilters({
   hospitals,
   setores,
@@ -77,6 +70,9 @@ export function VagasFilters({
   onChange,
   isLoading,
 }: VagasFiltersProps) {
+  const t = useTranslations('Vagas.filters');
+  const tStatus = useTranslations('Vagas.status');
+  const tCommon = useTranslations('Common.actions');
   const [localValue, setLocalValue] = useState<VagasFiltersValue>(value);
 
   useEffect(() => {
@@ -122,14 +118,14 @@ export function VagasFilters({
         onValueChange={(v) => handleChange('status', v)}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{t('allStatus')}</SelectItem>
+          <SelectItem value="aberta">{tStatus('open')}</SelectItem>
+          <SelectItem value="anunciada">{tStatus('announced')}</SelectItem>
+          <SelectItem value="fechada">{tStatus('closed')}</SelectItem>
+          <SelectItem value="cancelada">{tStatus('cancelled')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -138,10 +134,10 @@ export function VagasFilters({
         onValueChange={(v) => handleChange('hospitalId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Hospital" />
+          <SelectValue placeholder={t('hospital')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os hospitais</SelectItem>
+          <SelectItem value="all">{t('allHospitals')}</SelectItem>
           {hospitals.map((hospital) => (
             <SelectItem key={hospital.id} value={hospital.id}>
               {hospital.nome}
@@ -156,10 +152,10 @@ export function VagasFilters({
         disabled={!localValue.hospitalId || localValue.hospitalId === 'all'}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Setor" />
+          <SelectValue placeholder={t('sector')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os setores</SelectItem>
+          <SelectItem value="all">{t('allSectors')}</SelectItem>
           {filteredSetores.map((setor) => (
             <SelectItem key={setor.id} value={setor.id}>
               {setor.nome}
@@ -171,7 +167,7 @@ export function VagasFilters({
       <DateRangePicker
         value={localValue.dateRange}
         onChange={(range) => handleChange('dateRange', range)}
-        placeholder="Periodo"
+        placeholder={t('period')}
         className="w-[280px]"
       />
 
@@ -180,7 +176,7 @@ export function VagasFilters({
           <SearchIcon />
         </div>
         <Input
-          placeholder="Buscar por observacoes..."
+          placeholder={t('searchPlaceholder')}
           value={localValue.search}
           onChange={(e) => handleChange('search', e.target.value)}
           className="pl-9"
@@ -190,7 +186,7 @@ export function VagasFilters({
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('clearFilters')}
         </Button>
       )}
     </div>

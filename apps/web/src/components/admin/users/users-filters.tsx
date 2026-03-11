@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -10,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { UserRole } from '../../../services/types';
+import type { UserRole } from '@/services/types';
 
 const SearchIcon = () => (
   <svg
@@ -58,27 +59,16 @@ export interface UsersFiltersProps {
   isLoading?: boolean;
 }
 
-const ROLE_OPTIONS = [
-  { value: 'all', label: 'Todas as funcoes' },
-  { value: 'administrador', label: 'Administrador' },
-  { value: 'moderador', label: 'Moderador' },
-  { value: 'gestor', label: 'Gestor' },
-  { value: 'coordenador', label: 'Coordenador' },
-  { value: 'escalista', label: 'Escalista' },
-];
-
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: 'ativo', label: 'Ativos' },
-  { value: 'inativo', label: 'Inativos' },
-];
-
 export function UsersFilters({
   grupos,
   value,
   onChange,
   isLoading,
 }: UsersFiltersProps) {
+  const t = useTranslations('Admin.users.filters');
+  const tRoles = useTranslations('Common.roles');
+  const tStatus = useTranslations('Common.status');
+  const tCommon = useTranslations('Common.actions');
   const [localValue, setLocalValue] = useState<UsersFiltersValue>(value);
 
   useEffect(() => {
@@ -115,14 +105,15 @@ export function UsersFilters({
         onValueChange={(v) => handleChange('role', v)}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Funcao" />
+          <SelectValue placeholder={t('role')} />
         </SelectTrigger>
         <SelectContent>
-          {ROLE_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tRoles('allRoles')}</SelectItem>
+          <SelectItem value="administrador">{tRoles('administrator')}</SelectItem>
+          <SelectItem value="moderador">{tRoles('moderator')}</SelectItem>
+          <SelectItem value="gestor">{tRoles('manager')}</SelectItem>
+          <SelectItem value="coordenador">{tRoles('coordinator')}</SelectItem>
+          <SelectItem value="escalista">{tRoles('scheduler')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -131,10 +122,10 @@ export function UsersFilters({
         onValueChange={(v) => handleChange('grupoId', v)}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Grupo" />
+          <SelectValue placeholder={t('group')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os grupos</SelectItem>
+          <SelectItem value="all">{t('allGroups')}</SelectItem>
           {grupos.map((grupo) => (
             <SelectItem key={grupo.id} value={grupo.id}>
               {grupo.nome}
@@ -151,11 +142,9 @@ export function UsersFilters({
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{tStatus('all')}</SelectItem>
+          <SelectItem value="ativo">{tStatus('active')}</SelectItem>
+          <SelectItem value="inativo">{tStatus('inactive')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -164,7 +153,7 @@ export function UsersFilters({
           <SearchIcon />
         </div>
         <Input
-          placeholder="Buscar por nome, email..."
+          placeholder={t('searchPlaceholder')}
           value={localValue.search}
           onChange={(e) => handleChange('search', e.target.value)}
           className="pl-9"
@@ -174,7 +163,7 @@ export function UsersFilters({
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('clearFilters')}
         </Button>
       )}
     </div>

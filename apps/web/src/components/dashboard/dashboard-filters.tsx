@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -30,6 +31,8 @@ export function DashboardFilters({
   onChange,
   isLoading,
 }: DashboardFiltersProps) {
+  const t = useTranslations('Dashboard.filters');
+  const tActions = useTranslations('Common.actions');
   const [localMonth, setLocalMonth] = useState<Date | undefined>(value.month);
   const [localHospitalId, setLocalHospitalId] = useState<string>(
     value.hospitalIds.length > 0 ? value.hospitalIds[0] : 'all'
@@ -60,22 +63,22 @@ export function DashboardFilters({
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg border bg-background p-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-500">Periodo:</span>
+        <span className="text-sm text-gray-500">{t('period')}</span>
         <MonthPicker
           value={localMonth}
           onChange={setLocalMonth}
-          placeholder="Selecione o mes"
+          placeholder={t('selectMonth')}
         />
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-500">Hospital:</span>
+        <span className="text-sm text-gray-500">{t('hospital')}</span>
         <Select value={localHospitalId} onValueChange={setLocalHospitalId}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Todos os hospitais" />
+            <SelectValue placeholder={t('allHospitals')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos os hospitais</SelectItem>
+            <SelectItem value="all">{t('allHospitals')}</SelectItem>
             {hospitals.map((hospital) => (
               <SelectItem key={hospital.id} value={hospital.id}>
                 {hospital.nome}
@@ -87,10 +90,10 @@ export function DashboardFilters({
 
       <div className="flex items-center gap-2 ml-auto">
         <Button variant="outline" onClick={handleReset} disabled={isLoading}>
-          Limpar
+          {tActions('clear')}
         </Button>
         <Button onClick={handleApply} disabled={isLoading}>
-          Aplicar
+          {tActions('apply')}
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { DateRangePicker } from '@/components/houston';
 import type { DateRange } from 'react-day-picker';
-import type { CandidaturaStatus, Vaga, Medico } from '../../services/types';
+import type { CandidaturaStatus, Vaga, Medico } from '@/services/types';
 
 const _SearchIcon = () => (
   <svg
@@ -60,13 +61,6 @@ export interface CandidaturasFiltersProps {
   isLoading?: boolean;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todas' },
-  { value: 'pendente', label: 'Pendentes' },
-  { value: 'aprovada', label: 'Aprovadas' },
-  { value: 'rejeitada', label: 'Rejeitadas' },
-];
-
 export const CandidaturasFilters = memo(function CandidaturasFilters({
   vagas,
   medicos,
@@ -74,6 +68,8 @@ export const CandidaturasFilters = memo(function CandidaturasFilters({
   onChange,
   isLoading,
 }: CandidaturasFiltersProps) {
+  const t = useTranslations('Candidaturas.filters');
+  const tCommon = useTranslations('Common.actions');
   const [localValue, setLocalValue] = useState<CandidaturasFiltersValue>(value);
 
   useEffect(() => {
@@ -110,14 +106,13 @@ export const CandidaturasFilters = memo(function CandidaturasFilters({
         onValueChange={(v) => handleChange('status', v)}
       >
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          {STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="all">{t('allStatus')}</SelectItem>
+          <SelectItem value="pendente">{t('pending')}</SelectItem>
+          <SelectItem value="aprovada">{t('approved')}</SelectItem>
+          <SelectItem value="rejeitada">{t('rejected')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -126,10 +121,10 @@ export const CandidaturasFilters = memo(function CandidaturasFilters({
         onValueChange={(v) => handleChange('vagaId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Vaga" />
+          <SelectValue placeholder={t('vaga')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todas as vagas</SelectItem>
+          <SelectItem value="all">{t('allVagas')}</SelectItem>
           {vagas.map((vaga) => (
             <SelectItem key={vaga.id} value={vaga.id}>
               {vaga.horaInicio} - {vaga.horaFim}
@@ -143,10 +138,10 @@ export const CandidaturasFilters = memo(function CandidaturasFilters({
         onValueChange={(v) => handleChange('medicoId', v)}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Medico" />
+          <SelectValue placeholder={t('medico')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os medicos</SelectItem>
+          <SelectItem value="all">{t('allMedicos')}</SelectItem>
           {medicos.map((medico) => (
             <SelectItem key={medico.id} value={medico.id}>
               {medico.nome} - {medico.crm}
@@ -158,14 +153,14 @@ export const CandidaturasFilters = memo(function CandidaturasFilters({
       <DateRangePicker
         value={localValue.dateRange}
         onChange={(range) => handleChange('dateRange', range)}
-        placeholder="Periodo"
+        placeholder={t('period')}
         className="w-[280px]"
       />
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear} disabled={isLoading}>
           <XIcon />
-          Limpar filtros
+          {tCommon('clearFilters')}
         </Button>
       )}
     </div>

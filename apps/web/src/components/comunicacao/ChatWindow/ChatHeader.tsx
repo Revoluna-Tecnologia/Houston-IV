@@ -7,6 +7,7 @@
  */
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import type { Conversation, ConversationType } from '../../../services/comunicacao/types';
+import type { Conversation, ConversationType } from '@/services/comunicacao/types';
 
 const ArrowLeftIcon = () => (
   <svg
@@ -104,6 +105,8 @@ export function ChatHeader({
   showBackButton = false,
   className,
 }: ChatHeaderProps) {
+  const t = useTranslations('Comunicacao');
+
   const displayName = useMemo(() => {
     if (conversation.name) {
       return conversation.name;
@@ -115,12 +118,12 @@ export function ChatHeader({
         otherParticipant?.user?.name ||
         otherParticipant?.medico?.nome ||
         otherParticipant?.phoneNumber ||
-        'Conversa'
+        t('chat.conversation')
       );
     }
 
-    return 'Grupo';
-  }, [conversation]);
+    return t('chat.group');
+  }, [conversation, t]);
 
   const participantCount = conversation.participants?.length || 0;
   const isGroup = conversation.type === ('group' as ConversationType);
@@ -135,7 +138,7 @@ export function ChatHeader({
       {showBackButton && (
         <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0 md:hidden">
           <ArrowLeftIcon />
-          <span className="sr-only">Voltar</span>
+          <span className="sr-only">{t('chat.back')}</span>
         </Button>
       )}
 
@@ -154,7 +157,7 @@ export function ChatHeader({
         <h3 className="truncate font-semibold">{displayName}</h3>
         {isGroup && participantCount > 0 && (
           <p className="text-xs text-muted-foreground">
-            {participantCount} participante{participantCount !== 1 ? 's' : ''}
+            {t('chat.participantCount', { count: participantCount })}
           </p>
         )}
       </div>
@@ -164,25 +167,25 @@ export function ChatHeader({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
             <MoreVerticalIcon />
-            <span className="sr-only">Opcoes</span>
+            <span className="sr-only">{t('chat.options')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {isGroup && onViewParticipants && (
             <DropdownMenuItem onClick={onViewParticipants}>
-              Ver participantes
+              {t('chat.viewParticipants')}
             </DropdownMenuItem>
           )}
           {onArchive && (
             <DropdownMenuItem onClick={() => onArchive(!conversation.isArchived)}>
-              {conversation.isArchived ? 'Desarquivar' : 'Arquivar'}
+              {conversation.isArchived ? t('chat.unarchive') : t('chat.archive')}
             </DropdownMenuItem>
           )}
           {onDelete && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onDelete} className="text-destructive">
-                Excluir conversa
+                {t('chat.deleteConversation')}
               </DropdownMenuItem>
             </>
           )}

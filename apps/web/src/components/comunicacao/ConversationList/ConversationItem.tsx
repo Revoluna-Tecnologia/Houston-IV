@@ -7,10 +7,11 @@
  */
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import type { Conversation, ConversationType } from '../../../services/comunicacao/types';
+import type { Conversation, ConversationType } from '@/services/comunicacao/types';
 
 const UserIcon = () => (
   <svg
@@ -74,6 +75,8 @@ export function ConversationItem({
   isSelected,
   onClick,
 }: ConversationItemProps) {
+  const t = useTranslations('Comunicacao');
+
   const displayName = useMemo(() => {
     if (conversation.name) {
       return conversation.name;
@@ -86,12 +89,12 @@ export function ConversationItem({
         otherParticipant?.user?.name ||
         otherParticipant?.medico?.nome ||
         otherParticipant?.phoneNumber ||
-        'Conversa'
+        t('chat.conversation')
       );
     }
 
-    return 'Grupo';
-  }, [conversation]);
+    return t('chat.group');
+  }, [conversation, t]);
 
   const formattedTime = useMemo(() => {
     if (!conversation.lastMessageAt) return null;
@@ -160,7 +163,7 @@ export function ConversationItem({
               hasUnread ? 'text-foreground' : 'text-muted-foreground'
             )}
           >
-            {conversation.lastMessagePreview || 'Nenhuma mensagem'}
+            {conversation.lastMessagePreview || t('conversations.noMessages')}
           </p>
           {hasUnread && (
             <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,17 +24,19 @@ const UF_OPTIONS = [
   'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
 ];
 
-const createMedicoSchema = z.object({
-  nome: z.string().min(3, 'Nome deve ter no minimo 3 caracteres'),
-  crm: z.string().min(4, 'CRM deve ter no minimo 4 caracteres'),
-  crmUf: z.string().min(2, 'UF e obrigatoria'),
-  cpf: z.string().optional(),
-  email: z.string().email('Email invalido').optional().or(z.literal('')),
-  telefone: z.string().optional(),
-  especialidadeId: z.string().min(1, 'Especialidade e obrigatoria'),
-});
+function createMedicoSchema(t: (key: string) => string) {
+  return z.object({
+    nome: z.string().min(3, t('nameMin')),
+    crm: z.string().min(4, t('crmMin')),
+    crmUf: z.string().min(2, t('ufRequired')),
+    cpf: z.string().optional(),
+    email: z.string().email(t('invalidEmail')).optional().or(z.literal('')),
+    telefone: z.string().optional(),
+    especialidadeId: z.string().min(1, t('specialtyRequired')),
+  });
+}
 
-type CreateMedicoFormData = z.infer<typeof createMedicoSchema>;
+type CreateMedicoFormData = z.infer<ReturnType<typeof createMedicoSchema>>;
 
 export interface CreateMedicoModalProps {
   open: boolean;
@@ -48,7 +51,12 @@ export function CreateMedicoModal({
   onSubmit,
   especialidades,
 }: CreateMedicoModalProps) {
+  const t = useTranslations('Medicos.form');
+  const tValidation = useTranslations('Medicos.validation');
+  const tCommon = useTranslations('Common.actions');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(() => createMedicoSchema(tValidation), [tValidation]);
 
   const {
     register,
@@ -58,7 +66,7 @@ export function CreateMedicoModal({
     reset,
     formState: { errors },
   } = useForm<CreateMedicoFormData>({
-    resolver: zodResolver(createMedicoSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       nome: '',
       crm: '',
@@ -136,126 +144,68 @@ export function CreateMedicoModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Novo Medico"
-      description="Preencha os dados para cadastrar um novo medico"
+      title={t('createTitle')}
+      description={t('createDescription')}
       size="lg"
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome">Nome Completo *</Label>
-          <Input
-            id="nome"
-            placeholder="Nome do medico"
-            {...register('nome')}
-          />
-          {errors.nome && (
-            <p className="text-sm text-red-500">{errors.nome.message}</p>
-          )}
+          <Label htmlFor="nome">{t('fullName')}</Label>
+          <Input id="nome" placeholder={t('namePlaceholder')} {...register('nome')} />
+          {errors.nome && <p className="text-sm text-red-500">{errors.nome.message}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="crm">CRM *</Label>
-            <Input
-              id="crm"
-              placeholder="Numero do CRM"
-              {...register('crm')}
-            />
-            {errors.crm && (
-              <p className="text-sm text-red-500">{errors.crm.message}</p>
-            )}
+            <Label htmlFor="crm">{t('crm')}</Label>
+            <Input id="crm" placeholder={t('crmPlaceholder')} {...register('crm')} />
+            {errors.crm && <p className="text-sm text-red-500">{errors.crm.message}</p>}
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="crmUf">UF do CRM *</Label>
-            <Select
-              value={watch('crmUf')}
-              onValueChange={(value) => setValue('crmUf', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a UF" />
-              </SelectTrigger>
+            <Label htmlFor="crmUf">{t('crmUf')}</Label>
+            <Select value={watch('crmUf')} onValueChange={(value) => setValue('crmUf', value)}>
+              <SelectTrigger><SelectValue placeholder={t('selectUf')} /></SelectTrigger>
               <SelectContent>
-                {UF_OPTIONS.map((uf) => (
-                  <SelectItem key={uf} value={uf}>
-                    {uf}
-                  </SelectItem>
-                ))}
+                {UF_OPTIONS.map((uf) => (<SelectItem key={uf} value={uf}>{uf}</SelectItem>))}
               </SelectContent>
             </Select>
-            {errors.crmUf && (
-              <p className="text-sm text-red-500">{errors.crmUf.message}</p>
-            )}
+            {errors.crmUf && <p className="text-sm text-red-500">{errors.crmUf.message}</p>}
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="cpf">CPF</Label>
-          <Input
-            id="cpf"
-            placeholder="000.000.000-00"
-            value={watchedCpf}
-            onChange={handleCpfChange}
-          />
-          {errors.cpf && (
-            <p className="text-sm text-red-500">{errors.cpf.message}</p>
-          )}
+          <Input id="cpf" placeholder="000.000.000-00" value={watchedCpf} onChange={handleCpfChange} />
+          {errors.cpf && <p className="text-sm text-red-500">{errors.cpf.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="especialidadeId">Especialidade *</Label>
-          <Select
-            value={watch('especialidadeId')}
-            onValueChange={(value) => setValue('especialidadeId', value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione a especialidade" />
-            </SelectTrigger>
+          <Label htmlFor="especialidadeId">{t('specialty')}</Label>
+          <Select value={watch('especialidadeId')} onValueChange={(value) => setValue('especialidadeId', value)}>
+            <SelectTrigger><SelectValue placeholder={t('selectSpecialty')} /></SelectTrigger>
             <SelectContent>
-              {especialidades.map((esp) => (
-                <SelectItem key={esp.id} value={esp.id}>
-                  {esp.nome}
-                </SelectItem>
-              ))}
+              {especialidades.map((esp) => (<SelectItem key={esp.id} value={esp.id}>{esp.nome}</SelectItem>))}
             </SelectContent>
           </Select>
-          {errors.especialidadeId && (
-            <p className="text-sm text-red-500">{errors.especialidadeId.message}</p>
-          )}
+          {errors.especialidadeId && <p className="text-sm text-red-500">{errors.especialidadeId.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="email@exemplo.com"
-            {...register('email')}
-          />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
-          )}
+          <Label htmlFor="email">{tCommon('search') ? 'Email' : 'Email'}</Label>
+          <Input id="email" type="email" placeholder={t('emailPlaceholder')} {...register('email')} />
+          {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="telefone">Telefone</Label>
-          <Input
-            id="telefone"
-            placeholder="(00) 00000-0000"
-            value={watchedTelefone}
-            onChange={handlePhoneChange}
-          />
-          {errors.telefone && (
-            <p className="text-sm text-red-500">{errors.telefone.message}</p>
-          )}
+          <Label htmlFor="telefone">{t('phone')}</Label>
+          <Input id="telefone" placeholder="(00) 00000-0000" value={watchedTelefone} onChange={handlePhoneChange} />
+          {errors.telefone && <p className="text-sm text-red-500">{errors.telefone.message}</p>}
         </div>
 
         <div className="flex justify-end gap-3 pt-4">
-          <Button type="button" variant="outline" onClick={handleClose}>
-            Cancelar
-          </Button>
+          <Button type="button" variant="outline" onClick={handleClose}>{tCommon('cancel')}</Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar Medico'}
+            {isSubmitting ? tCommon('saving') : t('saveButton')}
           </Button>
         </div>
       </form>

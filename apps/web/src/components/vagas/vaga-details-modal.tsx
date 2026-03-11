@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Modal, StatusBadge, type StatusBadgeVariant } from '@/components/houston';
 import type { Vaga, VagaStatus, Hospital, Candidatura } from '../../services/types';
@@ -17,13 +18,6 @@ export interface VagaDetailsModalProps {
   onEdit: () => void;
   onCancel: () => void;
 }
-
-const STATUS_LABELS: Record<VagaStatus, string> = {
-  aberta: 'Aberta',
-  anunciada: 'Anunciada',
-  fechada: 'Fechada',
-  cancelada: 'Cancelada',
-};
 
 const STATUS_VARIANTS: Record<VagaStatus, StatusBadgeVariant> = {
   aberta: 'warning',
@@ -43,7 +37,18 @@ export function VagaDetailsModal({
   onEdit,
   onCancel,
 }: VagaDetailsModalProps) {
+  const t = useTranslations('Vagas');
+  const tCommon = useTranslations('Common.actions');
+  const tCandidaturas = useTranslations('Candidaturas.status');
+
   if (!vaga) return null;
+
+  const STATUS_LABELS: Record<VagaStatus, string> = {
+    aberta: t('status.open'),
+    anunciada: t('status.announced'),
+    fechada: t('status.closed'),
+    cancelada: t('status.cancelled'),
+  };
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -61,7 +66,7 @@ export function VagaDetailsModal({
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title="Detalhes da Vaga"
+      title={t('details.title')}
       size="lg"
     >
       <div className="space-y-6">
@@ -77,50 +82,50 @@ export function VagaDetailsModal({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">Data</p>
+            <p className="text-sm text-gray-500">{t('details.date')}</p>
             <p className="font-medium">{formatDate(vaga.data)}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Horario</p>
+            <p className="text-sm text-gray-500">{t('details.schedule')}</p>
             <p className="font-medium">{vaga.horaInicio} - {vaga.horaFim}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">Hospital</p>
+            <p className="text-sm text-gray-500">{t('details.hospital')}</p>
             <p className="font-medium">{hospital?.nome || '-'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Setor</p>
+            <p className="text-sm text-gray-500">{t('details.sector')}</p>
             <p className="font-medium">{setorNome || '-'}</p>
           </div>
         </div>
 
         <div>
-          <p className="text-sm text-gray-500">Especialidade</p>
+          <p className="text-sm text-gray-500">{t('details.specialty')}</p>
           <p className="font-medium">{especialidadeNome || '-'}</p>
         </div>
 
         {vaga.observacoes && (
           <div>
-            <p className="text-sm text-gray-500">Observacoes</p>
+            <p className="text-sm text-gray-500">{t('details.notes')}</p>
             <p className="mt-1 rounded-lg bg-gray-50 p-3 text-sm">{vaga.observacoes}</p>
           </div>
         )}
 
         {candidaturas.length > 0 && (
           <div>
-            <p className="mb-2 text-sm text-gray-500">Candidaturas ({candidaturas.length})</p>
+            <p className="mb-2 text-sm text-gray-500">{t('details.candidaturas', { count: candidaturas.length })}</p>
             <div className="space-y-2">
               {candidaturas.map((candidatura) => (
                 <div
                   key={candidatura.id}
                   className="flex items-center justify-between rounded-lg border p-3"
                 >
-                  <span className="text-sm">Medico ID: {candidatura.medicoId}</span>
+                  <span className="text-sm">{t('details.medicoId', { id: candidatura.medicoId })}</span>
                   <StatusBadge
-                    status={candidatura.status === 'aprovada' ? 'Aprovada' : candidatura.status === 'rejeitada' ? 'Rejeitada' : 'Pendente'}
+                    status={candidatura.status === 'aprovada' ? tCandidaturas('approved') : candidatura.status === 'rejeitada' ? tCandidaturas('rejected') : tCandidaturas('pending')}
                     variant={candidatura.status === 'aprovada' ? 'success' : candidatura.status === 'rejeitada' ? 'error' : 'pending'}
                   />
                 </div>
@@ -132,16 +137,16 @@ export function VagaDetailsModal({
         <div className="flex justify-end gap-3 border-t pt-4">
           {canCancel && (
             <Button variant="destructive" onClick={onCancel}>
-              Cancelar Vaga
+              {t('details.cancelVaga')}
             </Button>
           )}
           {canEdit && (
             <Button onClick={onEdit}>
-              Editar
+              {tCommon('edit')}
             </Button>
           )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Fechar
+            {tCommon('close')}
           </Button>
         </div>
       </div>
