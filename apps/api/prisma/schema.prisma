@@ -118,8 +118,9 @@ model User {
   grupoIds      String[]  @map("grupo_ids")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
-  sessions      Session[]
-  accounts      Account[]
+  sessions         Session[]
+  accounts         Account[]
+  chatParticipants ChatParticipant[]
 
   @@map("users")
 }
@@ -443,6 +444,7 @@ model ChatParticipant {
   conversationId String          @map("conversation_id")
   conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   userId         String?         @map("user_id")
+  user           User?           @relation(fields: [userId], references: [id])
   medicoId       String?         @map("medico_id")
   medico         Medico?         @relation(fields: [medicoId], references: [id])
   phoneNumber    String          @map("phone_number")
