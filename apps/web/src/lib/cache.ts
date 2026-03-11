@@ -15,12 +15,12 @@ export type CacheTag = typeof CacheTags[keyof typeof CacheTags];
 
 export function invalidateCache(tag: CacheTag) {
   if (typeof window === 'undefined') {
-    revalidateTag(tag);
+    revalidateTag(tag, 'default');
   }
 }
 
 export function invalidateCacheTags(tags: CacheTag[]) {
   if (typeof window === 'undefined') {
-    tags.forEach(tag => revalidateTag(tag));
+    tags.forEach(tag => revalidateTag(tag, 'default'));
   }
 }

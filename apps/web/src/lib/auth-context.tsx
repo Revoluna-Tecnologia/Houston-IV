@@ -3,18 +3,15 @@
 import {
   createContext,
   useContext,
+  useMemo,
   type ReactNode,
 } from 'react'
 import { useSession, signIn, signOut, signUp } from './auth-client'
+import type { User } from '@/services/types'
+import { UserRole } from '@/services/types'
 
 export interface AuthContextValue {
-  user: {
-    id: string
-    email: string
-    name: string
-    role?: string
-    grupoIds?: string[]
-  } | null
+  user: User | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
@@ -47,16 +44,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     })
   }
 
+  const user = useMemo((): User | null => {
+    if (!session?.user) return null
+    const sessionUser = session.user
+    const role = (sessionUser.role as string) || 'escalista'
+    return {
+      id: sessionUser.id,
+      email: sessionUser.email,
+      name: sessionUser.name,
+      role: role as UserRole,
+      grupoIds: (sessionUser.grupoIds as string[]) || [],
+      ativo: true,
+      createdAt: sessionUser.createdAt ? new Date(sessionUser.createdAt) : new Date(),
+      updatedAt: sessionUser.updatedAt ? new Date(sessionUser.updatedAt) : new Date(),
+    }
+  }, [session?.user])
+
   const value: AuthContextValue = {
-    user: session?.user
-      ? {
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.name,
-          role: session.user.role as string | undefined,
-          grupoIds: session.user.grupoIds as string[] | undefined,
-        }
-      : null,
+    user,
     isAuthenticated: !!session?.user,
     isLoading: isPending,
     login,
