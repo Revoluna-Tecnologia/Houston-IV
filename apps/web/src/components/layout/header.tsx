@@ -1,9 +1,10 @@
 'use client';
 
 import { memo } from 'react';
-import { Menu, Bell, User as UserIcon, Settings, LogOut } from 'lucide-react';
+import { Menu, User as UserIcon, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { NotificationBell } from '@/components/notifications/notification-bell';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -53,10 +54,7 @@ export const Header = memo(function Header({ user, onMenuClick, title }: HeaderP
       <div className="flex-1" />
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="text-gray-500">
-          <Bell className="h-5 w-5" />
-          <span className="sr-only">Notificacoes</span>
-        </Button>
+        <NotificationBell className="text-gray-500" />
 
         {user && (
           <DropdownMenu>
