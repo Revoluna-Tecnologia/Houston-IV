@@ -4,7 +4,7 @@
  * Implementa Strategy Pattern para suporte multi-provider
  */
 
-import { Module, DynamicModule, Provider, Logger } from '@nestjs/common'
+import { Module, DynamicModule, Provider, Logger, forwardRef } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { HttpModule } from '@nestjs/axios'
 import { WhatsAppService } from './whatsapp.service'
@@ -56,6 +56,7 @@ export class WhatsAppModule {
    */
   static forRoot(): DynamicModule {
     return {
+      global: true,
       module: WhatsAppModule,
       imports: [
         ConfigModule,
@@ -64,7 +65,7 @@ export class WhatsAppModule {
           maxRedirects: 5,
         }),
         PrismaModule,
-        InstancesModule,
+        forwardRef(() => InstancesModule),
       ],
       providers: [
         // Providers disponíveis

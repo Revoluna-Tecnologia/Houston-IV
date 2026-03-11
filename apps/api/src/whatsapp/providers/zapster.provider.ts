@@ -40,8 +40,12 @@ export class ZapsterProvider implements IWhatsAppProvider {
     private readonly configService: ConfigService
   ) {
     this.apiUrl = this.configService.get<string>('ZAPSTER_API_URL', 'https://api.zapsterapi.com/v1')
-    this.apiKey = this.configService.getOrThrow<string>('ZAPSTER_API_KEY')
+    this.apiKey = this.configService.get<string>('ZAPSTER_API_KEY', '')
     this.webhookSecret = this.configService.get<string>('ZAPSTER_WEBHOOK_SECRET', '')
+
+    if (!this.apiKey) {
+      this.logger.warn('ZAPSTER_API_KEY not configured — WhatsApp integration disabled')
+    }
   }
 
   private get headers(): Record<string, string> {
