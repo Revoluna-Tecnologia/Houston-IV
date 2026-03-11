@@ -23,6 +23,9 @@ import { CommentsModule } from './tickets/comments/comments.module'
 import { AttachmentsModule } from './tickets/attachments/attachments.module'
 import { KanbanModule } from './kanban/kanban.module'
 import { NotificationsModule } from './notifications/notifications.module'
+import { ComunicacaoModule } from './comunicacao/comunicacao.module'
+import { WhatsAppModule } from './whatsapp/whatsapp.module'
+import { StorageModule } from './storage/storage.module'
 import { AuthController } from './auth/auth.controller'
 
 @Module({
@@ -81,6 +84,9 @@ import { AuthController } from './auth/auth.controller'
     AttachmentsModule,
     KanbanModule,
     NotificationsModule,
+    ComunicacaoModule,
+    WhatsAppModule.forRoot(),
+    StorageModule,
   ],
   controllers: [AuthController],
 })

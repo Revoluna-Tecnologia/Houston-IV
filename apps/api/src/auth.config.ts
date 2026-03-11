@@ -71,7 +71,11 @@ const trustedOrigins = process.env.TRUSTED_ORIGINS
   ? process.env.TRUSTED_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:3000', 'http://localhost:3001']
 
-console.log('[Better Auth] Configured with trustedOrigins:', trustedOrigins)
+// Log apenas em dev para não expor config em produção
+if (process.env.NODE_ENV !== 'production') {
+  const { Logger } = require('@nestjs/common')
+  new Logger('BetterAuth').log(`Configured with trustedOrigins: ${trustedOrigins.join(', ')}`)
+}
 
 export type Session = typeof auth.$Infer.Session
 export type User = typeof auth.$Infer.Session.user
