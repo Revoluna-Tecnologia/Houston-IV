@@ -7,12 +7,6 @@ import { useCallback, useMemo } from 'react'
 import type { User } from '../services/types'
 import { UserRole } from '../services/types'
 
-// #region agent log
-const debugLog = (location: string, message: string, data: object, hypothesisId: string) => {
-  fetch('http://127.0.0.1:7242/ingest/41fda97e-756c-42b1-9a82-abbcc64dfe44',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location,message,data,timestamp:Date.now(),sessionId:'debug-session',hypothesisId})}).catch(()=>{});
-};
-// #endregion
-
 export interface UseAuthReturn {
   user: User | null
   isAuthenticated: boolean
@@ -31,40 +25,20 @@ export function useAuth(): UseAuthReturn {
   const router = useRouter()
 
   const login = useCallback(async (email: string, password: string) => {
-    // #region agent log
-    debugLog('use-auth.ts:login:entry', 'Login started', { email }, 'H2');
-    // #endregion
-    
     const result = await signIn.email({
       email,
       password,
       callbackURL: '/',
     })
 
-    // #region agent log
-    debugLog('use-auth.ts:login:afterSignIn', 'signIn.email completed', { hasError: !!result.error, errorMsg: result.error?.message, hasData: !!result.data }, 'H2');
-    // #endregion
-
     if (result.error) {
       throw new Error(result.error.message || 'Erro ao fazer login')
     }
 
-    // #region agent log
-    debugLog('use-auth.ts:login:beforeRefetch', 'About to refetch session', {}, 'H2');
-    // #endregion
-    
     // Refetch session to update auth state before redirecting
     await refetch()
-    
-    // #region agent log
-    debugLog('use-auth.ts:login:afterRefetch', 'Session refetched, about to redirect', {}, 'H3');
-    // #endregion
-    
+
     router.replace('/')
-    
-    // #region agent log
-    debugLog('use-auth.ts:login:afterReplace', 'router.replace called', {}, 'H3');
-    // #endregion
   }, [router, refetch])
 
   const logout = useCallback(async () => {
