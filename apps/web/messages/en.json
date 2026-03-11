@@ -1,0 +1,835 @@
+{
+  "Common": {
+    "actions": {
+      "save": "Save",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "confirm": "Confirm",
+      "back": "Back",
+      "search": "Search",
+      "filter": "Filter",
+      "clearFilters": "Clear filters",
+      "clear": "Clear",
+      "apply": "Apply",
+      "close": "Close",
+      "view": "View",
+      "loading": "Loading...",
+      "creating": "Creating...",
+      "sending": "Sending...",
+      "previous": "Previous",
+      "next": "Next",
+      "remove": "Remove",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "refresh": "Refresh",
+      "add": "Add",
+      "send": "Send",
+      "archive": "Archive",
+      "unarchive": "Unarchive",
+      "approve": "Approve",
+      "reject": "Reject",
+      "publish": "Publish",
+      "authorize": "Authorize",
+      "pay": "Pay"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "all": "All",
+      "allFeminine": "All"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "page": "Page {page}",
+      "pageOf": "Page {current} of {total}",
+      "showing": "Showing {from} to {to} of {total} results"
+    },
+    "validation": {
+      "required": "Required field",
+      "invalidEmail": "Invalid email",
+      "minLength": "Minimum of {min} characters",
+      "minValue": "Value must be greater than or equal to {min}",
+      "passwordsDontMatch": "Passwords do not match",
+      "minPassword": "Password must be at least 8 characters"
+    },
+    "emptyState": {
+      "noResults": "No results found"
+    },
+    "dataTable": {
+      "noResults": "No results found",
+      "showing": "Showing {from} to {to} of {total} results",
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {current} of {total}"
+    },
+    "confirm": {
+      "deleteTitle": "Confirm deletion",
+      "deleteDescription": "Are you sure you want to delete? This action cannot be undone.",
+      "irreversible": "This action cannot be undone."
+    },
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status",
+      "actions": "Actions",
+      "date": "Date",
+      "value": "Value",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional notes...",
+      "period": "Period",
+      "group": "Group",
+      "allGroups": "All groups",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "from": "From:",
+      "to": "To:"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "roles": {
+      "administrator": "Administrator",
+      "moderator": "Moderator",
+      "manager": "Manager",
+      "coordinator": "Coordinator",
+      "scheduler": "Scheduler",
+      "allRoles": "All roles"
+    }
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "vagas": "Shifts",
+    "candidaturas": "Applications",
+    "medicos": "Doctors",
+    "hospitais": "Hospitals",
+    "escalistas": "Schedulers",
+    "grades": "Schedules",
+    "pagamentos": "Payments",
+    "comunicacao": "Messaging",
+    "tickets": "Tickets",
+    "users": "Users",
+    "brand": "Houston IV"
+  },
+  "Header": {
+    "openMenu": "Open menu",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Sign out"
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot my password",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "orContinueWith": "or continue with",
+      "resetSuccess": "Your password has been successfully reset. Sign in with your new password."
+    },
+    "loginErrors": {
+      "accessDenied": "Your account is not registered as a scheduler. Contact the administrator.",
+      "pendingApproval": "Your registration is pending approval. You will receive an email once approved.",
+      "inactive": "Your account has been deactivated. Contact the administrator for more information.",
+      "generic": "An error occurred while signing in. Please try again.",
+      "googleError": "Error signing in with Google",
+      "microsoftError": "Error signing in with Microsoft"
+    },
+    "magicLink": {
+      "emailLabel": "Email",
+      "placeholder": "you@email.com",
+      "submit": "Send magic link",
+      "submitting": "Sending...",
+      "enterEmail": "Enter your email to receive the link",
+      "sent": "We sent a link to <strong>{email}</strong>. Check your inbox.",
+      "error": "Error sending magic link",
+      "backToLogin": "Back to sign in"
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "description": "Enter your email and we will send you instructions to reset your password",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "submit": "Send instructions",
+      "submitting": "Sending...",
+      "success": "If the email is registered, you will receive instructions to reset your password.",
+      "error": "An error occurred while sending the email. Please try again.",
+      "backToLogin": "Back to sign in",
+      "validation": {
+        "invalidEmail": "Invalid email"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Enter your new password below",
+      "invalidLinkTitle": "Invalid link",
+      "invalidLinkDescription": "The password reset link is invalid or has expired",
+      "requestNewLink": "Request new link",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "error": "An error occurred while resetting your password. Please try again.",
+      "strength": {
+        "label": "Password strength: ",
+        "veryWeak": "Very weak",
+        "weak": "Weak",
+        "fair": "Fair",
+        "strong": "Strong",
+        "veryStrong": "Very strong"
+      },
+      "validation": {
+        "minPassword": "Password must be at least 8 characters",
+        "minConfirm": "Password confirmation must be at least 8 characters",
+        "passwordsDontMatch": "Passwords do not match"
+      }
+    }
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "hospitals": "Hospitals",
+    "noHospitals": "No hospitals with shifts for the selected period.",
+    "metrics": {
+      "totalVagas": "Total Shifts",
+      "vagasAbertas": "Open Shifts",
+      "vagasFechadas": "Closed Shifts",
+      "tempoMedio": "Average Time",
+      "candidaturas": "Applications",
+      "vagasUrgentes": "Urgent Shifts",
+      "folhaPagamento": "Payroll",
+      "riscoOperacional": "Operational Risk"
+    },
+    "filters": {
+      "period": "Period:",
+      "selectMonth": "Select month",
+      "hospital": "Hospital:",
+      "allHospitals": "All hospitals"
+    }
+  },
+  "Vagas": {
+    "title": "Shifts",
+    "newVaga": "New Shift",
+    "noVagas": "No shifts found",
+    "noVagasDescription": "Start by creating a new shift or adjust the filters",
+    "deleteTitle": "Delete Shift",
+    "deleteDescription": "Are you sure you want to delete this shift? This action cannot be undone.",
+    "status": {
+      "open": "Open",
+      "announced": "Announced",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "status": "Status",
+      "hospital": "Hospital",
+      "allHospitals": "All hospitals",
+      "sector": "Sector",
+      "allSectors": "All sectors",
+      "period": "Period",
+      "searchPlaceholder": "Search by notes...",
+      "allStatus": "All"
+    },
+    "table": {
+      "date": "Date",
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "schedule": "Schedule",
+      "value": "Value",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "createTitle": "New Shift",
+      "createDescription": "Fill in the details to create a new shift",
+      "editTitle": "Edit Shift",
+      "editDescription": "Update the shift details",
+      "date": "Date",
+      "selectDate": "Select the date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "value": "Value",
+      "hospital": "Hospital",
+      "selectHospital": "Select the hospital",
+      "sector": "Sector",
+      "selectSector": "Select the sector",
+      "specialty": "Specialty",
+      "selectSpecialty": "Select the specialty",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional notes...",
+      "createButton": "Create Shift",
+      "saveButton": "Save"
+    },
+    "validation": {
+      "dateRequired": "Date is required",
+      "startTimeRequired": "Start time is required",
+      "endTimeRequired": "End time is required",
+      "valueMin": "Value must be greater than or equal to zero",
+      "hospitalRequired": "Hospital is required",
+      "sectorRequired": "Sector is required",
+      "specialtyRequired": "Specialty is required"
+    },
+    "details": {
+      "title": "Shift Details",
+      "date": "Date",
+      "schedule": "Schedule",
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "specialty": "Specialty",
+      "notes": "Notes",
+      "candidaturas": "Applications ({count})",
+      "medicoId": "Doctor ID: {id}",
+      "cancelVaga": "Cancel Shift"
+    }
+  },
+  "Candidaturas": {
+    "title": "Applications",
+    "noCandidaturas": "No applications found",
+    "noCandidaturasDescription": "There are no applications to display. Adjust the filters or wait for new applications.",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "filters": {
+      "status": "Status",
+      "allStatus": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "vaga": "Shift",
+      "allVagas": "All shifts",
+      "medico": "Doctor",
+      "allMedicos": "All doctors",
+      "period": "Period"
+    },
+    "row": {
+      "date": "Date",
+      "vaga": "Shift",
+      "medico": "Doctor",
+      "vagaValue": "Shift Value",
+      "vagaDate": "Shift Date",
+      "sentDate": "Application Sent",
+      "medicoEmail": "Doctor Email",
+      "medicoPhone": "Doctor Phone",
+      "crmUf": "CRM/State"
+    },
+    "confirm": {
+      "approveTitle": "Approve Application",
+      "approveDescription": "Are you sure you want to approve this application?",
+      "rejectTitle": "Reject Application",
+      "rejectDescription": "Are you sure you want to reject this application?",
+      "bulkApproveTitle": "Approve Applications",
+      "bulkApproveDescription": "Are you sure you want to approve {count} application(s)?",
+      "bulkApproveButton": "Approve All",
+      "bulkRejectTitle": "Reject Applications",
+      "bulkRejectDescription": "Are you sure you want to reject {count} application(s)?",
+      "bulkRejectButton": "Reject All"
+    },
+    "bulk": {
+      "approveSelected": "Approve Selected",
+      "rejectSelected": "Reject Selected"
+    }
+  },
+  "Medicos": {
+    "title": "Doctors",
+    "newMedico": "New Doctor",
+    "noMedicos": "No doctors found",
+    "noMedicosDescription": "Start by registering a new doctor or adjust the filters",
+    "deleteTitle": "Delete Doctor",
+    "deleteDescription": "Are you sure you want to delete this doctor? This action cannot be undone.",
+    "filters": {
+      "searchPlaceholder": "Search by name or CRM...",
+      "specialty": "Specialty",
+      "allSpecialties": "All specialties",
+      "status": "Status"
+    },
+    "table": {
+      "name": "Name",
+      "specialty": "Specialty",
+      "phone": "Phone",
+      "actions": "Actions"
+    },
+    "form": {
+      "createTitle": "New Doctor",
+      "createDescription": "Fill in the details to register a new doctor",
+      "editTitle": "Edit Doctor",
+      "editDescription": "Update the doctor details",
+      "fullName": "Full Name *",
+      "namePlaceholder": "Doctor name",
+      "crm": "CRM *",
+      "crmPlaceholder": "CRM number",
+      "crmUf": "CRM State *",
+      "selectUf": "Select state",
+      "specialty": "Specialty *",
+      "selectSpecialty": "Select specialty",
+      "emailPlaceholder": "email@example.com",
+      "phone": "Phone",
+      "activeSwitch": "Active doctor",
+      "saveButton": "Save Doctor"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 3 characters",
+      "crmMin": "CRM must be at least 4 characters",
+      "ufRequired": "State is required",
+      "invalidEmail": "Invalid email",
+      "specialtyRequired": "Specialty is required"
+    }
+  },
+  "Hospitais": {
+    "title": "Hospitals",
+    "newHospital": "New Hospital",
+    "noHospitais": "No hospitals found",
+    "noHospitaisDescription": "Start by registering a new hospital or adjust the filters",
+    "deleteTitle": "Delete Hospital",
+    "deleteDescription": "Are you sure you want to delete this hospital? This action cannot be undone.",
+    "filters": {
+      "group": "Group",
+      "allGroups": "All groups",
+      "cityPlaceholder": "Filter by city...",
+      "status": "Status",
+      "searchPlaceholder": "Search by name, CNPJ..."
+    },
+    "table": {
+      "name": "Name",
+      "city": "City",
+      "state": "State",
+      "group": "Group",
+      "actions": "Actions",
+      "viewSectors": "View Sectors"
+    },
+    "form": {
+      "createTitle": "New Hospital",
+      "createDescription": "Fill in the details to register a new hospital",
+      "editTitle": "Edit Hospital",
+      "editDescription": "Update the hospital details",
+      "name": "Name",
+      "namePlaceholder": "Hospital name",
+      "group": "Group",
+      "selectGroup": "Select group",
+      "phone": "Phone",
+      "emailPlaceholder": "email@hospital.com",
+      "address": "Address",
+      "addressPlaceholder": "Street, number, neighborhood",
+      "city": "City",
+      "cityPlaceholder": "City",
+      "state": "State",
+      "statePlaceholder": "State",
+      "activeSwitch": "Active hospital",
+      "createButton": "Create Hospital"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "groupRequired": "Group is required",
+      "invalidEmail": "Invalid email"
+    }
+  },
+  "Escalistas": {
+    "title": "Schedulers",
+    "noEscalistas": "No schedulers found",
+    "noEscalistasDescription": "Adjust the filters to view schedulers",
+    "removeTitle": "Remove Scheduler",
+    "removeDescription": "Are you sure you want to remove this scheduler? This action cannot be undone.",
+    "filters": {
+      "group": "Group",
+      "allGroups": "All groups",
+      "medico": "Doctor",
+      "allMedicos": "All doctors",
+      "status": "Status",
+      "searchPlaceholder": "Search by name, CRM..."
+    },
+    "statusLabels": {
+      "pending": "Pending",
+      "active": "Active",
+      "inactive": "Inactive",
+      "allPending": "Pending"
+    },
+    "table": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "medico": "Doctor",
+      "group": "Group",
+      "actions": "Actions"
+    }
+  },
+  "Grades": {
+    "title": "Schedules",
+    "newGrade": "New Schedule",
+    "noGrades": "No schedules found",
+    "noGradesDescription": "Start by creating a new schedule or adjust the filters",
+    "deleteTitle": "Delete Schedule",
+    "deleteDescription": "Are you sure you want to delete this schedule? This action cannot be undone.",
+    "publishTitle": "Publish Schedule",
+    "publishDescription": "Are you sure you want to publish this schedule? Once published, the schedule will be visible to doctors.",
+    "filters": {
+      "hospital": "Hospital",
+      "allHospitals": "All hospitals",
+      "sector": "Sector",
+      "allSectors": "All sectors",
+      "status": "Status",
+      "month": "Month",
+      "allMonths": "All months",
+      "year": "Year",
+      "allYears": "All years"
+    },
+    "statusLabels": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "form": {
+      "createTitle": "New Schedule",
+      "createDescription": "Fill in the details to create a new schedule",
+      "editTitle": "Edit Schedule",
+      "editDescription": "Update the schedule details",
+      "name": "Name",
+      "namePlaceholder": "Schedule name",
+      "hospital": "Hospital",
+      "selectHospital": "Select hospital",
+      "sector": "Sector",
+      "selectSector": "Select sector",
+      "month": "Month",
+      "selectMonth": "Select month",
+      "year": "Year",
+      "selectYear": "Select year",
+      "createButton": "Create Schedule"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "hospitalRequired": "Hospital is required",
+      "sectorRequired": "Sector is required"
+    }
+  },
+  "Pagamentos": {
+    "title": "Payments",
+    "noPagamentos": "No payments found",
+    "noPagamentosDescription": "Adjust the filters to view payments",
+    "status": {
+      "pending": "Pending",
+      "authorized": "Authorized",
+      "paid": "Paid",
+      "cancelled": "Cancelled",
+      "allPending": "Pending",
+      "allAuthorized": "Authorized",
+      "allPaid": "Paid",
+      "allCancelled": "Cancelled"
+    },
+    "filters": {
+      "status": "Status",
+      "medico": "Doctor",
+      "allMedicos": "All doctors",
+      "hospital": "Hospital",
+      "allHospitals": "All hospitals",
+      "period": "Period"
+    },
+    "table": {
+      "selectAll": "Select all",
+      "selectRow": "Select row",
+      "vaga": "Shift",
+      "medico": "Doctor",
+      "value": "Value",
+      "actions": "Actions"
+    },
+    "summary": {
+      "totalPending": "Total Pending",
+      "totalAuthorized": "Total Authorized",
+      "totalPaid": "Total Paid"
+    },
+    "bulk": {
+      "authorizeSelected": "Authorize Selected",
+      "paySelected": "Pay Selected"
+    }
+  },
+  "Comunicacao": {
+    "tabs": {
+      "conversations": "Conversations",
+      "contacts": "Contacts",
+      "whatsapp": "WhatsApp"
+    },
+    "settings": "Settings",
+    "conversations": {
+      "title": "Conversations",
+      "new": "New",
+      "filters": {
+        "all": "All",
+        "direct": "Direct",
+        "groups": "Groups",
+        "archived": "Archived"
+      },
+      "empty": {
+        "noConversations": "No conversations found",
+        "noSearchResults": "No conversations match the search",
+        "noArchived": "No archived conversations",
+        "noDirect": "No direct conversations",
+        "noGroups": "No groups found"
+      },
+      "fallback": {
+        "conversation": "Conversation",
+        "group": "Group"
+      },
+      "noMessage": "No messages",
+      "participants": "{count, plural, one {# participant} other {# participants}}"
+    },
+    "chat": {
+      "back": "Back",
+      "options": "Options",
+      "viewParticipants": "View participants",
+      "deleteConversation": "Delete conversation",
+      "reply": "Reply",
+      "deleteMessage": "Delete",
+      "deletedMessage": "Message deleted",
+      "image": "Image",
+      "file": "File",
+      "shiftOffer": "Shift Offer"
+    },
+    "contacts": {
+      "title": "Contacts",
+      "add": "Add",
+      "addContact": "Add contact",
+      "addDescription": "Add a new contact to start conversations",
+      "searchPlaceholder": "Search contacts...",
+      "filters": {
+        "all": "All",
+        "favorites": "Favorites",
+        "blocked": "Blocked"
+      },
+      "empty": {
+        "noResults": "No contacts found",
+        "noFavorites": "No favorites",
+        "noBlocked": "No blocked contacts",
+        "noContacts": "No contacts",
+        "searchHint": "Try a different search",
+        "addHint": "Add contacts to start conversations"
+      },
+      "count": "{current} of {total} contacts"
+    },
+    "whatsapp": {
+      "title": "WhatsApp Business",
+      "descriptionDisconnected": "Set up WhatsApp to send and receive messages",
+      "descriptionConnecting": "Connect your WhatsApp by scanning the QR Code",
+      "descriptionConnected": "WhatsApp connected and ready to use",
+      "instanceName": "Instance name",
+      "instancePlaceholder": "E.g.: Main WhatsApp",
+      "instanceHint": "A name to identify this connection",
+      "createInstance": "Create instance",
+      "connect": "Connect WhatsApp",
+      "disconnect": "Disconnect",
+      "deleteConfirm": "Are you sure you want to delete this instance?",
+      "messagesToday": "Messages today",
+      "activeConversations": "Active conversations"
+    },
+    "shiftOffer": {
+      "title": "Shift Details",
+      "hospital": "Hospital:",
+      "sector": "Sector:",
+      "date": "Date:",
+      "schedule": "Schedule:",
+      "value": "Value:",
+      "validityLabel": "Offer validity (hours)",
+      "validityHint": "The offer expires automatically after this period",
+      "cancelOffer": "Cancel",
+      "sendOffer": "Send offer",
+      "sendingOffer": "Sending...",
+      "validityError": "Validity must be between 1 and 168 hours (7 days)",
+      "sendError": "Error sending offer"
+    }
+  },
+  "Tickets": {
+    "title": "Ticket Management",
+    "count": "{total} tickets",
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "slaViolated": "SLA Violated"
+    },
+    "archiveConfirm": "Archive {count} ticket(s)?",
+    "loadError": "Error loading tickets",
+    "analytics": {
+      "title": "Ticket Analytics",
+      "loadError": "Error loading analytics",
+      "sector": "Sector",
+      "allSectors": "All sectors",
+      "noData": "No data available"
+    }
+  },
+  "Kanban": {
+    "title": "Kanban",
+    "newCard": "New Card",
+    "selectTab": "Select tab",
+    "searchPlaceholder": "Search cards...",
+    "loadError": "Error loading Kanban board",
+    "columns": {
+      "backlog": "Backlog",
+      "todo": "To Do",
+      "inProgress": "In Progress",
+      "review": "Review",
+      "done": "Done"
+    },
+    "tabs": {
+      "projects": "Projects",
+      "financial": "Financial"
+    }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "unread": "{count} unread notifications",
+    "unreadSingular": "{count} unread",
+    "unreadPlural": "{count} unread",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all notifications",
+    "loadError": "Error loading notifications",
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "filters": {
+      "all": "All",
+      "tickets": "Tickets",
+      "vagas": "Shifts",
+      "messages": "Messages",
+      "announcements": "Announcements"
+    },
+    "empty": {
+      "noUnread": "No unread notifications",
+      "noNotifications": "No notifications"
+    }
+  },
+  "Settings": {
+    "title": "Settings",
+    "description": "Manage your preferences and account settings",
+    "sections": {
+      "notifications": {
+        "title": "Notifications",
+        "description": "Manage your notification preferences"
+      },
+      "profile": {
+        "title": "Profile",
+        "description": "Update your personal information"
+      },
+      "security": {
+        "title": "Security",
+        "description": "Password, authentication, and sessions"
+      },
+      "appearance": {
+        "title": "Appearance",
+        "description": "Theme and visual preferences"
+      },
+      "apiKeys": {
+        "title": "API Keys",
+        "description": "Manage your API keys"
+      }
+    }
+  },
+  "Support": {
+    "title": "Support",
+    "description": "Open and track your support tickets",
+    "newTicket": "New Ticket",
+    "createTicket": "Create Ticket",
+    "noTickets": "No tickets found",
+    "noTicketsDescription": "Create a new ticket to get help",
+    "loadError": "Error loading tickets: ",
+    "detail": {
+      "notFound": "Ticket not found",
+      "back": "Back",
+      "createdAt": "Created at",
+      "description": "Description",
+      "location": "Location",
+      "reproduction": "Steps to Reproduce",
+      "slaViolated": "SLA Violated",
+      "comments": "Comments ({count})",
+      "noComments": "No comments yet",
+      "commentPlaceholder": "Add a comment...",
+      "sendComment": "Send Comment",
+      "sendingComment": "Sending..."
+    },
+    "status": {
+      "open": "Open",
+      "inReview": "In Review",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "Admin": {
+    "users": {
+      "title": "Users",
+      "newUser": "New User",
+      "noUsers": "No users found",
+      "noUsersDescription": "Start by registering a new user or adjust the filters",
+      "deleteTitle": "Delete User",
+      "deleteDescription": "Are you sure you want to delete this user? This action cannot be undone.",
+      "filters": {
+        "role": "Role",
+        "group": "Group",
+        "allGroups": "All groups",
+        "searchPlaceholder": "Search by name, email..."
+      },
+      "table": {
+        "name": "Name",
+        "role": "Role",
+        "groups": "Groups",
+        "actions": "Actions"
+      },
+      "form": {
+        "createTitle": "New User",
+        "createDescription": "Fill in the details to create a new user",
+        "editTitle": "Edit User",
+        "editDescription": "Update the user details",
+        "name": "Name",
+        "namePlaceholder": "Full name",
+        "emailPlaceholder": "email@example.com",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "role": "Role",
+        "selectRole": "Select role",
+        "groups": "Groups",
+        "activeSwitch": "Active user",
+        "emailReadonly": "Email cannot be changed",
+        "createButton": "Create User"
+      },
+      "validation": {
+        "nameRequired": "Name is required",
+        "invalidEmail": "Invalid email",
+        "passwordMin": "Password must be at least 8 characters",
+        "roleRequired": "Role is required",
+        "passwordsDontMatch": "Passwords do not match"
+      }
+    }
+  },
+  "Hooks": {
+    "auth": {
+      "loginError": "Error signing in",
+      "signupError": "Error creating account"
+    }
+  }
+}

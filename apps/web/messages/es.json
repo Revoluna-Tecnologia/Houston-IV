@@ -1,0 +1,835 @@
+{
+  "Common": {
+    "actions": {
+      "save": "Guardar",
+      "saveChanges": "Guardar Cambios",
+      "saving": "Guardando...",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "create": "Crear",
+      "confirm": "Confirmar",
+      "back": "Volver",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "clearFilters": "Limpiar filtros",
+      "clear": "Limpiar",
+      "apply": "Aplicar",
+      "close": "Cerrar",
+      "view": "Ver",
+      "loading": "Cargando...",
+      "creating": "Creando...",
+      "sending": "Enviando...",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "remove": "Quitar",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "refresh": "Actualizar",
+      "add": "Agregar",
+      "send": "Enviar",
+      "archive": "Archivar",
+      "unarchive": "Desarchivar",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "publish": "Publicar",
+      "authorize": "Autorizar",
+      "pay": "Pagar"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "pending": "Pendiente",
+      "cancelled": "Cancelado",
+      "all": "Todos",
+      "allFeminine": "Todas"
+    },
+    "pagination": {
+      "label": "Paginación",
+      "previousPage": "Página anterior",
+      "nextPage": "Página siguiente",
+      "page": "Página {page}",
+      "pageOf": "Página {current} de {total}",
+      "showing": "Mostrando {from} a {to} de {total} resultados"
+    },
+    "validation": {
+      "required": "Campo obligatorio",
+      "invalidEmail": "Correo electrónico inválido",
+      "minLength": "Mínimo de {min} caracteres",
+      "minValue": "El valor debe ser mayor o igual a {min}",
+      "passwordsDontMatch": "Las contraseñas no coinciden",
+      "minPassword": "La contraseña debe tener al menos 8 caracteres"
+    },
+    "emptyState": {
+      "noResults": "No se encontraron resultados"
+    },
+    "dataTable": {
+      "noResults": "No se encontraron resultados",
+      "showing": "Mostrando {from} a {to} de {total} resultados",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {current} de {total}"
+    },
+    "confirm": {
+      "deleteTitle": "Confirmar eliminación",
+      "deleteDescription": "¿Está seguro de que desea eliminar? Esta acción no se puede deshacer.",
+      "irreversible": "Esta acción no se puede deshacer."
+    },
+    "labels": {
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "status": "Estado",
+      "actions": "Acciones",
+      "date": "Fecha",
+      "value": "Valor",
+      "notes": "Observaciones",
+      "notesPlaceholder": "Observaciones adicionales...",
+      "period": "Período",
+      "group": "Grupo",
+      "allGroups": "Todos los grupos",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Estado",
+      "from": "Desde:",
+      "to": "Hasta:"
+    },
+    "months": {
+      "january": "Enero",
+      "february": "Febrero",
+      "march": "Marzo",
+      "april": "Abril",
+      "may": "Mayo",
+      "june": "Junio",
+      "july": "Julio",
+      "august": "Agosto",
+      "september": "Septiembre",
+      "october": "Octubre",
+      "november": "Noviembre",
+      "december": "Diciembre"
+    },
+    "roles": {
+      "administrator": "Administrador",
+      "moderator": "Moderador",
+      "manager": "Gestor",
+      "coordinator": "Coordinador",
+      "scheduler": "Programador",
+      "allRoles": "Todos los roles"
+    }
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "vagas": "Turnos",
+    "candidaturas": "Postulaciones",
+    "medicos": "Médicos",
+    "hospitais": "Hospitales",
+    "escalistas": "Programadores",
+    "grades": "Horarios",
+    "pagamentos": "Pagos",
+    "comunicacao": "Comunicación",
+    "tickets": "Tickets",
+    "users": "Usuarios",
+    "brand": "Houston IV"
+  },
+  "Header": {
+    "openMenu": "Abrir menú",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Salir"
+  },
+  "Auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Ingrese con sus credenciales",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "su@email.com",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "Olvidé mi contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Ingresando...",
+      "orContinueWith": "o continúe con",
+      "resetSuccess": "Su contraseña fue restablecida exitosamente. Inicie sesión con la nueva contraseña."
+    },
+    "loginErrors": {
+      "accessDenied": "Su cuenta no está registrada como programador. Contacte al administrador.",
+      "pendingApproval": "Su registro está pendiente de aprobación. Recibirá un correo electrónico cuando sea aprobado.",
+      "inactive": "Su cuenta fue desactivada. Contacte al administrador para más información.",
+      "generic": "Ocurrió un error al iniciar sesión. Intente nuevamente.",
+      "googleError": "Error al iniciar sesión con Google",
+      "microsoftError": "Error al iniciar sesión con Microsoft"
+    },
+    "magicLink": {
+      "emailLabel": "Correo electrónico",
+      "placeholder": "su@email.com",
+      "submit": "Enviar enlace mágico",
+      "submitting": "Enviando...",
+      "enterEmail": "Ingrese su correo electrónico para recibir el enlace",
+      "sent": "Enviamos un enlace a <strong>{email}</strong>. Verifique su bandeja de entrada.",
+      "error": "Error al enviar enlace mágico",
+      "backToLogin": "Volver al inicio de sesión"
+    },
+    "forgotPassword": {
+      "title": "¿Olvidó su contraseña?",
+      "description": "Ingrese su correo electrónico y le enviaremos las instrucciones para restablecer su contraseña",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "su@email.com",
+      "submit": "Enviar instrucciones",
+      "submitting": "Enviando...",
+      "success": "Si el correo electrónico está registrado, recibirá las instrucciones para restablecer su contraseña.",
+      "error": "Ocurrió un error al enviar el correo electrónico. Intente nuevamente.",
+      "backToLogin": "Volver al inicio de sesión",
+      "validation": {
+        "invalidEmail": "Correo electrónico inválido"
+      }
+    },
+    "resetPassword": {
+      "title": "Restablecer contraseña",
+      "description": "Ingrese su nueva contraseña a continuación",
+      "invalidLinkTitle": "Enlace inválido",
+      "invalidLinkDescription": "El enlace para restablecer la contraseña es inválido o expiró",
+      "requestNewLink": "Solicitar nuevo enlace",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar nueva contraseña",
+      "submit": "Restablecer contraseña",
+      "submitting": "Restableciendo...",
+      "error": "Ocurrió un error al restablecer la contraseña. Intente nuevamente.",
+      "strength": {
+        "label": "Seguridad de la contraseña: ",
+        "veryWeak": "Muy débil",
+        "weak": "Débil",
+        "fair": "Aceptable",
+        "strong": "Fuerte",
+        "veryStrong": "Muy fuerte"
+      },
+      "validation": {
+        "minPassword": "La contraseña debe tener al menos 8 caracteres",
+        "minConfirm": "La confirmación de contraseña debe tener al menos 8 caracteres",
+        "passwordsDontMatch": "Las contraseñas no coinciden"
+      }
+    }
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "hospitals": "Hospitales",
+    "noHospitals": "Ningún hospital con turnos para el período seleccionado.",
+    "metrics": {
+      "totalVagas": "Total de Turnos",
+      "vagasAbertas": "Turnos Abiertos",
+      "vagasFechadas": "Turnos Cerrados",
+      "tempoMedio": "Tiempo Promedio",
+      "candidaturas": "Postulaciones",
+      "vagasUrgentes": "Turnos Urgentes",
+      "folhaPagamento": "Nómina de Pagos",
+      "riscoOperacional": "Riesgo Operacional"
+    },
+    "filters": {
+      "period": "Período:",
+      "selectMonth": "Seleccione el mes",
+      "hospital": "Hospital:",
+      "allHospitals": "Todos los hospitales"
+    }
+  },
+  "Vagas": {
+    "title": "Turnos",
+    "newVaga": "Nuevo Turno",
+    "noVagas": "No se encontraron turnos",
+    "noVagasDescription": "Comience creando un nuevo turno o ajuste los filtros",
+    "deleteTitle": "Eliminar Turno",
+    "deleteDescription": "¿Está seguro de que desea eliminar este turno? Esta acción no se puede deshacer.",
+    "status": {
+      "open": "Abierto",
+      "announced": "Anunciado",
+      "closed": "Cerrado",
+      "cancelled": "Cancelado"
+    },
+    "filters": {
+      "status": "Estado",
+      "hospital": "Hospital",
+      "allHospitals": "Todos los hospitales",
+      "sector": "Sector",
+      "allSectors": "Todos los sectores",
+      "period": "Período",
+      "searchPlaceholder": "Buscar por observaciones...",
+      "allStatus": "Todos"
+    },
+    "table": {
+      "date": "Fecha",
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "schedule": "Horario",
+      "value": "Valor",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "form": {
+      "createTitle": "Nuevo Turno",
+      "createDescription": "Complete los datos para crear un nuevo turno",
+      "editTitle": "Editar Turno",
+      "editDescription": "Actualice los datos del turno",
+      "date": "Fecha",
+      "selectDate": "Seleccione la fecha",
+      "startTime": "Hora Inicio",
+      "endTime": "Hora Fin",
+      "value": "Valor",
+      "hospital": "Hospital",
+      "selectHospital": "Seleccione el hospital",
+      "sector": "Sector",
+      "selectSector": "Seleccione el sector",
+      "specialty": "Especialidad",
+      "selectSpecialty": "Seleccione la especialidad",
+      "notes": "Observaciones",
+      "notesPlaceholder": "Observaciones adicionales...",
+      "createButton": "Crear Turno",
+      "saveButton": "Guardar"
+    },
+    "validation": {
+      "dateRequired": "La fecha es obligatoria",
+      "startTimeRequired": "La hora de inicio es obligatoria",
+      "endTimeRequired": "La hora de fin es obligatoria",
+      "valueMin": "El valor debe ser mayor o igual a cero",
+      "hospitalRequired": "El hospital es obligatorio",
+      "sectorRequired": "El sector es obligatorio",
+      "specialtyRequired": "La especialidad es obligatoria"
+    },
+    "details": {
+      "title": "Detalles del Turno",
+      "date": "Fecha",
+      "schedule": "Horario",
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "specialty": "Especialidad",
+      "notes": "Observaciones",
+      "candidaturas": "Postulaciones ({count})",
+      "medicoId": "Médico ID: {id}",
+      "cancelVaga": "Cancelar Turno"
+    }
+  },
+  "Candidaturas": {
+    "title": "Postulaciones",
+    "noCandidaturas": "No se encontraron postulaciones",
+    "noCandidaturasDescription": "No hay postulaciones para mostrar. Ajuste los filtros o espere nuevas postulaciones.",
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "rejected": "Rechazada"
+    },
+    "filters": {
+      "status": "Estado",
+      "allStatus": "Todas",
+      "pending": "Pendientes",
+      "approved": "Aprobadas",
+      "rejected": "Rechazadas",
+      "vaga": "Turno",
+      "allVagas": "Todos los turnos",
+      "medico": "Médico",
+      "allMedicos": "Todos los médicos",
+      "period": "Período"
+    },
+    "row": {
+      "date": "Fecha",
+      "vaga": "Turno",
+      "medico": "Médico",
+      "vagaValue": "Valor del Turno",
+      "vagaDate": "Fecha del Turno",
+      "sentDate": "Postulación Enviada",
+      "medicoEmail": "Email del Médico",
+      "medicoPhone": "Teléfono del Médico",
+      "crmUf": "CRM/UF"
+    },
+    "confirm": {
+      "approveTitle": "Aprobar Postulación",
+      "approveDescription": "¿Está seguro de que desea aprobar esta postulación?",
+      "rejectTitle": "Rechazar Postulación",
+      "rejectDescription": "¿Está seguro de que desea rechazar esta postulación?",
+      "bulkApproveTitle": "Aprobar Postulaciones",
+      "bulkApproveDescription": "¿Está seguro de que desea aprobar {count} postulación(es)?",
+      "bulkApproveButton": "Aprobar Todas",
+      "bulkRejectTitle": "Rechazar Postulaciones",
+      "bulkRejectDescription": "¿Está seguro de que desea rechazar {count} postulación(es)?",
+      "bulkRejectButton": "Rechazar Todas"
+    },
+    "bulk": {
+      "approveSelected": "Aprobar Seleccionados",
+      "rejectSelected": "Rechazar Seleccionados"
+    }
+  },
+  "Medicos": {
+    "title": "Médicos",
+    "newMedico": "Nuevo Médico",
+    "noMedicos": "No se encontraron médicos",
+    "noMedicosDescription": "Comience registrando un nuevo médico o ajuste los filtros",
+    "deleteTitle": "Eliminar Médico",
+    "deleteDescription": "¿Está seguro de que desea eliminar este médico? Esta acción no se puede deshacer.",
+    "filters": {
+      "searchPlaceholder": "Buscar por nombre o CRM...",
+      "specialty": "Especialidad",
+      "allSpecialties": "Todas las especialidades",
+      "status": "Estado"
+    },
+    "table": {
+      "name": "Nombre",
+      "specialty": "Especialidad",
+      "phone": "Teléfono",
+      "actions": "Acciones"
+    },
+    "form": {
+      "createTitle": "Nuevo Médico",
+      "createDescription": "Complete los datos para registrar un nuevo médico",
+      "editTitle": "Editar Médico",
+      "editDescription": "Actualice los datos del médico",
+      "fullName": "Nombre Completo *",
+      "namePlaceholder": "Nombre del médico",
+      "crm": "CRM *",
+      "crmPlaceholder": "Número de CRM",
+      "crmUf": "UF del CRM *",
+      "selectUf": "Seleccione la UF",
+      "specialty": "Especialidad *",
+      "selectSpecialty": "Seleccione la especialidad",
+      "emailPlaceholder": "email@ejemplo.com",
+      "phone": "Teléfono",
+      "activeSwitch": "Médico activo",
+      "saveButton": "Guardar Médico"
+    },
+    "validation": {
+      "nameMin": "El nombre debe tener al menos 3 caracteres",
+      "crmMin": "El CRM debe tener al menos 4 caracteres",
+      "ufRequired": "La UF es obligatoria",
+      "invalidEmail": "Email inválido",
+      "specialtyRequired": "La especialidad es obligatoria"
+    }
+  },
+  "Hospitais": {
+    "title": "Hospitales",
+    "newHospital": "Nuevo Hospital",
+    "noHospitais": "No se encontraron hospitales",
+    "noHospitaisDescription": "Comience registrando un nuevo hospital o ajuste los filtros",
+    "deleteTitle": "Eliminar Hospital",
+    "deleteDescription": "¿Está seguro de que desea eliminar este hospital? Esta acción no se puede deshacer.",
+    "filters": {
+      "group": "Grupo",
+      "allGroups": "Todos los grupos",
+      "cityPlaceholder": "Filtrar por ciudad...",
+      "status": "Estado",
+      "searchPlaceholder": "Buscar por nombre, CNPJ..."
+    },
+    "table": {
+      "name": "Nombre",
+      "city": "Ciudad",
+      "state": "Estado",
+      "group": "Grupo",
+      "actions": "Acciones",
+      "viewSectors": "Ver Sectores"
+    },
+    "form": {
+      "createTitle": "Nuevo Hospital",
+      "createDescription": "Complete los datos para registrar un nuevo hospital",
+      "editTitle": "Editar Hospital",
+      "editDescription": "Actualice los datos del hospital",
+      "name": "Nombre",
+      "namePlaceholder": "Nombre del hospital",
+      "group": "Grupo",
+      "selectGroup": "Seleccione el grupo",
+      "phone": "Teléfono",
+      "emailPlaceholder": "email@hospital.com",
+      "address": "Dirección",
+      "addressPlaceholder": "Calle, número, barrio",
+      "city": "Ciudad",
+      "cityPlaceholder": "Ciudad",
+      "state": "Estado",
+      "statePlaceholder": "UF",
+      "activeSwitch": "Hospital activo",
+      "createButton": "Crear Hospital"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "groupRequired": "El grupo es obligatorio",
+      "invalidEmail": "Email inválido"
+    }
+  },
+  "Escalistas": {
+    "title": "Programadores",
+    "noEscalistas": "No se encontraron programadores",
+    "noEscalistasDescription": "Ajuste los filtros para ver los programadores",
+    "removeTitle": "Quitar Programador",
+    "removeDescription": "¿Está seguro de que desea quitar este programador? Esta acción no se puede deshacer.",
+    "filters": {
+      "group": "Grupo",
+      "allGroups": "Todos los grupos",
+      "medico": "Médico",
+      "allMedicos": "Todos los médicos",
+      "status": "Estado",
+      "searchPlaceholder": "Buscar por nombre, CRM..."
+    },
+    "statusLabels": {
+      "pending": "Pendiente",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "allPending": "Pendientes"
+    },
+    "table": {
+      "selectAll": "Seleccionar todos",
+      "selectRow": "Seleccionar fila",
+      "medico": "Médico",
+      "group": "Grupo",
+      "actions": "Acciones"
+    }
+  },
+  "Grades": {
+    "title": "Horarios",
+    "newGrade": "Nuevo Horario",
+    "noGrades": "No se encontraron horarios",
+    "noGradesDescription": "Comience creando un nuevo horario o ajuste los filtros",
+    "deleteTitle": "Eliminar Horario",
+    "deleteDescription": "¿Está seguro de que desea eliminar este horario? Esta acción no se puede deshacer.",
+    "publishTitle": "Publicar Horario",
+    "publishDescription": "¿Está seguro de que desea publicar este horario? Una vez publicado, el horario será visible para los médicos.",
+    "filters": {
+      "hospital": "Hospital",
+      "allHospitals": "Todos los hospitales",
+      "sector": "Sector",
+      "allSectors": "Todos los sectores",
+      "status": "Estado",
+      "month": "Mes",
+      "allMonths": "Todos los meses",
+      "year": "Año",
+      "allYears": "Todos los años"
+    },
+    "statusLabels": {
+      "draft": "Borrador",
+      "published": "Publicado",
+      "archived": "Archivado"
+    },
+    "form": {
+      "createTitle": "Nuevo Horario",
+      "createDescription": "Complete los datos para crear un nuevo horario",
+      "editTitle": "Editar Horario",
+      "editDescription": "Actualice los datos del horario",
+      "name": "Nombre",
+      "namePlaceholder": "Nombre del horario",
+      "hospital": "Hospital",
+      "selectHospital": "Seleccione el hospital",
+      "sector": "Sector",
+      "selectSector": "Seleccione el sector",
+      "month": "Mes",
+      "selectMonth": "Seleccione el mes",
+      "year": "Año",
+      "selectYear": "Seleccione el año",
+      "createButton": "Crear Horario"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "hospitalRequired": "El hospital es obligatorio",
+      "sectorRequired": "El sector es obligatorio"
+    }
+  },
+  "Pagamentos": {
+    "title": "Pagos",
+    "noPagamentos": "No se encontraron pagos",
+    "noPagamentosDescription": "Ajuste los filtros para ver los pagos",
+    "status": {
+      "pending": "Pendiente",
+      "authorized": "Autorizado",
+      "paid": "Pagado",
+      "cancelled": "Cancelado",
+      "allPending": "Pendientes",
+      "allAuthorized": "Autorizados",
+      "allPaid": "Pagados",
+      "allCancelled": "Cancelados"
+    },
+    "filters": {
+      "status": "Estado",
+      "medico": "Médico",
+      "allMedicos": "Todos los médicos",
+      "hospital": "Hospital",
+      "allHospitals": "Todos los hospitales",
+      "period": "Período"
+    },
+    "table": {
+      "selectAll": "Seleccionar todos",
+      "selectRow": "Seleccionar fila",
+      "vaga": "Turno",
+      "medico": "Médico",
+      "value": "Valor",
+      "actions": "Acciones"
+    },
+    "summary": {
+      "totalPending": "Total Pendiente",
+      "totalAuthorized": "Total Autorizado",
+      "totalPaid": "Total Pagado"
+    },
+    "bulk": {
+      "authorizeSelected": "Autorizar Seleccionados",
+      "paySelected": "Pagar Seleccionados"
+    }
+  },
+  "Comunicacao": {
+    "tabs": {
+      "conversations": "Conversaciones",
+      "contacts": "Contactos",
+      "whatsapp": "WhatsApp"
+    },
+    "settings": "Configuración",
+    "conversations": {
+      "title": "Conversaciones",
+      "new": "Nueva",
+      "filters": {
+        "all": "Todas",
+        "direct": "Directas",
+        "groups": "Grupos",
+        "archived": "Archivadas"
+      },
+      "empty": {
+        "noConversations": "No se encontraron conversaciones",
+        "noSearchResults": "Ninguna conversación coincide con la búsqueda",
+        "noArchived": "Ninguna conversación archivada",
+        "noDirect": "Ninguna conversación directa",
+        "noGroups": "No se encontraron grupos"
+      },
+      "fallback": {
+        "conversation": "Conversación",
+        "group": "Grupo"
+      },
+      "noMessage": "Ningún mensaje",
+      "participants": "{count, plural, one {# participante} other {# participantes}}"
+    },
+    "chat": {
+      "back": "Volver",
+      "options": "Opciones",
+      "viewParticipants": "Ver participantes",
+      "deleteConversation": "Eliminar conversación",
+      "reply": "Responder",
+      "deleteMessage": "Eliminar",
+      "deletedMessage": "Mensaje eliminado",
+      "image": "Imagen",
+      "file": "Archivo",
+      "shiftOffer": "Oferta de Guardia"
+    },
+    "contacts": {
+      "title": "Contactos",
+      "add": "Agregar",
+      "addContact": "Agregar contacto",
+      "addDescription": "Agregue un nuevo contacto para iniciar conversaciones",
+      "searchPlaceholder": "Buscar contactos...",
+      "filters": {
+        "all": "Todos",
+        "favorites": "Favoritos",
+        "blocked": "Bloqueados"
+      },
+      "empty": {
+        "noResults": "No se encontraron contactos",
+        "noFavorites": "Ningún favorito",
+        "noBlocked": "Ningún bloqueado",
+        "noContacts": "Ningún contacto",
+        "searchHint": "Intente una búsqueda diferente",
+        "addHint": "Agregue contactos para iniciar conversaciones"
+      },
+      "count": "{current} de {total} contactos"
+    },
+    "whatsapp": {
+      "title": "WhatsApp Business",
+      "descriptionDisconnected": "Configure WhatsApp para enviar y recibir mensajes",
+      "descriptionConnecting": "Conecte su WhatsApp escaneando el código QR",
+      "descriptionConnected": "WhatsApp conectado y listo para usar",
+      "instanceName": "Nombre de la instancia",
+      "instancePlaceholder": "Ej: WhatsApp Principal",
+      "instanceHint": "Un nombre para identificar esta conexión",
+      "createInstance": "Crear instancia",
+      "connect": "Conectar WhatsApp",
+      "disconnect": "Desconectar",
+      "deleteConfirm": "¿Está seguro de que desea eliminar esta instancia?",
+      "messagesToday": "Mensajes hoy",
+      "activeConversations": "Conversaciones activas"
+    },
+    "shiftOffer": {
+      "title": "Detalles del Turno",
+      "hospital": "Hospital:",
+      "sector": "Sector:",
+      "date": "Fecha:",
+      "schedule": "Horario:",
+      "value": "Valor:",
+      "validityLabel": "Validez de la oferta (horas)",
+      "validityHint": "La oferta expira automáticamente después de este período",
+      "cancelOffer": "Cancelar",
+      "sendOffer": "Enviar oferta",
+      "sendingOffer": "Enviando...",
+      "validityError": "La validez debe ser entre 1 y 168 horas (7 días)",
+      "sendError": "Error al enviar oferta"
+    }
+  },
+  "Tickets": {
+    "title": "Gestión de Tickets",
+    "count": "{total} tickets",
+    "status": {
+      "open": "Abiertos",
+      "inProgress": "En Progreso",
+      "resolved": "Resueltos",
+      "slaViolated": "SLA Violado"
+    },
+    "archiveConfirm": "¿Archivar {count} ticket(s)?",
+    "loadError": "Error al cargar tickets",
+    "analytics": {
+      "title": "Analytics de Tickets",
+      "loadError": "Error al cargar analytics",
+      "sector": "Sector",
+      "allSectors": "Todos los sectores",
+      "noData": "No hay datos disponibles"
+    }
+  },
+  "Kanban": {
+    "title": "Kanban",
+    "newCard": "Nueva Tarjeta",
+    "selectTab": "Seleccione la pestaña",
+    "searchPlaceholder": "Buscar tarjetas...",
+    "loadError": "Error al cargar el tablero Kanban",
+    "columns": {
+      "backlog": "Backlog",
+      "todo": "Por Hacer",
+      "inProgress": "En Progreso",
+      "review": "Revisión",
+      "done": "Completado"
+    },
+    "tabs": {
+      "projects": "Proyectos",
+      "financial": "Financiero"
+    }
+  },
+  "Notifications": {
+    "title": "Notificaciones",
+    "unread": "{count} notificaciones no leídas",
+    "unreadSingular": "{count} no leída",
+    "unreadPlural": "{count} no leídas",
+    "markAllRead": "Marcar todas como leídas",
+    "viewAll": "Ver todas las notificaciones",
+    "loadError": "Error al cargar notificaciones",
+    "tabs": {
+      "all": "Todas",
+      "unread": "No leídas"
+    },
+    "filters": {
+      "all": "Todas",
+      "tickets": "Tickets",
+      "vagas": "Turnos",
+      "messages": "Mensajes",
+      "announcements": "Comunicados"
+    },
+    "empty": {
+      "noUnread": "Ninguna notificación no leída",
+      "noNotifications": "Ninguna notificación"
+    }
+  },
+  "Settings": {
+    "title": "Configuración",
+    "description": "Administre sus preferencias y configuración de la cuenta",
+    "sections": {
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Administre sus preferencias de notificación"
+      },
+      "profile": {
+        "title": "Perfil",
+        "description": "Actualice su información personal"
+      },
+      "security": {
+        "title": "Seguridad",
+        "description": "Contraseña, autenticación y sesiones"
+      },
+      "appearance": {
+        "title": "Apariencia",
+        "description": "Tema y preferencias visuales"
+      },
+      "apiKeys": {
+        "title": "API Keys",
+        "description": "Administre sus claves de API"
+      }
+    }
+  },
+  "Support": {
+    "title": "Soporte",
+    "description": "Abra y haga seguimiento a sus tickets de soporte",
+    "newTicket": "Nuevo Ticket",
+    "createTicket": "Crear Ticket",
+    "noTickets": "No se encontraron tickets",
+    "noTicketsDescription": "Cree un nuevo ticket para obtener ayuda",
+    "loadError": "Error al cargar tickets: ",
+    "detail": {
+      "notFound": "Ticket no encontrado",
+      "back": "Volver",
+      "createdAt": "Creado el",
+      "description": "Descripción",
+      "location": "Ubicación",
+      "reproduction": "Pasos para Reproducir",
+      "slaViolated": "SLA Violado",
+      "comments": "Comentarios ({count})",
+      "noComments": "Aún no hay comentarios",
+      "commentPlaceholder": "Agregue un comentario...",
+      "sendComment": "Enviar Comentario",
+      "sendingComment": "Enviando..."
+    },
+    "status": {
+      "open": "Abierto",
+      "inReview": "En Revisión",
+      "inProgress": "En Progreso",
+      "resolved": "Resuelto",
+      "closed": "Cerrado"
+    },
+    "priority": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "critical": "Crítica"
+    }
+  },
+  "Admin": {
+    "users": {
+      "title": "Usuarios",
+      "newUser": "Nuevo Usuario",
+      "noUsers": "No se encontraron usuarios",
+      "noUsersDescription": "Comience registrando un nuevo usuario o ajuste los filtros",
+      "deleteTitle": "Eliminar Usuario",
+      "deleteDescription": "¿Está seguro de que desea eliminar este usuario? Esta acción no se puede deshacer.",
+      "filters": {
+        "role": "Rol",
+        "group": "Grupo",
+        "allGroups": "Todos los grupos",
+        "searchPlaceholder": "Buscar por nombre, email..."
+      },
+      "table": {
+        "name": "Nombre",
+        "role": "Rol",
+        "groups": "Grupos",
+        "actions": "Acciones"
+      },
+      "form": {
+        "createTitle": "Nuevo Usuario",
+        "createDescription": "Complete los datos para crear un nuevo usuario",
+        "editTitle": "Editar Usuario",
+        "editDescription": "Actualice los datos del usuario",
+        "name": "Nombre",
+        "namePlaceholder": "Nombre completo",
+        "emailPlaceholder": "email@ejemplo.com",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña",
+        "role": "Rol",
+        "selectRole": "Seleccione el rol",
+        "groups": "Grupos",
+        "activeSwitch": "Usuario activo",
+        "emailReadonly": "El email no se puede modificar",
+        "createButton": "Crear Usuario"
+      },
+      "validation": {
+        "nameRequired": "El nombre es obligatorio",
+        "invalidEmail": "Email inválido",
+        "passwordMin": "La contraseña debe tener al menos 8 caracteres",
+        "roleRequired": "El rol es obligatorio",
+        "passwordsDontMatch": "Las contraseñas no coinciden"
+      }
+    }
+  },
+  "Hooks": {
+    "auth": {
+      "loginError": "Error al iniciar sesión",
+      "signupError": "Error al crear cuenta"
+    }
+  }
+}
