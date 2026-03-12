@@ -1,20 +1,22 @@
-import { betterAuth } from 'better-auth'
-import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { PrismaClient } from '@prisma/client'
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { PrismaClient } from "./generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient()
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
 
-const secret = process.env.BETTER_AUTH_SECRET
+const secret = process.env.BETTER_AUTH_SECRET;
 if (!secret) {
-  throw new Error('BETTER_AUTH_SECRET environment variable is required')
+  throw new Error("BETTER_AUTH_SECRET environment variable is required");
 }
 
 export const auth = betterAuth({
   secret,
-  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3001',
-  basePath: '/auth', // With global prefix 'api', routes will be at /api/auth/*
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3001",
+  basePath: "/auth", // With global prefix 'api', routes will be at /api/auth/*
   database: prismaAdapter(prisma, {
-    provider: 'postgresql',
+    provider: "postgresql",
   }),
 
   emailAndPassword: {
@@ -25,13 +27,13 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
     microsoft: {
-      clientId: process.env.MICROSOFT_CLIENT_ID || '',
-      clientSecret: process.env.MICROSOFT_CLIENT_SECRET || '',
-      tenantId: 'common',
+      clientId: process.env.MICROSOFT_CLIENT_ID || "",
+      clientSecret: process.env.MICROSOFT_CLIENT_SECRET || "",
+      tenantId: "common",
     },
   },
 
@@ -47,12 +49,12 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: 'string',
+        type: "string",
         required: false,
-        defaultValue: 'escalista',
+        defaultValue: "escalista",
       },
       grupoIds: {
-        type: 'string[]',
+        type: "string[]",
         required: false,
         defaultValue: [],
       },
@@ -60,22 +62,21 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: process.env.TRUSTED_ORIGINS
-    ? process.env.TRUSTED_ORIGINS.split(',').map(origin => origin.trim())
-    : [
-        'http://localhost:3000',
-        'http://localhost:3001',
-      ],
-})
+    ? process.env.TRUSTED_ORIGINS.split(",").map((origin) => origin.trim())
+    : ["http://localhost:3000", "http://localhost:3001"],
+});
 
 const trustedOrigins = process.env.TRUSTED_ORIGINS
-  ? process.env.TRUSTED_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:3000', 'http://localhost:3001']
+  ? process.env.TRUSTED_ORIGINS.split(",").map((origin) => origin.trim())
+  : ["http://localhost:3000", "http://localhost:3001"];
 
 // Log apenas em dev para não expor config em produção
-if (process.env.NODE_ENV !== 'production') {
-  const { Logger } = require('@nestjs/common')
-  new Logger('BetterAuth').log(`Configured with trustedOrigins: ${trustedOrigins.join(', ')}`)
+if (process.env.NODE_ENV !== "production") {
+  const { Logger } = require("@nestjs/common");
+  new Logger("BetterAuth").log(
+    `Configured with trustedOrigins: ${trustedOrigins.join(", ")}`,
+  );
 }
 
-export type Session = typeof auth.$Infer.Session
-export type User = typeof auth.$Infer.Session.user
+export type Session = typeof auth.$Infer.Session;
+export type User = typeof auth.$Infer.Session.user;
