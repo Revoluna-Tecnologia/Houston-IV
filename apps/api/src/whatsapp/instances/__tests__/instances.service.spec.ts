@@ -1,60 +1,65 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
-import { NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common'
-import { WhatsAppInstanceStatus } from '@prisma/client'
-import { InstancesService } from '../instances.service'
-import { InstancesRepository } from '../instances.repository'
-import { WhatsAppService } from '../../whatsapp.service'
-import { ConnectionStatus } from '../../types'
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
+import {
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+} from "@nestjs/common";
+import { WhatsAppInstanceStatus } from "@prisma/client";
+import { InstancesService } from "../instances.service";
+import { InstancesRepository } from "../instances.repository";
+import { WhatsAppService } from "../../whatsapp.service";
+import { ConnectionStatus } from "../../types";
+import { AppRole } from "../../../auth/types/auth.types";
 
-describe('InstancesService', () => {
-  let service: InstancesService
+describe("InstancesService", () => {
+  let service: InstancesService;
   let repository: {
-    create: Mock
-    findById: Mock
-    findByGrupoId: Mock
-    findAll: Mock
-    update: Mock
-    updateStatus: Mock
-    delete: Mock
-    existsForGrupo: Mock
-  }
+    create: Mock;
+    findById: Mock;
+    findByGrupoId: Mock;
+    findAll: Mock;
+    update: Mock;
+    updateStatus: Mock;
+    delete: Mock;
+    existsForGrupo: Mock;
+  };
   let whatsappService: {
-    createInstance: Mock
-    deleteInstance: Mock
-    getActiveProvider: Mock
-    getQRCode: Mock
-    getPairingCode: Mock
-    getConnectionStatus: Mock
-    getInstance: Mock
-    powerOn: Mock
-    powerOff: Mock
-    disconnect: Mock
-  }
+    createInstance: Mock;
+    deleteInstance: Mock;
+    getActiveProvider: Mock;
+    getQRCode: Mock;
+    getPairingCode: Mock;
+    getConnectionStatus: Mock;
+    getInstance: Mock;
+    powerOn: Mock;
+    powerOff: Mock;
+    disconnect: Mock;
+  };
 
   const mockUser = {
-    id: 'user-1',
-    email: 'test@test.com',
-    name: 'Test User',
-    role: 'admin' as const,
-    grupoIds: ['grupo-1', 'grupo-2'],
+    id: "user-1",
+    email: "test@test.com",
+    name: "Test User",
+    roles: [AppRole.ADMINISTRADOR],
+    grupoIds: ["grupo-1", "grupo-2"],
     permissions: [],
-    iat: 0,
-    exp: 0,
-  }
+    hospitalIds: [],
+    setorIds: [],
+  };
 
   const mockInstance = {
-    id: 'instance-1',
-    grupoId: 'grupo-1',
-    provider: 'zapster',
-    providerInstanceId: 'provider-instance-1',
-    instanceName: 'Test Instance',
+    id: "instance-1",
+    grupoId: "grupo-1",
+    provider: "zapster",
+    providerInstanceId: "provider-instance-1",
+    instanceName: "Test Instance",
     status: WhatsAppInstanceStatus.disconnected,
     phoneNumber: null,
     metadata: {},
-    createdById: 'user-1',
+    createdById: "user-1",
     createdAt: new Date(),
     updatedAt: new Date(),
-  }
+  };
 
   beforeEach(() => {
     repository = {
@@ -66,7 +71,7 @@ describe('InstancesService', () => {
       updateStatus: vi.fn(),
       delete: vi.fn(),
       existsForGrupo: vi.fn(),
-    }
+    };
 
     whatsappService = {
       createInstance: vi.fn(),
@@ -79,330 +84,356 @@ describe('InstancesService', () => {
       powerOn: vi.fn(),
       powerOff: vi.fn(),
       disconnect: vi.fn(),
-    }
+    };
 
     // Directly instantiate the service with mocked dependencies
     service = new InstancesService(
       repository as unknown as InstancesRepository,
-      whatsappService as unknown as WhatsAppService
-    )
-  })
+      whatsappService as unknown as WhatsAppService,
+    );
+  });
 
-  describe('create', () => {
-    it('should create a new instance', async () => {
-      const dto = { grupoId: 'grupo-1', name: 'New Instance' }
+  describe("create", () => {
+    it("should create a new instance", async () => {
+      const dto = { grupoId: "grupo-1", name: "New Instance" };
       const providerInstance = {
-        id: 'provider-1',
-        name: 'New Instance',
+        id: "provider-1",
+        name: "New Instance",
         status: ConnectionStatus.DISCONNECTED,
         phoneNumber: null,
         createdAt: new Date(),
-      }
+      };
 
-      repository.existsForGrupo.mockResolvedValue(false)
-      whatsappService.createInstance.mockResolvedValue(providerInstance)
-      whatsappService.getActiveProvider.mockReturnValue('zapster')
-      repository.create.mockResolvedValue(mockInstance)
+      repository.existsForGrupo.mockResolvedValue(false);
+      whatsappService.createInstance.mockResolvedValue(providerInstance);
+      whatsappService.getActiveProvider.mockReturnValue("zapster");
+      repository.create.mockResolvedValue(mockInstance);
 
-      const result = await service.create(dto, mockUser)
+      const result = await service.create(dto, mockUser);
 
-      expect(result.id).toBe('instance-1')
-      expect(repository.existsForGrupo).toHaveBeenCalledWith('grupo-1')
-      expect(whatsappService.createInstance).toHaveBeenCalledWith('New Instance')
-    })
+      expect(result.id).toBe("instance-1");
+      expect(repository.existsForGrupo).toHaveBeenCalledWith("grupo-1");
+      expect(whatsappService.createInstance).toHaveBeenCalledWith(
+        "New Instance",
+      );
+    });
 
-    it('should throw ForbiddenException when user has no access to grupo', async () => {
-      const dto = { grupoId: 'grupo-not-allowed', name: 'New Instance' }
+    it("should throw ForbiddenException when user has no access to grupo", async () => {
+      const dto = { grupoId: "grupo-not-allowed", name: "New Instance" };
 
-      await expect(service.create(dto, mockUser)).rejects.toThrow(ForbiddenException)
-      await expect(service.create(dto, mockUser)).rejects.toThrow('Sem acesso ao grupo')
-    })
-
-    it('should throw ConflictException when grupo already has instance', async () => {
-      const dto = { grupoId: 'grupo-1', name: 'New Instance' }
-
-      repository.existsForGrupo.mockResolvedValue(true)
-
-      await expect(service.create(dto, mockUser)).rejects.toThrow(ConflictException)
       await expect(service.create(dto, mockUser)).rejects.toThrow(
-        'Grupo já possui uma instância WhatsApp'
-      )
-    })
-  })
+        ForbiddenException,
+      );
+      await expect(service.create(dto, mockUser)).rejects.toThrow(
+        "Sem acesso ao grupo",
+      );
+    });
 
-  describe('findAll', () => {
-    it('should return all instances for user grupos', async () => {
-      repository.findAll.mockResolvedValue([mockInstance])
+    it("should throw ConflictException when grupo already has instance", async () => {
+      const dto = { grupoId: "grupo-1", name: "New Instance" };
 
-      const result = await service.findAll(mockUser)
+      repository.existsForGrupo.mockResolvedValue(true);
 
-      expect(result).toHaveLength(1)
-      expect(repository.findAll).toHaveBeenCalledWith(mockUser.grupoIds)
-    })
-  })
+      await expect(service.create(dto, mockUser)).rejects.toThrow(
+        ConflictException,
+      );
+      await expect(service.create(dto, mockUser)).rejects.toThrow(
+        "Grupo já possui uma instância WhatsApp",
+      );
+    });
+  });
 
-  describe('findOne', () => {
-    it('should return an instance by id', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
+  describe("findAll", () => {
+    it("should return all instances for user grupos", async () => {
+      repository.findAll.mockResolvedValue([mockInstance]);
 
-      const result = await service.findOne('instance-1', mockUser)
+      const result = await service.findAll(mockUser);
 
-      expect(result.id).toBe('instance-1')
-    })
+      expect(result).toHaveLength(1);
+      expect(repository.findAll).toHaveBeenCalledWith(mockUser.grupoIds);
+    });
+  });
 
-    it('should throw NotFoundException when instance not found', async () => {
-      repository.findById.mockResolvedValue(null)
+  describe("findOne", () => {
+    it("should return an instance by id", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
 
-      await expect(service.findOne('non-existent', mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-    })
+      const result = await service.findOne("instance-1", mockUser);
 
-    it('should throw ForbiddenException when user has no access', async () => {
-      const instanceOutsideGrupo = { ...mockInstance, grupoId: 'grupo-not-allowed' }
-      repository.findById.mockResolvedValue(instanceOutsideGrupo)
+      expect(result.id).toBe("instance-1");
+    });
 
-      await expect(service.findOne('instance-1', mockUser)).rejects.toThrow(
-        ForbiddenException
-      )
-    })
-  })
+    it("should throw NotFoundException when instance not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
-  describe('findByGrupo', () => {
-    it('should return instance for grupo', async () => {
-      repository.findByGrupoId.mockResolvedValue(mockInstance)
+      await expect(service.findOne("non-existent", mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
 
-      const result = await service.findByGrupo('grupo-1', mockUser)
+    it("should throw ForbiddenException when user has no access", async () => {
+      const instanceOutsideGrupo = {
+        ...mockInstance,
+        grupoId: "grupo-not-allowed",
+      };
+      repository.findById.mockResolvedValue(instanceOutsideGrupo);
 
-      expect(result?.id).toBe('instance-1')
-    })
+      await expect(service.findOne("instance-1", mockUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+  });
 
-    it('should return null when no instance exists for grupo', async () => {
-      repository.findByGrupoId.mockResolvedValue(null)
+  describe("findByGrupo", () => {
+    it("should return instance for grupo", async () => {
+      repository.findByGrupoId.mockResolvedValue(mockInstance);
 
-      const result = await service.findByGrupo('grupo-1', mockUser)
+      const result = await service.findByGrupo("grupo-1", mockUser);
 
-      expect(result).toBeNull()
-    })
+      expect(result?.id).toBe("instance-1");
+    });
 
-    it('should throw ForbiddenException when user has no access', async () => {
-      await expect(service.findByGrupo('grupo-not-allowed', mockUser)).rejects.toThrow(
-        ForbiddenException
-      )
-    })
-  })
+    it("should return null when no instance exists for grupo", async () => {
+      repository.findByGrupoId.mockResolvedValue(null);
 
-  describe('update', () => {
-    it('should update an instance', async () => {
-      const updatedInstance = { ...mockInstance, instanceName: 'Updated Name' }
-      repository.findById.mockResolvedValue(mockInstance)
-      repository.update.mockResolvedValue(updatedInstance)
+      const result = await service.findByGrupo("grupo-1", mockUser);
 
-      const result = await service.update('instance-1', { name: 'Updated Name' }, mockUser)
+      expect(result).toBeNull();
+    });
 
-      expect(result.instanceName).toBe('Updated Name')
-    })
+    it("should throw ForbiddenException when user has no access", async () => {
+      await expect(
+        service.findByGrupo("grupo-not-allowed", mockUser),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
 
-    it('should throw NotFoundException when instance not found', async () => {
-      repository.findById.mockResolvedValue(null)
+  describe("update", () => {
+    it("should update an instance", async () => {
+      const updatedInstance = { ...mockInstance, instanceName: "Updated Name" };
+      repository.findById.mockResolvedValue(mockInstance);
+      repository.update.mockResolvedValue(updatedInstance);
+
+      const result = await service.update(
+        "instance-1",
+        { name: "Updated Name" },
+        mockUser,
+      );
+
+      expect(result.instanceName).toBe("Updated Name");
+    });
+
+    it("should throw NotFoundException when instance not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
       await expect(
-        service.update('non-existent', { name: 'New Name' }, mockUser)
-      ).rejects.toThrow(NotFoundException)
-    })
-  })
+        service.update("non-existent", { name: "New Name" }, mockUser),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
 
-  describe('delete', () => {
-    it('should delete an instance', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.disconnect.mockResolvedValue(undefined)
-      whatsappService.deleteInstance.mockResolvedValue(undefined)
-      repository.delete.mockResolvedValue(undefined)
+  describe("delete", () => {
+    it("should delete an instance", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.disconnect.mockResolvedValue(undefined);
+      whatsappService.deleteInstance.mockResolvedValue(undefined);
+      repository.delete.mockResolvedValue(undefined);
 
-      await service.delete('instance-1', mockUser)
+      await service.delete("instance-1", mockUser);
 
-      expect(whatsappService.disconnect).toHaveBeenCalled()
-      expect(whatsappService.deleteInstance).toHaveBeenCalled()
-      expect(repository.delete).toHaveBeenCalledWith('instance-1')
-    })
+      expect(whatsappService.disconnect).toHaveBeenCalled();
+      expect(whatsappService.deleteInstance).toHaveBeenCalled();
+      expect(repository.delete).toHaveBeenCalledWith("instance-1");
+    });
 
-    it('should continue deletion even if provider fails', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.disconnect.mockRejectedValue(new Error('Provider error'))
-      repository.delete.mockResolvedValue(undefined)
+    it("should continue deletion even if provider fails", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.disconnect.mockRejectedValue(new Error("Provider error"));
+      repository.delete.mockResolvedValue(undefined);
 
-      await service.delete('instance-1', mockUser)
+      await service.delete("instance-1", mockUser);
 
-      expect(repository.delete).toHaveBeenCalledWith('instance-1')
-    })
-  })
+      expect(repository.delete).toHaveBeenCalledWith("instance-1");
+    });
+  });
 
-  describe('getQRCode', () => {
-    it('should return QR code', async () => {
-      const qrResponse = { qr: 'base64-qr-code', expiresAt: new Date() }
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.getQRCode.mockResolvedValue(qrResponse)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+  describe("getQRCode", () => {
+    it("should return QR code", async () => {
+      const qrResponse = { qr: "base64-qr-code", expiresAt: new Date() };
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.getQRCode.mockResolvedValue(qrResponse);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      const result = await service.getQRCode('instance-1', mockUser)
+      const result = await service.getQRCode("instance-1", mockUser);
 
-      expect(result.qr).toBe('base64-qr-code')
-    })
+      expect(result.qr).toBe("base64-qr-code");
+    });
 
-    it('should power on instance if offline', async () => {
-      const offlineInstance = { ...mockInstance, status: WhatsAppInstanceStatus.offline }
-      repository.findById.mockResolvedValue(offlineInstance)
-      whatsappService.powerOn.mockResolvedValue(undefined)
+    it("should power on instance if offline", async () => {
+      const offlineInstance = {
+        ...mockInstance,
+        status: WhatsAppInstanceStatus.offline,
+      };
+      repository.findById.mockResolvedValue(offlineInstance);
+      whatsappService.powerOn.mockResolvedValue(undefined);
       whatsappService.getQRCode.mockResolvedValue({
-        qr: 'qr-code',
+        qr: "qr-code",
         expiresAt: new Date(),
-      })
-      repository.updateStatus.mockResolvedValue(mockInstance)
+      });
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.getQRCode('instance-1', mockUser)
+      await service.getQRCode("instance-1", mockUser);
 
-      expect(whatsappService.powerOn).toHaveBeenCalled()
-    })
-  })
+      expect(whatsappService.powerOn).toHaveBeenCalled();
+    });
+  });
 
-  describe('getPairingCode', () => {
-    it('should return pairing code', async () => {
-      const codeResponse = { code: '123456', expiresAt: new Date() }
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.getPairingCode.mockResolvedValue(codeResponse)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+  describe("getPairingCode", () => {
+    it("should return pairing code", async () => {
+      const codeResponse = { code: "123456", expiresAt: new Date() };
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.getPairingCode.mockResolvedValue(codeResponse);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
       const result = await service.getPairingCode(
-        'instance-1',
-        { phoneNumber: '5511999999999' },
-        mockUser
-      )
+        "instance-1",
+        { phoneNumber: "5511999999999" },
+        mockUser,
+      );
 
-      expect(result.code).toBe('123456')
-    })
+      expect(result.code).toBe("123456");
+    });
 
-    it('should throw error when phone number not provided', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
+    it("should throw error when phone number not provided", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
 
       await expect(
-        service.getPairingCode('instance-1', {}, mockUser)
-      ).rejects.toThrow('Número de telefone é obrigatório para código de pareamento')
-    })
-  })
+        service.getPairingCode("instance-1", {}, mockUser),
+      ).rejects.toThrow(
+        "Número de telefone é obrigatório para código de pareamento",
+      );
+    });
+  });
 
-  describe('getConnectionStatus', () => {
-    it('should return connection status', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
+  describe("getConnectionStatus", () => {
+    it("should return connection status", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
       whatsappService.getConnectionStatus.mockResolvedValue(
-        ConnectionStatus.CONNECTED
-      )
+        ConnectionStatus.CONNECTED,
+      );
       repository.updateStatus.mockResolvedValue({
         ...mockInstance,
         status: WhatsAppInstanceStatus.connected,
-      })
+      });
 
-      const result = await service.getConnectionStatus('instance-1', mockUser)
+      const result = await service.getConnectionStatus("instance-1", mockUser);
 
-      expect(result.isConnected).toBe(true)
-      expect(result.status).toBe(WhatsAppInstanceStatus.connected)
-    })
-  })
+      expect(result.isConnected).toBe(true);
+      expect(result.status).toBe(WhatsAppInstanceStatus.connected);
+    });
+  });
 
-  describe('powerOn', () => {
-    it('should power on instance', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.powerOn.mockResolvedValue(undefined)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+  describe("powerOn", () => {
+    it("should power on instance", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.powerOn.mockResolvedValue(undefined);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.powerOn('instance-1', mockUser)
+      await service.powerOn("instance-1", mockUser);
 
-      expect(whatsappService.powerOn).toHaveBeenCalledWith('provider-instance-1')
+      expect(whatsappService.powerOn).toHaveBeenCalledWith(
+        "provider-instance-1",
+      );
       expect(repository.updateStatus).toHaveBeenCalledWith(
-        'instance-1',
-        WhatsAppInstanceStatus.connecting
-      )
-    })
-  })
+        "instance-1",
+        WhatsAppInstanceStatus.connecting,
+      );
+    });
+  });
 
-  describe('powerOff', () => {
-    it('should power off instance', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.powerOff.mockResolvedValue(undefined)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+  describe("powerOff", () => {
+    it("should power off instance", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.powerOff.mockResolvedValue(undefined);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.powerOff('instance-1', mockUser)
+      await service.powerOff("instance-1", mockUser);
 
-      expect(whatsappService.powerOff).toHaveBeenCalledWith('provider-instance-1')
+      expect(whatsappService.powerOff).toHaveBeenCalledWith(
+        "provider-instance-1",
+      );
       expect(repository.updateStatus).toHaveBeenCalledWith(
-        'instance-1',
-        WhatsAppInstanceStatus.offline
-      )
-    })
-  })
+        "instance-1",
+        WhatsAppInstanceStatus.offline,
+      );
+    });
+  });
 
-  describe('disconnect', () => {
-    it('should disconnect instance', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
-      whatsappService.disconnect.mockResolvedValue(undefined)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+  describe("disconnect", () => {
+    it("should disconnect instance", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
+      whatsappService.disconnect.mockResolvedValue(undefined);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.disconnect('instance-1', mockUser)
+      await service.disconnect("instance-1", mockUser);
 
-      expect(whatsappService.disconnect).toHaveBeenCalledWith('provider-instance-1')
+      expect(whatsappService.disconnect).toHaveBeenCalledWith(
+        "provider-instance-1",
+      );
       expect(repository.updateStatus).toHaveBeenCalledWith(
-        'instance-1',
+        "instance-1",
         WhatsAppInstanceStatus.disconnected,
-        undefined
-      )
-    })
-  })
+        undefined,
+      );
+    });
+  });
 
-  describe('refreshStatus', () => {
-    it('should refresh status from provider', async () => {
+  describe("refreshStatus", () => {
+    it("should refresh status from provider", async () => {
       const providerInstance = {
-        id: 'provider-1',
-        name: 'Test',
+        id: "provider-1",
+        name: "Test",
         status: ConnectionStatus.CONNECTED,
-        phoneNumber: '5511999999999',
+        phoneNumber: "5511999999999",
         createdAt: new Date(),
-      }
-      repository.findById.mockResolvedValue(mockInstance)
+      };
+      repository.findById.mockResolvedValue(mockInstance);
       whatsappService.getConnectionStatus.mockResolvedValue(
-        ConnectionStatus.CONNECTED
-      )
-      whatsappService.getInstance.mockResolvedValue(providerInstance)
-      repository.updateStatus.mockResolvedValue(mockInstance)
+        ConnectionStatus.CONNECTED,
+      );
+      whatsappService.getInstance.mockResolvedValue(providerInstance);
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.refreshStatus('instance-1')
+      await service.refreshStatus("instance-1");
 
       expect(repository.updateStatus).toHaveBeenCalledWith(
-        'instance-1',
+        "instance-1",
         WhatsAppInstanceStatus.connected,
-        '5511999999999'
-      )
-    })
+        "5511999999999",
+      );
+    });
 
-    it('should set offline status when provider fails', async () => {
-      repository.findById.mockResolvedValue(mockInstance)
+    it("should set offline status when provider fails", async () => {
+      repository.findById.mockResolvedValue(mockInstance);
       whatsappService.getConnectionStatus.mockRejectedValue(
-        new Error('Provider error')
-      )
-      repository.updateStatus.mockResolvedValue(mockInstance)
+        new Error("Provider error"),
+      );
+      repository.updateStatus.mockResolvedValue(mockInstance);
 
-      await service.refreshStatus('instance-1')
+      await service.refreshStatus("instance-1");
 
       expect(repository.updateStatus).toHaveBeenCalledWith(
-        'instance-1',
-        WhatsAppInstanceStatus.offline
-      )
-    })
+        "instance-1",
+        WhatsAppInstanceStatus.offline,
+      );
+    });
 
-    it('should do nothing when instance not found', async () => {
-      repository.findById.mockResolvedValue(null)
+    it("should do nothing when instance not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
-      await service.refreshStatus('non-existent')
+      await service.refreshStatus("non-existent");
 
-      expect(whatsappService.getConnectionStatus).not.toHaveBeenCalled()
-    })
-  })
-})
+      expect(whatsappService.getConnectionStatus).not.toHaveBeenCalled();
+    });
+  });
+});

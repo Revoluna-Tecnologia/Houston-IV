@@ -1,38 +1,43 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
-import { NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common'
-import { ContactsService } from '../contacts.service'
-import { ContactsRepository } from '../contacts.repository'
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
+import {
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+} from "@nestjs/common";
+import { ContactsService } from "../contacts.service";
+import { ContactsRepository } from "../contacts.repository";
+import { AppRole } from "../../../auth/types/auth.types";
 
-describe('ContactsService', () => {
-  let service: ContactsService
+describe("ContactsService", () => {
+  let service: ContactsService;
   let repository: {
-    create: Mock
-    findById: Mock
-    findByOwnerAndPhone: Mock
-    findAll: Mock
-    update: Mock
-    delete: Mock
-    toggleFavorite: Mock
-    toggleBlock: Mock
-  }
+    create: Mock;
+    findById: Mock;
+    findByOwnerAndPhone: Mock;
+    findAll: Mock;
+    update: Mock;
+    delete: Mock;
+    toggleFavorite: Mock;
+    toggleBlock: Mock;
+  };
 
   const mockUser = {
-    id: 'user-1',
-    email: 'test@test.com',
-    name: 'Test User',
-    role: 'admin' as const,
-    grupoIds: ['grupo-1'],
+    id: "user-1",
+    email: "test@test.com",
+    name: "Test User",
+    roles: [AppRole.ADMINISTRADOR],
+    grupoIds: ["grupo-1"],
     permissions: [],
-    iat: 0,
-    exp: 0,
-  }
+    hospitalIds: [],
+    setorIds: [],
+  };
 
   const mockContact = {
-    id: 'contact-1',
-    ownerId: 'user-1',
-    name: 'John Doe',
-    phoneNumber: '5511999999999',
-    email: 'john@example.com',
+    id: "contact-1",
+    ownerId: "user-1",
+    name: "John Doe",
+    phoneNumber: "5511999999999",
+    email: "john@example.com",
     avatarUrl: null,
     linkedUserId: null,
     linkedMedicoId: null,
@@ -42,7 +47,7 @@ describe('ContactsService', () => {
     notes: null,
     createdAt: new Date(),
     updatedAt: new Date(),
-  }
+  };
 
   beforeEach(() => {
     repository = {
@@ -52,57 +57,63 @@ describe('ContactsService', () => {
       findAll: vi.fn().mockResolvedValue({ data: [mockContact], total: 1 }),
       update: vi.fn().mockResolvedValue(mockContact),
       delete: vi.fn().mockResolvedValue(undefined),
-      toggleFavorite: vi.fn().mockResolvedValue({ ...mockContact, isFavorite: true }),
-      toggleBlock: vi.fn().mockResolvedValue({ ...mockContact, isBlocked: true }),
-    }
+      toggleFavorite: vi
+        .fn()
+        .mockResolvedValue({ ...mockContact, isFavorite: true }),
+      toggleBlock: vi
+        .fn()
+        .mockResolvedValue({ ...mockContact, isBlocked: true }),
+    };
 
-    service = new ContactsService(repository as unknown as ContactsRepository)
-  })
+    service = new ContactsService(repository as unknown as ContactsRepository);
+  });
 
-  describe('create', () => {
-    it('should create a new contact', async () => {
+  describe("create", () => {
+    it("should create a new contact", async () => {
       const dto = {
-        name: 'John Doe',
-        phoneNumber: '5511999999999',
-        email: 'john@example.com',
-      }
+        name: "John Doe",
+        phoneNumber: "5511999999999",
+        email: "john@example.com",
+      };
 
-      const result = await service.create(dto, mockUser)
+      const result = await service.create(dto, mockUser);
 
-      expect(result.id).toBe('contact-1')
+      expect(result.id).toBe("contact-1");
       expect(repository.findByOwnerAndPhone).toHaveBeenCalledWith(
         mockUser.id,
-        dto.phoneNumber
-      )
-      expect(repository.create).toHaveBeenCalled()
-    })
+        dto.phoneNumber,
+      );
+      expect(repository.create).toHaveBeenCalled();
+    });
 
-    it('should throw ConflictException when contact already exists', async () => {
-      repository.findByOwnerAndPhone.mockResolvedValue(mockContact)
+    it("should throw ConflictException when contact already exists", async () => {
+      repository.findByOwnerAndPhone.mockResolvedValue(mockContact);
 
       const dto = {
-        name: 'John Doe',
-        phoneNumber: '5511999999999',
-      }
+        name: "John Doe",
+        phoneNumber: "5511999999999",
+      };
 
-      await expect(service.create(dto, mockUser)).rejects.toThrow(ConflictException)
       await expect(service.create(dto, mockUser)).rejects.toThrow(
-        'Contato com esse telefone já existe'
-      )
-    })
+        ConflictException,
+      );
+      await expect(service.create(dto, mockUser)).rejects.toThrow(
+        "Contato com esse telefone já existe",
+      );
+    });
 
-    it('should create contact with optional fields', async () => {
+    it("should create contact with optional fields", async () => {
       const dto = {
-        name: 'John Doe',
-        phoneNumber: '5511999999999',
-        email: 'john@example.com',
-        avatarUrl: 'https://example.com/avatar.jpg',
-        linkedMedicoId: 'medico-1',
+        name: "John Doe",
+        phoneNumber: "5511999999999",
+        email: "john@example.com",
+        avatarUrl: "https://example.com/avatar.jpg",
+        linkedMedicoId: "medico-1",
         isFavorite: true,
-        notes: 'Some notes',
-      }
+        notes: "Some notes",
+      };
 
-      await service.create(dto, mockUser)
+      await service.create(dto, mockUser);
 
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -114,139 +125,142 @@ describe('ContactsService', () => {
           linkedMedicoId: dto.linkedMedicoId,
           isFavorite: dto.isFavorite,
           notes: dto.notes,
-        })
-      )
-    })
-  })
+        }),
+      );
+    });
+  });
 
-  describe('findAll', () => {
-    it('should return all contacts for user', async () => {
-      const query = { page: 1, limit: 50 }
+  describe("findAll", () => {
+    it("should return all contacts for user", async () => {
+      const query = { page: 1, limit: 50 };
 
-      const result = await service.findAll(query, mockUser)
+      const result = await service.findAll(query, mockUser);
 
-      expect(result.data).toHaveLength(1)
-      expect(result.total).toBe(1)
-      expect(repository.findAll).toHaveBeenCalledWith(mockUser.id, query)
-    })
-  })
+      expect(result.data).toHaveLength(1);
+      expect(result.total).toBe(1);
+      expect(repository.findAll).toHaveBeenCalledWith(mockUser.id, query);
+    });
+  });
 
-  describe('findOne', () => {
-    it('should return a contact by id', async () => {
-      const result = await service.findOne('contact-1', mockUser)
+  describe("findOne", () => {
+    it("should return a contact by id", async () => {
+      const result = await service.findOne("contact-1", mockUser);
 
-      expect(result.id).toBe('contact-1')
-      expect(repository.findById).toHaveBeenCalledWith('contact-1')
-    })
+      expect(result.id).toBe("contact-1");
+      expect(repository.findById).toHaveBeenCalledWith("contact-1");
+    });
 
-    it('should throw NotFoundException when contact not found', async () => {
-      repository.findById.mockResolvedValue(null)
+    it("should throw NotFoundException when contact not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
-      await expect(service.findOne('non-existent', mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-      await expect(service.findOne('non-existent', mockUser)).rejects.toThrow(
-        'Contato não encontrado'
-      )
-    })
+      await expect(service.findOne("non-existent", mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
+      await expect(service.findOne("non-existent", mockUser)).rejects.toThrow(
+        "Contato não encontrado",
+      );
+    });
 
-    it('should throw ForbiddenException when user has no access', async () => {
-      const contactFromOtherUser = { ...mockContact, ownerId: 'other-user' }
-      repository.findById.mockResolvedValue(contactFromOtherUser)
+    it("should throw ForbiddenException when user has no access", async () => {
+      const contactFromOtherUser = { ...mockContact, ownerId: "other-user" };
+      repository.findById.mockResolvedValue(contactFromOtherUser);
 
-      await expect(service.findOne('contact-1', mockUser)).rejects.toThrow(
-        ForbiddenException
-      )
-      await expect(service.findOne('contact-1', mockUser)).rejects.toThrow(
-        'Sem acesso ao contato'
-      )
-    })
-  })
+      await expect(service.findOne("contact-1", mockUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+      await expect(service.findOne("contact-1", mockUser)).rejects.toThrow(
+        "Sem acesso ao contato",
+      );
+    });
+  });
 
-  describe('update', () => {
-    it('should update a contact', async () => {
-      const dto = { name: 'Jane Doe' }
+  describe("update", () => {
+    it("should update a contact", async () => {
+      const dto = { name: "Jane Doe" };
 
-      const result = await service.update('contact-1', dto, mockUser)
+      const result = await service.update("contact-1", dto, mockUser);
 
-      expect(result.id).toBe('contact-1')
-      expect(repository.update).toHaveBeenCalledWith('contact-1', expect.any(Object))
-    })
+      expect(result.id).toBe("contact-1");
+      expect(repository.update).toHaveBeenCalledWith(
+        "contact-1",
+        expect.any(Object),
+      );
+    });
 
-    it('should throw NotFoundException when contact not found', async () => {
-      repository.findById.mockResolvedValue(null)
-
-      await expect(
-        service.update('non-existent', { name: 'Jane' }, mockUser)
-      ).rejects.toThrow(NotFoundException)
-    })
-
-    it('should throw ForbiddenException when user has no access', async () => {
-      const contactFromOtherUser = { ...mockContact, ownerId: 'other-user' }
-      repository.findById.mockResolvedValue(contactFromOtherUser)
+    it("should throw NotFoundException when contact not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
       await expect(
-        service.update('contact-1', { name: 'Jane' }, mockUser)
-      ).rejects.toThrow(ForbiddenException)
-    })
-  })
+        service.update("non-existent", { name: "Jane" }, mockUser),
+      ).rejects.toThrow(NotFoundException);
+    });
 
-  describe('delete', () => {
-    it('should delete a contact', async () => {
-      await service.delete('contact-1', mockUser)
+    it("should throw ForbiddenException when user has no access", async () => {
+      const contactFromOtherUser = { ...mockContact, ownerId: "other-user" };
+      repository.findById.mockResolvedValue(contactFromOtherUser);
 
-      expect(repository.delete).toHaveBeenCalledWith('contact-1')
-    })
+      await expect(
+        service.update("contact-1", { name: "Jane" }, mockUser),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
 
-    it('should throw NotFoundException when contact not found', async () => {
-      repository.findById.mockResolvedValue(null)
+  describe("delete", () => {
+    it("should delete a contact", async () => {
+      await service.delete("contact-1", mockUser);
 
-      await expect(service.delete('non-existent', mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-    })
+      expect(repository.delete).toHaveBeenCalledWith("contact-1");
+    });
 
-    it('should throw ForbiddenException when user has no access', async () => {
-      const contactFromOtherUser = { ...mockContact, ownerId: 'other-user' }
-      repository.findById.mockResolvedValue(contactFromOtherUser)
+    it("should throw NotFoundException when contact not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
-      await expect(service.delete('contact-1', mockUser)).rejects.toThrow(
-        ForbiddenException
-      )
-    })
-  })
+      await expect(service.delete("non-existent", mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
 
-  describe('toggleFavorite', () => {
-    it('should toggle favorite status', async () => {
-      const result = await service.toggleFavorite('contact-1', mockUser)
+    it("should throw ForbiddenException when user has no access", async () => {
+      const contactFromOtherUser = { ...mockContact, ownerId: "other-user" };
+      repository.findById.mockResolvedValue(contactFromOtherUser);
 
-      expect(result.isFavorite).toBe(true)
-      expect(repository.toggleFavorite).toHaveBeenCalledWith('contact-1')
-    })
+      await expect(service.delete("contact-1", mockUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+  });
 
-    it('should throw NotFoundException when contact not found', async () => {
-      repository.findById.mockResolvedValue(null)
+  describe("toggleFavorite", () => {
+    it("should toggle favorite status", async () => {
+      const result = await service.toggleFavorite("contact-1", mockUser);
 
-      await expect(service.toggleFavorite('non-existent', mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-    })
-  })
+      expect(result.isFavorite).toBe(true);
+      expect(repository.toggleFavorite).toHaveBeenCalledWith("contact-1");
+    });
 
-  describe('toggleBlock', () => {
-    it('should toggle block status', async () => {
-      const result = await service.toggleBlock('contact-1', mockUser)
+    it("should throw NotFoundException when contact not found", async () => {
+      repository.findById.mockResolvedValue(null);
 
-      expect(result.isBlocked).toBe(true)
-      expect(repository.toggleBlock).toHaveBeenCalledWith('contact-1')
-    })
+      await expect(
+        service.toggleFavorite("non-existent", mockUser),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
 
-    it('should throw NotFoundException when contact not found', async () => {
-      repository.findById.mockResolvedValue(null)
+  describe("toggleBlock", () => {
+    it("should toggle block status", async () => {
+      const result = await service.toggleBlock("contact-1", mockUser);
 
-      await expect(service.toggleBlock('non-existent', mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-    })
-  })
-})
+      expect(result.isBlocked).toBe(true);
+      expect(repository.toggleBlock).toHaveBeenCalledWith("contact-1");
+    });
+
+    it("should throw NotFoundException when contact not found", async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.toggleBlock("non-existent", mockUser),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+});

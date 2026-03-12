@@ -1,34 +1,40 @@
-import type { Escalista, EscalistaStatus } from '@prisma/client'
-import { randomUUID } from 'crypto'
+import type { Escalista, EscalistaStatus } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 interface CreateEscalistaFixtureParams {
-  id?: string
-  medicoId?: string
-  grupoId?: string
-  status?: EscalistaStatus
-  createdAt?: Date
-  updatedAt?: Date
+  id?: string;
+  medicoId?: string;
+  grupoId?: string;
+  status?: EscalistaStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
+  deletedBy?: string | null;
 }
 
-export const createEscalistaFixture = (params?: CreateEscalistaFixtureParams): Escalista => ({
+export const createEscalistaFixture = (
+  params?: CreateEscalistaFixtureParams,
+): Escalista => ({
   id: params?.id ?? randomUUID(),
   medicoId: params?.medicoId ?? randomUUID(),
   grupoId: params?.grupoId ?? randomUUID(),
-  status: params?.status ?? 'pendente',
+  status: params?.status ?? "pendente",
   createdAt: params?.createdAt ?? new Date(),
   updatedAt: params?.updatedAt ?? new Date(),
-})
+  deletedAt: params?.deletedAt ?? null,
+  deletedBy: params?.deletedBy ?? null,
+});
 
-export const createActiveEscalistaFixture = (params?: CreateEscalistaFixtureParams): Escalista =>
-  createEscalistaFixture({ ...params, status: 'ativo' })
+export const createActiveEscalistaFixture = (
+  params?: CreateEscalistaFixtureParams,
+): Escalista => createEscalistaFixture({ ...params, status: "ativo" });
 
-export const createInactiveEscalistaFixture = (params?: CreateEscalistaFixtureParams): Escalista =>
-  createEscalistaFixture({ ...params, status: 'inativo' })
+export const createInactiveEscalistaFixture = (
+  params?: CreateEscalistaFixtureParams,
+): Escalista => createEscalistaFixture({ ...params, status: "inativo" });
 
 export const createEscalistaListFixture = (
   count: number,
-  grupoId?: string
+  grupoId?: string,
 ): Escalista[] =>
-  Array.from({ length: count }, () =>
-    createEscalistaFixture({ grupoId })
-  )
+  Array.from({ length: count }, () => createEscalistaFixture({ grupoId }));
