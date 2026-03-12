@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * ConversationList Component
@@ -6,14 +6,17 @@
  * SRP: Orquestra a lista, delegando renderizacao para subcomponentes
  */
 
-import { useState, useCallback, useMemo } from 'react';
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { ConversationSearch } from './ConversationSearch';
-import { ConversationItem } from './ConversationItem';
-import type { Conversation, ConversationType } from '@/services/comunicacao/types';
+import { useState, useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { ConversationSearch } from "./ConversationSearch";
+import { ConversationItem } from "./ConversationItem";
+import type {
+  Conversation,
+  ConversationType,
+} from "@/services/comunicacao/types";
 
 const PlusIcon = () => (
   <svg
@@ -48,7 +51,7 @@ const ArchiveIcon = () => (
   </svg>
 );
 
-type FilterType = 'all' | 'direct' | 'group' | 'archived';
+type FilterType = "all" | "direct" | "group" | "archived";
 
 export interface ConversationListProps {
   conversations: Conversation[];
@@ -67,25 +70,29 @@ export function ConversationList({
   onCreateNew,
   className,
 }: ConversationListProps) {
-  const t = useTranslations('Comunicacao');
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<FilterType>('all');
+  const t = useTranslations("Comunicacao");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const filteredConversations = useMemo(() => {
     let result = [...conversations];
 
     // Filtrar por tipo
     switch (filter) {
-      case 'direct':
-        result = result.filter((c) => c.type === ('direct' as ConversationType) && !c.isArchived);
+      case "direct":
+        result = result.filter(
+          (c) => c.type === ("direct" as ConversationType) && !c.isArchived,
+        );
         break;
-      case 'group':
-        result = result.filter((c) => c.type === ('group' as ConversationType) && !c.isArchived);
+      case "group":
+        result = result.filter(
+          (c) => c.type === ("group" as ConversationType) && !c.isArchived,
+        );
         break;
-      case 'archived':
+      case "archived":
         result = result.filter((c) => c.isArchived);
         break;
-      case 'all':
+      case "all":
       default:
         result = result.filter((c) => !c.isArchived);
         break;
@@ -96,12 +103,14 @@ export function ConversationList({
       const searchLower = search.toLowerCase().trim();
       result = result.filter((c) => {
         const nameMatch = c.name?.toLowerCase().includes(searchLower);
-        const previewMatch = c.lastMessagePreview?.toLowerCase().includes(searchLower);
+        const previewMatch = c.lastMessagePreview
+          ?.toLowerCase()
+          .includes(searchLower);
         const participantMatch = c.participants?.some(
           (p) =>
             p.user?.name?.toLowerCase().includes(searchLower) ||
             p.medico?.nome?.toLowerCase().includes(searchLower) ||
-            p.phoneNumber?.includes(searchLower)
+            p.phoneNumber?.includes(searchLower),
         );
         return nameMatch || previewMatch || participantMatch;
       });
@@ -114,24 +123,26 @@ export function ConversationList({
     (id: string) => {
       onSelect(id);
     },
-    [onSelect]
+    [onSelect],
   );
 
   const filterButtons: { key: FilterType; label: string }[] = [
-    { key: 'all', label: t('conversations.filterAll') },
-    { key: 'direct', label: t('conversations.filterDirect') },
-    { key: 'group', label: t('conversations.filterGroup') },
-    { key: 'archived', label: t('conversations.filterArchived') },
+    { key: "all", label: t("conversations.filters.all") },
+    { key: "direct", label: t("conversations.filters.direct") },
+    { key: "group", label: t("conversations.filters.groups") },
+    { key: "archived", label: t("conversations.filters.archived") },
   ];
 
   return (
-    <div className={cn('flex h-full flex-col', className)}>
+    <div className={cn("flex h-full flex-col", className)}>
       {/* Header */}
       <div className="flex items-center justify-between border-b p-4">
-        <h2 className="text-lg font-semibold">{t('conversations.title')}</h2>
+        <h2 className="text-lg font-semibold">{t("conversations.title")}</h2>
         <Button size="sm" onClick={onCreateNew}>
           <PlusIcon />
-          <span className="ml-1 hidden sm:inline">{t('conversations.new')}</span>
+          <span className="ml-1 hidden sm:inline">
+            {t("conversations.new")}
+          </span>
         </Button>
       </div>
 
@@ -145,13 +156,13 @@ export function ConversationList({
         {filterButtons.map(({ key, label }) => (
           <Button
             key={key}
-            variant={filter === key ? 'secondary' : 'ghost'}
+            variant={filter === key ? "secondary" : "ghost"}
             size="sm"
             onClick={() => setFilter(key)}
             className="h-7 px-2 text-xs"
           >
-            {key === 'archived' && <ArchiveIcon />}
-            <span className={key === 'archived' ? 'ml-1' : ''}>{label}</span>
+            {key === "archived" && <ArchiveIcon />}
+            <span className={key === "archived" ? "ml-1" : ""}>{label}</span>
           </Button>
         ))}
       </div>
@@ -195,19 +206,25 @@ function ConversationListSkeleton() {
   );
 }
 
-function EmptyState({ filter, hasSearch }: { filter: FilterType; hasSearch: boolean }) {
-  const t = useTranslations('Comunicacao');
+function EmptyState({
+  filter,
+  hasSearch,
+}: {
+  filter: FilterType;
+  hasSearch: boolean;
+}) {
+  const t = useTranslations("Comunicacao");
 
-  let message = t('conversations.emptyDefault');
+  let message = t("conversations.emptyDefault");
 
   if (hasSearch) {
-    message = t('conversations.emptySearch');
-  } else if (filter === 'archived') {
-    message = t('conversations.emptyArchived');
-  } else if (filter === 'direct') {
-    message = t('conversations.emptyDirect');
-  } else if (filter === 'group') {
-    message = t('conversations.emptyGroup');
+    message = t("conversations.emptySearch");
+  } else if (filter === "archived") {
+    message = t("conversations.emptyArchived");
+  } else if (filter === "direct") {
+    message = t("conversations.emptyDirect");
+  } else if (filter === "group") {
+    message = t("conversations.emptyGroup");
   }
 
   return (
