@@ -48,9 +48,9 @@ export const configValidationSchema = Joi.object({
   MAX_FILE_SIZE: Joi.number().default(26214400), // 25MB
 
   // Email
-  RESEND_API_KEY: Joi.string().optional(),
+  RESEND_API_KEY: Joi.string().allow("").optional(),
 
   // WhatsApp
-  WHATSAPP_API_URL: Joi.string().uri().optional(),
-  WHATSAPP_API_KEY: Joi.string().optional(),
+  WHATSAPP_API_URL: Joi.string().uri().allow("").optional(),
+  WHATSAPP_API_KEY: Joi.string().allow("").optional(),
 }).options({ allowUnknown: true });
