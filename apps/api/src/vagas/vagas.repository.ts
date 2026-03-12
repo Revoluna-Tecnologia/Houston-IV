@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import type { Vaga, Prisma } from '@prisma/client'
-import type { CreateVagaDto, VagaQueryDto } from './dto'
-import type { PaginatedResult } from '../common'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import type { Vaga, Prisma } from "@prisma/client";
+import type { CreateVagaDto, VagaQueryDto } from "./dto";
+import type { PaginatedResult } from "../common";
 
 @Injectable()
 export class VagasRepository {
@@ -20,18 +20,28 @@ export class VagasRepository {
         setorId: data.setorId,
         especialidadeId: data.especialidadeId,
       },
-    })
+    });
   }
 
   async findAll(query: VagaQueryDto): Promise<PaginatedResult<Vaga>> {
-    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = query
-    const skip = (page - 1) * limit
-    const where = this.buildWhereClause(query)
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = query;
+    const skip = (page - 1) * limit;
+    const where = this.buildWhereClause(query);
 
     const [data, total] = await Promise.all([
-      this.prisma.vaga.findMany({ where, skip, take: limit, orderBy: { [sortBy]: sortOrder } }),
+      this.prisma.vaga.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder },
+      }),
       this.prisma.vaga.count({ where }),
-    ])
+    ]);
 
     return {
       data,
@@ -43,11 +53,13 @@ export class VagasRepository {
         hasNextPage: page < Math.ceil(total / limit),
         hasPreviousPage: page > 1,
       },
-    }
+    };
   }
 
   async findById(id: string): Promise<Vaga | null> {
-    return this.prisma.vaga.findUnique({ where: { id } })
+    return this.prisma.vaga.findFirst({
+      where: { id, ...this.prisma.notDeleted() },
+    });
   }
 
   async findConflicting(
@@ -56,12 +68,12 @@ export class VagasRepository {
     data: Date,
     horaInicio: string,
     horaFim: string,
-    excludeId?: string
+    excludeId?: string,
   ): Promise<Vaga | null> {
-    const startOfDay = new Date(data)
-    startOfDay.setHours(0, 0, 0, 0)
-    const endOfDay = new Date(data)
-    endOfDay.setHours(23, 59, 59, 999)
+    const startOfDay = new Date(data);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(data);
+    endOfDay.setHours(23, 59, 59, 999);
 
     return this.prisma.vaga.findFirst({
       where: {
@@ -69,32 +81,36 @@ export class VagasRepository {
         setorId,
         data: { gte: startOfDay, lte: endOfDay },
         NOT: excludeId ? { id: excludeId } : undefined,
-        OR: [
-          { horaInicio: { lt: horaFim }, horaFim: { gt: horaInicio } },
-        ],
+        OR: [{ horaInicio: { lt: horaFim }, horaFim: { gt: horaInicio } }],
+        ...this.prisma.notDeleted(),
       },
-    })
+    });
   }
 
   async update(id: string, data: Prisma.VagaUpdateInput): Promise<Vaga> {
-    return this.prisma.vaga.update({ where: { id }, data })
+    return this.prisma.vaga.update({ where: { id }, data });
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.vaga.delete({ where: { id } })
+    await this.prisma.vaga.update({
+      where: { id },
+      data: this.prisma.softDeleteData(),
+    });
   }
 
   private buildWhereClause(query: VagaQueryDto): Prisma.VagaWhereInput {
-    const where: Prisma.VagaWhereInput = {}
-    if (query.status) where.status = query.status
-    if (query.hospitalId) where.hospitalId = query.hospitalId
-    if (query.setorId) where.setorId = query.setorId
-    if (query.especialidadeId) where.especialidadeId = query.especialidadeId
+    const where: Prisma.VagaWhereInput = {
+      ...this.prisma.notDeleted(),
+    };
+    if (query.status) where.status = query.status;
+    if (query.hospitalId) where.hospitalId = query.hospitalId;
+    if (query.setorId) where.setorId = query.setorId;
+    if (query.especialidadeId) where.especialidadeId = query.especialidadeId;
     if (query.dataInicio || query.dataFim) {
-      where.data = {}
-      if (query.dataInicio) where.data.gte = new Date(query.dataInicio)
-      if (query.dataFim) where.data.lte = new Date(query.dataFim)
+      where.data = {};
+      if (query.dataInicio) where.data.gte = new Date(query.dataInicio);
+      if (query.dataFim) where.data.lte = new Date(query.dataFim);
     }
-    return where
+    return where;
   }
 }

@@ -1,67 +1,34 @@
 export interface Medico {
-  id: string
-  primeiroNome: string
-  sobrenome: string
-  crm: string
-  email?: string
-  telefone?: string
-  dataNascimento?: Date
-  especialidadeId?: string
-  rqe?: string
-  cpf?: string
-  rg?: string
-  logradouro?: string
-  numero?: string
-  bairro?: string
-  cidade?: string
-  estado?: string
-  pais: string
-  cep?: string
-  profilePictureUrl?: string
-  grupoId?: string
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  nome: string;
+  crm: string;
+  crmUf: string;
+  cpf: string | null;
+  email: string | null;
+  telefone: string | null;
+  especialidadeId: string;
+  ativo: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateMedicoInput {
-  primeiroNome: string
-  sobrenome: string
-  crm: string
-  email?: string
-  telefone?: string
-  dataNascimento?: Date
-  especialidadeId?: string
-  rqe?: string
-  cpf?: string
-  rg?: string
-  logradouro?: string
-  numero?: string
-  bairro?: string
-  cidade?: string
-  estado?: string
-  pais?: string
-  cep?: string
-  grupoId?: string
+  nome: string;
+  crm: string;
+  crmUf: string;
+  especialidadeId: string;
+  cpf?: string;
+  email?: string;
+  telefone?: string;
 }
 
 export interface UpdateMedicoInput {
-  primeiroNome?: string
-  sobrenome?: string
-  crm?: string
-  email?: string
-  telefone?: string
-  dataNascimento?: Date
-  especialidadeId?: string
-  rqe?: string
-  cpf?: string
-  rg?: string
-  logradouro?: string
-  numero?: string
-  bairro?: string
-  cidade?: string
-  estado?: string
-  pais?: string
-  cep?: string
-  profilePictureUrl?: string
-  grupoId?: string
+  nome?: string;
+  crm?: string;
+  crmUf?: string;
+  especialidadeId?: string;
+  cpf?: string;
+  email?: string;
+  telefone?: string;
+  ativo?: boolean;
 }

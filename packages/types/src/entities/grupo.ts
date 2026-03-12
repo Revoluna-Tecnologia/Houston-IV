@@ -1,23 +1,19 @@
 export interface Grupo {
-  id: string
-  nome: string
-  responsavel?: string
-  telefone?: string
-  email?: string
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  nome: string;
+  descricao: string | null;
+  ativo: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateGrupoInput {
-  nome: string
-  responsavel?: string
-  telefone?: string
-  email?: string
+  nome: string;
+  descricao?: string;
 }
 
 export interface UpdateGrupoInput {
-  nome?: string
-  responsavel?: string
-  telefone?: string
-  email?: string
+  nome?: string;
+  descricao?: string;
+  ativo?: boolean;
 }
