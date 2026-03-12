@@ -215,16 +215,16 @@ function EmptyState({
 }) {
   const t = useTranslations("Comunicacao");
 
-  let message = t("conversations.emptyDefault");
+  let message = t("conversations.empty.noConversations");
 
   if (hasSearch) {
-    message = t("conversations.emptySearch");
+    message = t("conversations.empty.noSearchResults");
   } else if (filter === "archived") {
-    message = t("conversations.emptyArchived");
+    message = t("conversations.empty.noArchived");
   } else if (filter === "direct") {
-    message = t("conversations.emptyDirect");
+    message = t("conversations.empty.noDirect");
   } else if (filter === "group") {
-    message = t("conversations.emptyGroup");
+    message = t("conversations.empty.noGroups");
   }
 
   return (

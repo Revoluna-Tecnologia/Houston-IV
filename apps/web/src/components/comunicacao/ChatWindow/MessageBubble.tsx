@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * MessageBubble Component
@@ -6,12 +6,16 @@
  * SRP: Responsavel apenas pela UI de uma mensagem
  */
 
-import { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { useDateLocale } from '@/lib/date-locale';
-import type { Message, MessageType, MessageStatus } from '@/services/comunicacao/types';
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { useDateLocale } from "@/lib/date-locale";
+import type {
+  Message,
+  MessageType,
+  MessageStatus,
+} from "@/services/comunicacao/types";
 
 const CheckIcon = () => (
   <svg
@@ -94,36 +98,38 @@ export function MessageBubble({
   onDelete,
   className,
 }: MessageBubbleProps) {
-  const t = useTranslations('Comunicacao');
+  const t = useTranslations("Comunicacao");
   const dateLocale = useDateLocale();
 
   const formattedTime = useMemo(() => {
     try {
-      return format(new Date(message.createdAt), 'HH:mm', { locale: dateLocale });
+      return format(new Date(message.createdAt), "HH:mm", {
+        locale: dateLocale,
+      });
     } catch {
-      return '';
+      return "";
     }
   }, [message.createdAt]);
 
   const isDeleted = !!message.deletedAt;
-  const isOptimistic = 'isOptimistic' in message;
+  const isOptimistic = "isOptimistic" in message;
 
   return (
     <div
       className={cn(
-        'group flex',
-        isOwn ? 'justify-end' : 'justify-start',
-        className
+        "group flex",
+        isOwn ? "justify-end" : "justify-start",
+        className,
       )}
     >
       <div
         className={cn(
-          'max-w-[75%] rounded-2xl px-4 py-2',
+          "max-w-[75%] rounded-2xl px-4 py-2",
           isOwn
-            ? 'bg-primary text-primary-foreground rounded-br-md'
-            : 'bg-muted rounded-bl-md',
-          isDeleted && 'italic opacity-60',
-          isOptimistic && 'opacity-70'
+            ? "bg-primary text-primary-foreground rounded-br-md"
+            : "bg-muted rounded-bl-md",
+          isDeleted && "italic opacity-60",
+          isOptimistic && "opacity-70",
         )}
       >
         {/* Sender name for group chats */}
@@ -137,10 +143,10 @@ export function MessageBubble({
         {message.replyTo && (
           <div
             className={cn(
-              'mb-2 rounded border-l-2 py-1 pl-2 text-xs',
+              "mb-2 rounded border-l-2 py-1 pl-2 text-xs",
               isOwn
-                ? 'border-primary-foreground/50 bg-primary-foreground/10'
-                : 'border-primary bg-primary/10'
+                ? "border-primary-foreground/50 bg-primary-foreground/10"
+                : "border-primary bg-primary/10",
             )}
           >
             <p className="truncate opacity-80">{message.replyTo.content}</p>
@@ -153,8 +159,8 @@ export function MessageBubble({
         {/* Footer */}
         <div
           className={cn(
-            'mt-1 flex items-center justify-end gap-1',
-            isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
+            "mt-1 flex items-center justify-end gap-1",
+            isOwn ? "text-primary-foreground/70" : "text-muted-foreground",
           )}
         >
           <span className="text-[10px]">{formattedTime}</span>
@@ -170,7 +176,7 @@ export function MessageBubble({
               type="button"
               onClick={() => onReply(message)}
               className="rounded p-1 hover:bg-muted"
-              title={t('chat.reply')}
+              title={t("chat.reply")}
             >
               <ReplyIcon />
             </button>
@@ -180,7 +186,7 @@ export function MessageBubble({
               type="button"
               onClick={() => onDelete(message.id)}
               className="rounded p-1 hover:bg-muted"
-              title={t('chat.deleteMessage')}
+              title={t("chat.deleteMessage")}
             >
               <TrashIcon />
             </button>
@@ -198,20 +204,20 @@ function MessageContent({
   message: Message;
   isDeleted: boolean;
 }) {
-  const t = useTranslations('Comunicacao');
+  const t = useTranslations("Comunicacao");
 
   if (isDeleted) {
-    return <p className="text-sm">{t('chat.messageDeleted')}</p>;
+    return <p className="text-sm">{t("chat.deletedMessage")}</p>;
   }
 
   switch (message.messageType as MessageType) {
-    case 'image':
+    case "image":
       return (
         <div className="space-y-1">
           {message.metadata?.mediaUrl && (
             <img
               src={message.metadata.mediaUrl}
-              alt={message.metadata.caption || t('chat.image')}
+              alt={message.metadata.caption || t("chat.image")}
               className="max-h-60 rounded-lg object-cover"
             />
           )}
@@ -221,7 +227,7 @@ function MessageContent({
         </div>
       );
 
-    case 'audio':
+    case "audio":
       return (
         <audio
           src={message.metadata?.mediaUrl}
@@ -230,7 +236,7 @@ function MessageContent({
         />
       );
 
-    case 'video':
+    case "video":
       return (
         <video
           src={message.metadata?.mediaUrl}
@@ -239,7 +245,7 @@ function MessageContent({
         />
       );
 
-    case 'file':
+    case "file":
       return (
         <a
           href={message.metadata?.mediaUrl}
@@ -249,38 +255,46 @@ function MessageContent({
         >
           <FileIcon />
           <span className="truncate text-sm">
-            {message.metadata?.fileName || t('chat.file')}
+            {message.metadata?.fileName || t("chat.file")}
           </span>
         </a>
       );
 
-    case 'shift_offer':
+    case "shift_offer":
       return (
         <div className="rounded-lg bg-background/10 p-3">
           <p className="text-xs font-medium uppercase opacity-70">
-            {t('chat.shiftOffer')}
+            {t("chat.shiftOffer")}
           </p>
           <p className="mt-1 text-sm">{message.content}</p>
         </div>
       );
 
-    case 'text':
+    case "text":
     default:
-      return <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>;
+      return (
+        <p className="whitespace-pre-wrap break-words text-sm">
+          {message.content}
+        </p>
+      );
   }
 }
 
 function StatusIndicator({ status }: { status: MessageStatus }) {
   switch (status) {
-    case 'sending':
+    case "sending":
       return <ClockIcon />;
-    case 'sent':
+    case "sent":
       return <CheckIcon />;
-    case 'delivered':
+    case "delivered":
       return <CheckCheckIcon />;
-    case 'read':
-      return <span className="text-blue-400"><CheckCheckIcon /></span>;
-    case 'failed':
+    case "read":
+      return (
+        <span className="text-blue-400">
+          <CheckCheckIcon />
+        </span>
+      );
+    case "failed":
       return <AlertCircleIcon />;
     default:
       return null;

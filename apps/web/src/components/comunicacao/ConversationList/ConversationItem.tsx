@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * ConversationItem Component
@@ -6,12 +6,15 @@
  * SRP: Responsavel apenas pela UI de um item de conversa
  */
 
-import { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
-import { useDateLocale } from '@/lib/date-locale';
-import type { Conversation, ConversationType } from '@/services/comunicacao/types';
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
+import { useDateLocale } from "@/lib/date-locale";
+import type {
+  Conversation,
+  ConversationType,
+} from "@/services/comunicacao/types";
 
 const UserIcon = () => (
   <svg
@@ -75,7 +78,7 @@ export function ConversationItem({
   isSelected,
   onClick,
 }: ConversationItemProps) {
-  const t = useTranslations('Comunicacao');
+  const t = useTranslations("Comunicacao");
   const dateLocale = useDateLocale();
 
   const displayName = useMemo(() => {
@@ -84,17 +87,20 @@ export function ConversationItem({
     }
 
     // Para conversas diretas, mostrar nome do outro participante
-    if (conversation.type === ('direct' as ConversationType) && conversation.participants) {
+    if (
+      conversation.type === ("direct" as ConversationType) &&
+      conversation.participants
+    ) {
       const otherParticipant = conversation.participants[0];
       return (
         otherParticipant?.user?.name ||
         otherParticipant?.medico?.nome ||
         otherParticipant?.phoneNumber ||
-        t('chat.conversation')
+        t("conversations.fallback.conversation")
       );
     }
 
-    return t('chat.group');
+    return t("conversations.fallback.group");
   }, [conversation, t]);
 
   const formattedTime = useMemo(() => {
@@ -111,24 +117,24 @@ export function ConversationItem({
   }, [conversation.lastMessageAt]);
 
   const hasUnread = (conversation.unreadCount ?? 0) > 0;
-  const isGroup = conversation.type === ('group' as ConversationType);
+  const isGroup = conversation.type === ("group" as ConversationType);
 
   return (
     <button
       type="button"
       onClick={() => onClick(conversation.id)}
       className={cn(
-        'flex w-full items-start gap-3 rounded-lg p-3 text-left transition-colors',
-        'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        isSelected && 'bg-muted',
-        hasUnread && 'font-medium'
+        "flex w-full items-start gap-3 rounded-lg p-3 text-left transition-colors",
+        "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        isSelected && "bg-muted",
+        hasUnread && "font-medium",
       )}
     >
       {/* Avatar */}
       <div
         className={cn(
-          'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-          isGroup ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+          isGroup ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600",
         )}
       >
         {isGroup ? <UsersIcon /> : <UserIcon />}
@@ -148,8 +154,10 @@ export function ConversationItem({
           {formattedTime && (
             <span
               className={cn(
-                'shrink-0 text-xs',
-                hasUnread ? 'text-primary font-semibold' : 'text-muted-foreground'
+                "shrink-0 text-xs",
+                hasUnread
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground",
               )}
             >
               {formattedTime}
@@ -160,15 +168,17 @@ export function ConversationItem({
         <div className="flex items-center justify-between gap-2 mt-0.5">
           <p
             className={cn(
-              'truncate text-sm',
-              hasUnread ? 'text-foreground' : 'text-muted-foreground'
+              "truncate text-sm",
+              hasUnread ? "text-foreground" : "text-muted-foreground",
             )}
           >
-            {conversation.lastMessagePreview || t('conversations.noMessages')}
+            {conversation.lastMessagePreview || t("conversations.noMessage")}
           </p>
           {hasUnread && (
             <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
-              {conversation.unreadCount! > 99 ? '99+' : conversation.unreadCount}
+              {conversation.unreadCount! > 99
+                ? "99+"
+                : conversation.unreadCount}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * WhatsAppSetup Component
@@ -6,20 +6,26 @@
  * SRP: Orquestra o fluxo de setup, delegando UI para subcomponentes
  */
 
-import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { QRCodeDisplay } from './QRCodeDisplay';
-import { ConnectionStatus } from './ConnectionStatus';
+import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { QRCodeDisplay } from "./QRCodeDisplay";
+import { ConnectionStatus } from "./ConnectionStatus";
 import {
   WhatsAppInstanceStatus,
   type WhatsAppInstance,
   type CreateWhatsAppInstanceDto,
-} from '@/services/comunicacao/types';
+} from "@/services/comunicacao/types";
 
 const WhatsAppIcon = () => (
   <svg
@@ -49,7 +55,7 @@ const TrashIcon = () => (
   </svg>
 );
 
-type SetupStep = 'create' | 'connect' | 'connected';
+type SetupStep = "create" | "connect" | "connected";
 
 export interface WhatsAppSetupProps {
   instance: WhatsAppInstance | null;
@@ -59,7 +65,9 @@ export interface WhatsAppSetupProps {
   phoneNumber: string | null;
   isLoading: boolean;
   isConnecting: boolean;
-  onCreate: (data: CreateWhatsAppInstanceDto) => Promise<WhatsAppInstance | void>;
+  onCreate: (
+    data: CreateWhatsAppInstanceDto,
+  ) => Promise<WhatsAppInstance | void>;
   onConnect: () => Promise<void>;
   onDisconnect: () => Promise<void>;
   onDelete: () => Promise<void>;
@@ -84,17 +92,18 @@ export function WhatsAppSetup({
   onGetPairingCode,
   className,
 }: WhatsAppSetupProps) {
-  const t = useTranslations('Comunicacao');
-  const [instanceName, setInstanceName] = useState('');
+  const t = useTranslations("Comunicacao");
+  const tActions = useTranslations("Common.actions");
+  const [instanceName, setInstanceName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Determine current step
   const currentStep: SetupStep = !instance
-    ? 'create'
+    ? "create"
     : status === WhatsAppInstanceStatus.CONNECTED
-      ? 'connected'
-      : 'connect';
+      ? "connected"
+      : "connect";
 
   const handleCreate = useCallback(async () => {
     if (!instanceName.trim()) return;
@@ -108,7 +117,7 @@ export function WhatsAppSetup({
   }, [instanceName, onCreate]);
 
   const handleDelete = useCallback(async () => {
-    if (!confirm(t('whatsapp.deleteConfirm'))) return;
+    if (!confirm(t("whatsapp.deleteConfirm"))) return;
 
     setIsDeleting(true);
     try {
@@ -122,39 +131,41 @@ export function WhatsAppSetup({
     async (phone: string) => {
       await onGetPairingCode(phone);
     },
-    [onGetPairingCode]
+    [onGetPairingCode],
   );
 
   return (
-    <div className={cn('mx-auto max-w-lg', className)}>
+    <div className={cn("mx-auto max-w-lg", className)}>
       <Card>
         <CardHeader className="text-center">
           <div className="mx-auto mb-2">
             <WhatsAppIcon />
           </div>
-          <CardTitle>{t('whatsapp.title')}</CardTitle>
+          <CardTitle>{t("whatsapp.title")}</CardTitle>
           <CardDescription>
-            {currentStep === 'create' && t('whatsapp.descriptionCreate')}
-            {currentStep === 'connect' && t('whatsapp.descriptionConnect')}
-            {currentStep === 'connected' && t('whatsapp.descriptionConnected')}
+            {currentStep === "create" && t("whatsapp.descriptionDisconnected")}
+            {currentStep === "connect" && t("whatsapp.descriptionConnecting")}
+            {currentStep === "connected" && t("whatsapp.descriptionConnected")}
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           {/* Step: Create Instance */}
-          {currentStep === 'create' && (
+          {currentStep === "create" && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="instanceName">{t('whatsapp.instanceNameLabel')}</Label>
+                <Label htmlFor="instanceName">
+                  {t("whatsapp.instanceName")}
+                </Label>
                 <Input
                   id="instanceName"
-                  placeholder={t('whatsapp.instanceNamePlaceholder')}
+                  placeholder={t("whatsapp.instancePlaceholder")}
                   value={instanceName}
                   onChange={(e) => setInstanceName(e.target.value)}
                   disabled={isCreating}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {t('whatsapp.instanceNameHint')}
+                  {t("whatsapp.instanceHint")}
                 </p>
               </div>
               <Button
@@ -162,19 +173,24 @@ export function WhatsAppSetup({
                 disabled={!instanceName.trim() || isCreating}
                 className="w-full"
               >
-                {isCreating ? t('whatsapp.creating') : t('whatsapp.createInstance')}
+                {isCreating
+                  ? tActions("creating")
+                  : t("whatsapp.createInstance")}
               </Button>
             </div>
           )}
 
           {/* Step: Connect */}
-          {currentStep === 'connect' && instance && (
+          {currentStep === "connect" && instance && (
             <div className="space-y-4">
               {/* Instance info */}
               <div className="flex items-center justify-between rounded-lg bg-muted p-3">
                 <div>
                   <p className="font-medium">{instance.instanceName}</p>
-                  <ConnectionStatus status={status || WhatsAppInstanceStatus.DISCONNECTED} size="sm" />
+                  <ConnectionStatus
+                    status={status || WhatsAppInstanceStatus.DISCONNECTED}
+                    size="sm"
+                  />
                 </div>
                 <Button
                   variant="ghost"
@@ -189,8 +205,12 @@ export function WhatsAppSetup({
 
               {/* Connect button or QR */}
               {!isConnecting && !qrCode ? (
-                <Button onClick={onConnect} className="w-full" disabled={isLoading}>
-                  {t('whatsapp.connectWhatsApp')}
+                <Button
+                  onClick={onConnect}
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {t("whatsapp.connect")}
                 </Button>
               ) : (
                 <QRCodeDisplay
@@ -205,7 +225,7 @@ export function WhatsAppSetup({
           )}
 
           {/* Step: Connected */}
-          {currentStep === 'connected' && instance && (
+          {currentStep === "connected" && instance && (
             <div className="space-y-4">
               {/* Instance info */}
               <div className="rounded-lg bg-green-50 p-4 text-center">
@@ -227,7 +247,7 @@ export function WhatsAppSetup({
                   onClick={onDisconnect}
                   className="flex-1"
                 >
-                  {t('whatsapp.disconnect')}
+                  {t("whatsapp.disconnect")}
                 </Button>
                 <Button
                   variant="ghost"
@@ -236,7 +256,7 @@ export function WhatsAppSetup({
                   className="text-destructive hover:text-destructive"
                 >
                   <TrashIcon />
-                  <span className="ml-2">{t('whatsapp.delete')}</span>
+                  <span className="ml-2">{tActions("delete")}</span>
                 </Button>
               </div>
 
@@ -244,11 +264,15 @@ export function WhatsAppSetup({
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="rounded-lg border p-3 text-center">
                   <p className="text-2xl font-bold">-</p>
-                  <p className="text-xs text-muted-foreground">{t('whatsapp.messagesToday')}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("whatsapp.messagesToday")}
+                  </p>
                 </div>
                 <div className="rounded-lg border p-3 text-center">
                   <p className="text-2xl font-bold">-</p>
-                  <p className="text-xs text-muted-foreground">{t('whatsapp.activeConversations')}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("whatsapp.activeConversations")}
+                  </p>
                 </div>
               </div>
             </div>

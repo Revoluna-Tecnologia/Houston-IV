@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * AddContactModal Component
@@ -6,16 +6,16 @@
  * SRP: Responsavel pelo container modal, delegando form para AddContactForm
  */
 
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { AddContactForm } from './AddContactForm';
-import type { CreateContactDto } from '@/services/comunicacao/types';
+} from "@/components/ui/dialog";
+import { AddContactForm } from "./AddContactForm";
+import type { CreateContactDto } from "@/services/comunicacao/types";
 
 export interface AddContactModalProps {
   isOpen: boolean;
@@ -30,16 +30,14 @@ export function AddContactModal({
   onClose,
   onSubmit,
 }: AddContactModalProps) {
-  const t = useTranslations('Comunicacao');
+  const t = useTranslations("Comunicacao");
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('contacts.addContactTitle')}</DialogTitle>
-          <DialogDescription>
-            {t('contacts.addContactDescription')}
-          </DialogDescription>
+          <DialogTitle>{t("contacts.addContact")}</DialogTitle>
+          <DialogDescription>{t("contacts.addDescription")}</DialogDescription>
         </DialogHeader>
 
         <AddContactForm

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * ContactList Component
@@ -6,14 +6,14 @@
  * SRP: Orquestra a lista de contatos, delegando UI para subcomponentes
  */
 
-import { useState, useMemo, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { ContactItem } from './ContactItem';
-import type { Contact } from '@/services/comunicacao/types';
+import { useState, useMemo, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { ContactItem } from "./ContactItem";
+import type { Contact } from "@/services/comunicacao/types";
 
 const SearchIcon = () => (
   <svg
@@ -63,7 +63,7 @@ const UserIcon = () => (
   </svg>
 );
 
-type FilterType = 'all' | 'favorites' | 'blocked';
+type FilterType = "all" | "favorites" | "blocked";
 
 export interface ContactListProps {
   contacts: Contact[];
@@ -88,19 +88,19 @@ export function ContactList({
   onAddContact,
   className,
 }: ContactListProps) {
-  const t = useTranslations('Comunicacao');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<FilterType>('all');
+  const t = useTranslations("Comunicacao");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const filteredContacts = useMemo(() => {
     let result = [...contacts];
 
     // Apply filter
     switch (filter) {
-      case 'favorites':
+      case "favorites":
         result = result.filter((c) => c.isFavorite);
         break;
-      case 'blocked':
+      case "blocked":
         result = result.filter((c) => c.isBlocked);
         break;
     }
@@ -110,8 +110,7 @@ export function ContactList({
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (c) =>
-          c.name.toLowerCase().includes(query) ||
-          c.phoneNumber.includes(query)
+          c.name.toLowerCase().includes(query) || c.phoneNumber.includes(query),
       );
     }
 
@@ -130,24 +129,24 @@ export function ContactList({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value);
     },
-    []
+    [],
   );
 
   const filterButtons: { type: FilterType; label: string }[] = [
-    { type: 'all', label: t('contacts.filterAll') },
-    { type: 'favorites', label: t('contacts.filterFavorites') },
-    { type: 'blocked', label: t('contacts.filterBlocked') },
+    { type: "all", label: t("contacts.filters.all") },
+    { type: "favorites", label: t("contacts.filters.favorites") },
+    { type: "blocked", label: t("contacts.filters.blocked") },
   ];
 
   return (
-    <div className={cn('flex h-full flex-col', className)}>
+    <div className={cn("flex h-full flex-col", className)}>
       {/* Header */}
       <div className="border-b p-4">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{t('contacts.title')}</h2>
+          <h2 className="text-lg font-semibold">{t("contacts.title")}</h2>
           <Button size="sm" onClick={onAddContact}>
             <PlusIcon />
-            <span className="ml-2">{t('contacts.add')}</span>
+            <span className="ml-2">{t("contacts.add")}</span>
           </Button>
         </div>
 
@@ -157,7 +156,7 @@ export function ContactList({
             <SearchIcon />
           </span>
           <Input
-            placeholder={t('contacts.searchPlaceholder')}
+            placeholder={t("contacts.searchPlaceholder")}
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-9"
@@ -169,7 +168,7 @@ export function ContactList({
           {filterButtons.map(({ type, label }) => (
             <Button
               key={type}
-              variant={filter === type ? 'default' : 'outline'}
+              variant={filter === type ? "default" : "outline"}
               size="sm"
               onClick={() => setFilter(type)}
             >
@@ -198,22 +197,22 @@ export function ContactList({
             <UserIcon />
             <p className="mt-4 font-medium">
               {searchQuery
-                ? t('contacts.emptySearch')
-                : filter === 'favorites'
-                  ? t('contacts.emptyFavorites')
-                  : filter === 'blocked'
-                    ? t('contacts.emptyBlocked')
-                    : t('contacts.emptyDefault')}
+                ? t("contacts.empty.noResults")
+                : filter === "favorites"
+                  ? t("contacts.empty.noFavorites")
+                  : filter === "blocked"
+                    ? t("contacts.empty.noBlocked")
+                    : t("contacts.empty.noContacts")}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {searchQuery
-                ? t('contacts.emptySearchHint')
-                : t('contacts.emptyHint')}
+                ? t("contacts.empty.searchHint")
+                : t("contacts.empty.addHint")}
             </p>
-            {!searchQuery && filter === 'all' && (
+            {!searchQuery && filter === "all" && (
               <Button className="mt-4" onClick={onAddContact}>
                 <PlusIcon />
-                <span className="ml-2">{t('contacts.addContact')}</span>
+                <span className="ml-2">{t("contacts.addContact")}</span>
               </Button>
             )}
           </div>
@@ -237,7 +236,10 @@ export function ContactList({
       {/* Footer with count */}
       {!isLoading && contacts.length > 0 && (
         <div className="border-t p-3 text-center text-sm text-muted-foreground">
-          {t('contacts.count', { filtered: filteredContacts.length, total: contacts.length })}
+          {t("contacts.count", {
+            current: filteredContacts.length,
+            total: contacts.length,
+          })}
         </div>
       )}
     </div>
