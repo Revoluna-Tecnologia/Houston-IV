@@ -1,31 +1,37 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsString, IsEnum, IsOptional, IsUUID, MaxLength } from 'class-validator'
-import { KanbanTab } from '@prisma/client'
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsUUID,
+  MaxLength,
+} from "class-validator";
+import { KanbanTab } from "../../generated/prisma/client";
 
 export class UpdateCardDto {
-  @ApiPropertyOptional({ example: 'Implementar feature X - Atualizado' })
+  @ApiPropertyOptional({ example: "Implementar feature X - Atualizado" })
   @IsOptional()
   @IsString()
   @MaxLength(200)
-  title?: string
+  title?: string;
 
-  @ApiPropertyOptional({ example: 'Descricao atualizada' })
+  @ApiPropertyOptional({ example: "Descricao atualizada" })
   @IsOptional()
   @IsString()
-  description?: string
+  description?: string;
 
-  @ApiPropertyOptional({ example: 'in_progress' })
+  @ApiPropertyOptional({ example: "in_progress" })
   @IsOptional()
   @IsString()
-  status?: string
+  status?: string;
 
-  @ApiPropertyOptional({ enum: KanbanTab, example: 'projetos' })
+  @ApiPropertyOptional({ enum: KanbanTab, example: "projetos" })
   @IsOptional()
   @IsEnum(KanbanTab)
-  tab?: KanbanTab
+  tab?: KanbanTab;
 
-  @ApiPropertyOptional({ example: 'uuid-do-responsavel' })
+  @ApiPropertyOptional({ example: "uuid-do-responsavel" })
   @IsOptional()
   @IsUUID()
-  assigneeId?: string | null
+  assigneeId?: string | null;
 }

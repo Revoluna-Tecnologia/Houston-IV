@@ -1,53 +1,59 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsEnum, IsBoolean, IsOptional, IsArray, ValidateNested } from 'class-validator'
-import { Type } from 'class-transformer'
-import { NotificationType } from '@prisma/client'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { NotificationType } from "../../generated/prisma/client";
 
 export class UpdatePreferenceDto {
   @ApiProperty({ enum: NotificationType })
   @IsEnum(NotificationType)
-  type!: NotificationType
+  type!: NotificationType;
 
-  @ApiPropertyOptional({ description: 'Receber notificações in-app' })
+  @ApiPropertyOptional({ description: "Receber notificações in-app" })
   @IsBoolean()
   @IsOptional()
-  inApp?: boolean
+  inApp?: boolean;
 
-  @ApiPropertyOptional({ description: 'Receber notificações por email' })
+  @ApiPropertyOptional({ description: "Receber notificações por email" })
   @IsBoolean()
   @IsOptional()
-  email?: boolean
+  email?: boolean;
 
-  @ApiPropertyOptional({ description: 'Receber notificações push' })
+  @ApiPropertyOptional({ description: "Receber notificações push" })
   @IsBoolean()
   @IsOptional()
-  push?: boolean
+  push?: boolean;
 }
 
 export class PreferenceResponseDto {
   @ApiProperty()
-  id!: string
+  id!: string;
 
   @ApiProperty()
-  userId!: string
+  userId!: string;
 
   @ApiProperty({ enum: NotificationType })
-  type!: NotificationType
+  type!: NotificationType;
 
   @ApiProperty()
-  inApp!: boolean
+  inApp!: boolean;
 
   @ApiProperty()
-  email!: boolean
+  email!: boolean;
 
   @ApiProperty()
-  push!: boolean
+  push!: boolean;
 
   @ApiProperty()
-  createdAt!: Date
+  createdAt!: Date;
 
   @ApiProperty()
-  updatedAt!: Date
+  updatedAt!: Date;
 }
 
 export class BulkUpdatePreferencesDto {
@@ -55,5 +61,5 @@ export class BulkUpdatePreferencesDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdatePreferenceDto)
-  preferences!: UpdatePreferenceDto[]
+  preferences!: UpdatePreferenceDto[];
 }

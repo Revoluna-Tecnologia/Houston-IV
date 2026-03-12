@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsOptional,
   IsEnum,
@@ -8,80 +8,80 @@ import {
   Max,
   IsUUID,
   IsBoolean,
-} from 'class-validator'
-import { Type, Transform } from 'class-transformer'
+} from "class-validator";
+import { Type, Transform } from "class-transformer";
 import {
   TicketStatus,
   TicketPriority,
   TicketCategory,
   TicketType,
   TicketSector,
-} from '@prisma/client'
+} from "../../generated/prisma/client";
 
 export class TicketQueryDto {
   @ApiPropertyOptional({ enum: TicketStatus })
   @IsOptional()
   @IsEnum(TicketStatus)
-  status?: TicketStatus
+  status?: TicketStatus;
 
   @ApiPropertyOptional({ enum: TicketPriority })
   @IsOptional()
   @IsEnum(TicketPriority)
-  priority?: TicketPriority
+  priority?: TicketPriority;
 
   @ApiPropertyOptional({ enum: TicketCategory })
   @IsOptional()
   @IsEnum(TicketCategory)
-  category?: TicketCategory
+  category?: TicketCategory;
 
   @ApiPropertyOptional({ enum: TicketType })
   @IsOptional()
   @IsEnum(TicketType)
-  type?: TicketType
+  type?: TicketType;
 
   @ApiPropertyOptional({ enum: TicketSector })
   @IsOptional()
   @IsEnum(TicketSector)
-  sector?: TicketSector
+  sector?: TicketSector;
 
-  @ApiPropertyOptional({ example: 'uuid-do-grupo' })
+  @ApiPropertyOptional({ example: "uuid-do-grupo" })
   @IsOptional()
   @IsUUID()
-  grupoId?: string
+  grupoId?: string;
 
-  @ApiPropertyOptional({ example: 'uuid-do-criador' })
+  @ApiPropertyOptional({ example: "uuid-do-criador" })
   @IsOptional()
   @IsUUID()
-  createdById?: string
+  createdById?: string;
 
-  @ApiPropertyOptional({ example: 'uuid-do-atribuido' })
+  @ApiPropertyOptional({ example: "uuid-do-atribuido" })
   @IsOptional()
   @IsUUID()
-  assignedToId?: string
+  assignedToId?: string;
 
   @ApiPropertyOptional({ example: false })
   @IsOptional()
-  @Transform(({ value }) => value === 'true' || value === true)
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
-  archived?: boolean
+  archived?: boolean;
 
   @ApiPropertyOptional({ example: false })
   @IsOptional()
-  @Transform(({ value }) => value === 'true' || value === true)
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
-  slaBreach?: boolean
+  slaBreach?: boolean;
 
-  @ApiPropertyOptional({ example: 'login' })
+  @ApiPropertyOptional({ example: "login" })
   @IsOptional()
   @IsString()
-  search?: string
+  search?: string;
 
   @ApiPropertyOptional({ example: 1, minimum: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  page?: number = 1
+  page?: number = 1;
 
   @ApiPropertyOptional({ example: 10, minimum: 1, maximum: 100 })
   @IsOptional()
@@ -89,15 +89,15 @@ export class TicketQueryDto {
   @IsInt()
   @Min(1)
   @Max(100)
-  limit?: number = 10
+  limit?: number = 10;
 
-  @ApiPropertyOptional({ example: 'createdAt' })
+  @ApiPropertyOptional({ example: "createdAt" })
   @IsOptional()
   @IsString()
-  sortBy?: string = 'createdAt'
+  sortBy?: string = "createdAt";
 
-  @ApiPropertyOptional({ enum: ['asc', 'desc'], example: 'desc' })
+  @ApiPropertyOptional({ enum: ["asc", "desc"], example: "desc" })
   @IsOptional()
-  @IsEnum(['asc', 'desc'])
-  sortOrder?: 'asc' | 'desc' = 'desc'
+  @IsEnum(["asc", "desc"])
+  sortOrder?: "asc" | "desc" = "desc";
 }

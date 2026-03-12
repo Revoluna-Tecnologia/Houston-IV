@@ -1,48 +1,50 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { Resend } from 'resend'
-import { NotificationType } from '@prisma/client'
-import { buildNotificationTemplate } from '../templates'
+import { Injectable, Logger } from "@nestjs/common";
+import { Resend } from "resend";
+import { NotificationType } from "../../generated/prisma/client";
+import { buildNotificationTemplate } from "../templates";
 
 export interface SendEmailOptions {
-  to: string | string[]
-  subject: string
-  html: string
-  text?: string
-  replyTo?: string
+  to: string | string[];
+  subject: string;
+  html: string;
+  text?: string;
+  replyTo?: string;
 }
 
 export interface SendTemplatedNotificationOptions {
-  to: string
-  type: NotificationType
-  recipientName?: string
-  data?: Record<string, unknown>
+  to: string;
+  type: NotificationType;
+  recipientName?: string;
+  data?: Record<string, unknown>;
 }
 
 @Injectable()
 export class ResendProvider {
-  private readonly logger = new Logger(ResendProvider.name)
-  private readonly resend: Resend | null
-  private readonly fromEmail: string
-  private readonly isEnabled: boolean
+  private readonly logger = new Logger(ResendProvider.name);
+  private readonly resend: Resend | null;
+  private readonly fromEmail: string;
+  private readonly isEnabled: boolean;
 
   constructor() {
-    const apiKey = process.env.RESEND_API_KEY
-    this.fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@houston.com.br'
-    this.isEnabled = !!apiKey
+    const apiKey = process.env.RESEND_API_KEY;
+    this.fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@houston.com.br";
+    this.isEnabled = !!apiKey;
 
     if (this.isEnabled) {
-      this.resend = new Resend(apiKey)
-      this.logger.log('ResendProvider initialized')
+      this.resend = new Resend(apiKey);
+      this.logger.log("ResendProvider initialized");
     } else {
-      this.resend = null
-      this.logger.warn('ResendProvider disabled: RESEND_API_KEY not configured')
+      this.resend = null;
+      this.logger.warn(
+        "ResendProvider disabled: RESEND_API_KEY not configured",
+      );
     }
   }
 
   async sendEmail(options: SendEmailOptions): Promise<boolean> {
     if (!this.isEnabled || !this.resend) {
-      this.logger.debug('Email not sent: Resend is disabled')
-      return false
+      this.logger.debug("Email not sent: Resend is disabled");
+      return false;
     }
 
     try {
@@ -53,18 +55,18 @@ export class ResendProvider {
         html: options.html,
         text: options.text,
         replyTo: options.replyTo,
-      })
+      });
 
       if (error) {
-        this.logger.error(`Failed to send email: ${error.message}`)
-        return false
+        this.logger.error(`Failed to send email: ${error.message}`);
+        return false;
       }
 
-      this.logger.debug(`Email sent successfully: ${data?.id}`)
-      return true
+      this.logger.debug(`Email sent successfully: ${data?.id}`);
+      return true;
     } catch (error) {
-      this.logger.error(`Error sending email: ${error}`)
-      return false
+      this.logger.error(`Error sending email: ${error}`);
+      return false;
     }
   }
 
@@ -75,14 +77,14 @@ export class ResendProvider {
       type: options.type,
       recipientName: options.recipientName,
       data: options.data,
-    })
+    });
 
     return this.sendEmail({
       to: options.to,
       subject: template.subject,
       html: template.html,
       text: template.text,
-    })
+    });
   }
 
   async sendNotificationEmail(
@@ -91,53 +93,53 @@ export class ResendProvider {
     content: string,
     actionUrl?: string,
   ): Promise<boolean> {
-    const html = this.buildNotificationEmailHtml(title, content, actionUrl)
+    const html = this.buildNotificationEmailHtml(title, content, actionUrl);
     return this.sendEmail({
       to,
       subject: title,
       html,
       text: content,
-    })
+    });
   }
 
   async sendBulkEmails(
     recipients: { email: string; title: string; content: string }[],
   ): Promise<{ success: number; failed: number }> {
-    let success = 0
-    let failed = 0
+    let success = 0;
+    let failed = 0;
 
     for (const recipient of recipients) {
       const sent = await this.sendNotificationEmail(
         recipient.email,
         recipient.title,
         recipient.content,
-      )
+      );
       if (sent) {
-        success++
+        success++;
       } else {
-        failed++
+        failed++;
       }
     }
 
-    return { success, failed }
+    return { success, failed };
   }
 
   async sendBulkTemplatedNotifications(
     recipients: SendTemplatedNotificationOptions[],
   ): Promise<{ success: number; failed: number }> {
-    let success = 0
-    let failed = 0
+    let success = 0;
+    let failed = 0;
 
     for (const recipient of recipients) {
-      const sent = await this.sendTemplatedNotification(recipient)
+      const sent = await this.sendTemplatedNotification(recipient);
       if (sent) {
-        success++
+        success++;
       } else {
-        failed++
+        failed++;
       }
     }
 
-    return { success, failed }
+    return { success, failed };
   }
 
   private buildNotificationEmailHtml(
@@ -147,7 +149,7 @@ export class ResendProvider {
   ): string {
     const actionButton = actionUrl
       ? `<a href="${actionUrl}" style="display:inline-block;padding:12px 24px;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px;margin-top:16px;">Ver Detalhes</a>`
-      : ''
+      : "";
 
     return `
 <!DOCTYPE html>
@@ -185,6 +187,6 @@ export class ResendProvider {
     </tr>
   </table>
 </body>
-</html>`
+</html>`;
   }
 }

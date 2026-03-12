@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsString,
   IsEnum,
@@ -8,87 +8,87 @@ import {
   MaxLength,
   IsUUID,
   IsBoolean,
-} from 'class-validator'
+} from "class-validator";
 import {
   TicketStatus,
   TicketPriority,
   TicketCategory,
   TicketType,
   TicketSector,
-} from '@prisma/client'
+} from "../../generated/prisma/client";
 
 export class UpdateTicketDto {
-  @ApiPropertyOptional({ example: 'Bug no formulário de login - Atualizado' })
+  @ApiPropertyOptional({ example: "Bug no formulário de login - Atualizado" })
   @IsOptional()
   @IsString()
   @MaxLength(200)
-  title?: string
+  title?: string;
 
-  @ApiPropertyOptional({ example: 'Descrição atualizada do problema' })
+  @ApiPropertyOptional({ example: "Descrição atualizada do problema" })
   @IsOptional()
   @IsString()
-  description?: string
+  description?: string;
 
-  @ApiPropertyOptional({ enum: TicketStatus, example: 'in_progress' })
+  @ApiPropertyOptional({ enum: TicketStatus, example: "in_progress" })
   @IsOptional()
   @IsEnum(TicketStatus)
-  status?: TicketStatus
+  status?: TicketStatus;
 
-  @ApiPropertyOptional({ enum: TicketPriority, example: 'critical' })
+  @ApiPropertyOptional({ enum: TicketPriority, example: "critical" })
   @IsOptional()
   @IsEnum(TicketPriority)
-  priority?: TicketPriority
+  priority?: TicketPriority;
 
-  @ApiPropertyOptional({ enum: TicketCategory, example: 'security' })
+  @ApiPropertyOptional({ enum: TicketCategory, example: "security" })
   @IsOptional()
   @IsEnum(TicketCategory)
-  category?: TicketCategory
+  category?: TicketCategory;
 
-  @ApiPropertyOptional({ enum: TicketType, example: 'incident' })
+  @ApiPropertyOptional({ enum: TicketType, example: "incident" })
   @IsOptional()
   @IsEnum(TicketType)
-  type?: TicketType
+  type?: TicketType;
 
-  @ApiPropertyOptional({ enum: TicketSector, example: 'dev' })
+  @ApiPropertyOptional({ enum: TicketSector, example: "dev" })
   @IsOptional()
   @IsEnum(TicketSector)
-  sector?: TicketSector
+  sector?: TicketSector;
 
-  @ApiPropertyOptional({ example: '/dashboard/settings' })
+  @ApiPropertyOptional({ example: "/dashboard/settings" })
   @IsOptional()
   @IsString()
   @MaxLength(500)
-  location?: string
+  location?: string;
 
-  @ApiPropertyOptional({ example: 'Passos atualizados para reproduzir' })
+  @ApiPropertyOptional({ example: "Passos atualizados para reproduzir" })
   @IsOptional()
   @IsString()
-  reproductionSteps?: string
+  reproductionSteps?: string;
 
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  screenshots?: string[]
+  screenshots?: string[];
 
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  tags?: string[]
+  tags?: string[];
 
-  @ApiPropertyOptional({ example: '2024-12-31T23:59:59Z' })
+  @ApiPropertyOptional({ example: "2024-12-31T23:59:59Z" })
   @IsOptional()
   @IsDateString()
-  slaDeadline?: string
+  slaDeadline?: string;
 
-  @ApiPropertyOptional({ example: 'uuid-do-usuario-atribuido' })
+  @ApiPropertyOptional({ example: "uuid-do-usuario-atribuido" })
   @IsOptional()
   @IsUUID()
-  assignedToId?: string | null
+  assignedToId?: string | null;
 
   @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
-  archived?: boolean
+  archived?: boolean;
 }

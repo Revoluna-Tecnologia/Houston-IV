@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
-import { WhatsAppInstanceStatus } from "@prisma/client";
+import { WhatsAppInstanceStatus } from "../../../generated/prisma/client";
 import { InstancesController } from "../instances.controller";
 import { InstancesService } from "../instances.service";
 import { AppRole } from "../../../auth/types/auth.types";

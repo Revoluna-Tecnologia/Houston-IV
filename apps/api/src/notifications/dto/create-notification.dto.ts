@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsString,
   IsEnum,
@@ -6,82 +6,85 @@ import {
   IsArray,
   IsObject,
   IsUUID,
-} from 'class-validator'
+} from "class-validator";
 import {
   NotificationType,
   NotificationPriority,
   NotificationChannel,
-} from '@prisma/client'
+} from "../../generated/prisma/client";
 
 export class CreateNotificationDto {
-  @ApiProperty({ description: 'ID do usuário destinatário' })
+  @ApiProperty({ description: "ID do usuário destinatário" })
   @IsUUID()
-  userId!: string
+  userId!: string;
 
   @ApiProperty({ enum: NotificationType })
   @IsEnum(NotificationType)
-  type!: NotificationType
+  type!: NotificationType;
 
-  @ApiPropertyOptional({ enum: NotificationPriority, default: 'normal' })
+  @ApiPropertyOptional({ enum: NotificationPriority, default: "normal" })
   @IsEnum(NotificationPriority)
   @IsOptional()
-  priority?: NotificationPriority
+  priority?: NotificationPriority;
 
-  @ApiProperty({ description: 'Título da notificação' })
+  @ApiProperty({ description: "Título da notificação" })
   @IsString()
-  title!: string
+  title!: string;
 
-  @ApiProperty({ description: 'Conteúdo da notificação' })
+  @ApiProperty({ description: "Conteúdo da notificação" })
   @IsString()
-  content!: string
+  content!: string;
 
-  @ApiPropertyOptional({ description: 'Dados adicionais em JSON' })
+  @ApiPropertyOptional({ description: "Dados adicionais em JSON" })
   @IsObject()
   @IsOptional()
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>;
 
   @ApiPropertyOptional({ enum: NotificationChannel, isArray: true })
   @IsArray()
   @IsEnum(NotificationChannel, { each: true })
   @IsOptional()
-  channels?: NotificationChannel[]
+  channels?: NotificationChannel[];
 
-  @ApiPropertyOptional({ description: 'ID do grupo' })
+  @ApiPropertyOptional({ description: "ID do grupo" })
   @IsUUID()
   @IsOptional()
-  grupoId?: string
+  grupoId?: string;
 }
 
 export class SendBulkNotificationDto {
-  @ApiProperty({ description: 'IDs dos usuários destinatários', type: [String] })
+  @ApiProperty({
+    description: "IDs dos usuários destinatários",
+    type: [String],
+  })
   @IsArray()
-  @IsUUID('4', { each: true })
-  userIds!: string[]
+  @IsUUID("4", { each: true })
+  userIds!: string[];
 
   @ApiProperty({ enum: NotificationType })
   @IsEnum(NotificationType)
-  type!: NotificationType
+  type!: NotificationType;
 
-  @ApiPropertyOptional({ enum: NotificationPriority, default: 'normal' })
+  @ApiPropertyOptional({ enum: NotificationPriority, default: "normal" })
   @IsEnum(NotificationPriority)
   @IsOptional()
-  priority?: NotificationPriority
+  priority?: NotificationPriority;
 
-  @ApiProperty({ description: 'Título da notificação' })
+  @ApiProperty({ description: "Título da notificação" })
   @IsString()
-  title!: string
+  title!: string;
 
-  @ApiProperty({ description: 'Conteúdo da notificação' })
+  @ApiProperty({ description: "Conteúdo da notificação" })
   @IsString()
-  content!: string
+  content!: string;
 
-  @ApiPropertyOptional({ description: 'Dados adicionais em JSON' })
+  @ApiPropertyOptional({ description: "Dados adicionais em JSON" })
   @IsObject()
   @IsOptional()
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>;
 
-  @ApiPropertyOptional({ description: 'ID do grupo' })
+  @ApiPropertyOptional({ description: "ID do grupo" })
   @IsUUID()
   @IsOptional()
-  grupoId?: string
+  grupoId?: string;
 }

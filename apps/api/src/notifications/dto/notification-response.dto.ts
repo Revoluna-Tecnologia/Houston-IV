@@ -1,69 +1,69 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   NotificationType,
   NotificationPriority,
   NotificationChannel,
-} from '@prisma/client'
+} from "../../generated/prisma/client";
 
 export class NotificationResponseDto {
   @ApiProperty()
-  id!: string
+  id!: string;
 
   @ApiProperty()
-  userId!: string
+  userId!: string;
 
   @ApiProperty({ enum: NotificationType })
-  type!: NotificationType
+  type!: NotificationType;
 
   @ApiProperty({ enum: NotificationPriority })
-  priority!: NotificationPriority
+  priority!: NotificationPriority;
 
   @ApiProperty()
-  title!: string
+  title!: string;
 
   @ApiProperty()
-  content!: string
+  content!: string;
 
   @ApiPropertyOptional()
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>;
 
   @ApiProperty()
-  read!: boolean
+  read!: boolean;
 
   @ApiPropertyOptional()
-  readAt?: Date
+  readAt?: Date;
 
   @ApiProperty()
-  sentAt!: Date
+  sentAt!: Date;
 
   @ApiProperty({ enum: NotificationChannel, isArray: true })
-  channels!: NotificationChannel[]
+  channels!: NotificationChannel[];
 
   @ApiPropertyOptional()
-  grupoId?: string
+  grupoId?: string;
 
   @ApiProperty()
-  createdAt!: Date
+  createdAt!: Date;
 }
 
 export class UnreadCountResponseDto {
   @ApiProperty()
-  count!: number
+  count!: number;
 }
 
 export class NotificationPaginatedResponseDto {
   @ApiProperty({ type: [NotificationResponseDto] })
-  data!: NotificationResponseDto[]
+  data!: NotificationResponseDto[];
 
   @ApiProperty()
-  total!: number
+  total!: number;
 
   @ApiProperty()
-  page!: number
+  page!: number;
 
   @ApiProperty()
-  limit!: number
+  limit!: number;
 
   @ApiProperty()
-  totalPages!: number
+  totalPages!: number;
 }

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
-import type { TicketComment, Prisma } from '@prisma/client'
-import type { CreateCommentDto } from './dto'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import type { TicketComment, Prisma } from "../../generated/prisma/client";
+import type { CreateCommentDto } from "./dto";
 
 @Injectable()
 export class CommentsRepository {
@@ -11,7 +11,7 @@ export class CommentsRepository {
     ticketId: string,
     data: CreateCommentDto,
     authorId: string,
-    authorName: string
+    authorName: string,
   ): Promise<TicketComment> {
     return this.prisma.ticketComment.create({
       data: {
@@ -21,36 +21,39 @@ export class CommentsRepository {
         authorId,
         authorName,
       },
-    })
+    });
   }
 
-  async findByTicketId(ticketId: string, includeInternal: boolean = true): Promise<TicketComment[]> {
-    const where: Prisma.TicketCommentWhereInput = { ticketId }
+  async findByTicketId(
+    ticketId: string,
+    includeInternal: boolean = true,
+  ): Promise<TicketComment[]> {
+    const where: Prisma.TicketCommentWhereInput = { ticketId };
     if (!includeInternal) {
-      where.isInternal = false
+      where.isInternal = false;
     }
     return this.prisma.ticketComment.findMany({
       where,
-      orderBy: { createdAt: 'asc' },
-    })
+      orderBy: { createdAt: "asc" },
+    });
   }
 
   async findById(id: string): Promise<TicketComment | null> {
-    return this.prisma.ticketComment.findUnique({ where: { id } })
+    return this.prisma.ticketComment.findUnique({ where: { id } });
   }
 
   async update(id: string, content: string): Promise<TicketComment> {
     return this.prisma.ticketComment.update({
       where: { id },
       data: { content },
-    })
+    });
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.ticketComment.delete({ where: { id } })
+    await this.prisma.ticketComment.delete({ where: { id } });
   }
 
   async countByTicketId(ticketId: string): Promise<number> {
-    return this.prisma.ticketComment.count({ where: { ticketId } })
+    return this.prisma.ticketComment.count({ where: { ticketId } });
   }
 }

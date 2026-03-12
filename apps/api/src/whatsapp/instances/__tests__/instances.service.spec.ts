@@ -4,7 +4,7 @@ import {
   ConflictException,
   ForbiddenException,
 } from "@nestjs/common";
-import { WhatsAppInstanceStatus } from "@prisma/client";
+import { WhatsAppInstanceStatus } from "../../../generated/prisma/client";
 import { InstancesService } from "../instances.service";
 import { InstancesRepository } from "../instances.repository";
 import { WhatsAppService } from "../../whatsapp.service";
