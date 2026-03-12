@@ -3,37 +3,38 @@
  * Responsável pelo acesso a dados das ofertas de plantão
  */
 
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
-import { ChatShiftOffer, ShiftOfferStatus, Prisma } from '@prisma/client'
-import { ShiftOfferQueryDto } from './dto'
-import { Decimal } from '@prisma/client/runtime/library'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import { ChatShiftOffer, ShiftOfferStatus, Prisma } from "@prisma/client";
+import { ShiftOfferQueryDto } from "./dto";
+
+type Decimal = Prisma.Decimal;
 
 export interface CreateShiftOfferData {
-  vagaId: string
-  messageId?: string
-  senderId: string
-  recipientId?: string
-  recipientMedicoId?: string
-  recipientPhone: string
-  expiresAt: Date
+  vagaId: string;
+  messageId?: string;
+  senderId: string;
+  recipientId?: string;
+  recipientMedicoId?: string;
+  recipientPhone: string;
+  expiresAt: Date;
 }
 
 export interface ShiftOfferWithRelations extends ChatShiftOffer {
   vaga: {
-    id: string
-    data: Date
-    horaInicio: string
-    horaFim: string
-    valor: Decimal
-    hospital: { nome: string }
-    setor: { nome: string }
-    especialidade: { nome: string }
-  }
+    id: string;
+    data: Date;
+    horaInicio: string;
+    horaFim: string;
+    valor: Decimal;
+    hospital: { nome: string };
+    setor: { nome: string };
+    especialidade: { nome: string };
+  };
   recipientMedico: {
-    id: string
-    nome: string
-  } | null
+    id: string;
+    nome: string;
+  } | null;
 }
 
 @Injectable()
@@ -52,7 +53,7 @@ export class ShiftOffersRepository {
         expiresAt: data.expiresAt,
         status: ShiftOfferStatus.pending,
       },
-    })
+    });
   }
 
   async findById(id: string): Promise<ShiftOfferWithRelations | null> {
@@ -75,44 +76,52 @@ export class ShiftOffersRepository {
           select: { id: true, nome: true },
         },
       },
-    })
+    });
   }
 
   async findByMessageId(messageId: string): Promise<ChatShiftOffer | null> {
     return this.prisma.chatShiftOffer.findUnique({
       where: { messageId },
-    })
+    });
   }
 
   async findAll(
     userId: string,
-    query: ShiftOfferQueryDto
+    query: ShiftOfferQueryDto,
   ): Promise<{
-    data: ShiftOfferWithRelations[]
-    total: number
+    data: ShiftOfferWithRelations[];
+    total: number;
   }> {
-    const { status, vagaId, recipientMedicoId, sentByMe, receivedByMe, page = 1, limit = 20 } = query
+    const {
+      status,
+      vagaId,
+      recipientMedicoId,
+      sentByMe,
+      receivedByMe,
+      page = 1,
+      limit = 20,
+    } = query;
 
-    const where: Prisma.ChatShiftOfferWhereInput = {}
+    const where: Prisma.ChatShiftOfferWhereInput = {};
 
     if (status) {
-      where.status = status
+      where.status = status;
     }
 
     if (vagaId) {
-      where.vagaId = vagaId
+      where.vagaId = vagaId;
     }
 
     if (recipientMedicoId) {
-      where.recipientMedicoId = recipientMedicoId
+      where.recipientMedicoId = recipientMedicoId;
     }
 
     if (sentByMe) {
-      where.senderId = userId
+      where.senderId = userId;
     }
 
     if (receivedByMe) {
-      where.OR = [{ recipientId: userId }, { recipientMedicoId: userId }]
+      where.OR = [{ recipientId: userId }, { recipientMedicoId: userId }];
     }
 
     // Se não especificou filtro, mostrar apenas as do usuário
@@ -121,7 +130,7 @@ export class ShiftOffersRepository {
         { senderId: userId },
         { recipientId: userId },
         { recipientMedicoId: userId },
-      ]
+      ];
     }
 
     const [data, total] = await Promise.all([
@@ -144,20 +153,20 @@ export class ShiftOffersRepository {
             select: { id: true, nome: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
       this.prisma.chatShiftOffer.count({ where }),
-    ])
+    ]);
 
-    return { data, total }
+    return { data, total };
   }
 
   async updateStatus(
     id: string,
     status: ShiftOfferStatus,
-    respondedAt?: Date
+    respondedAt?: Date,
   ): Promise<ChatShiftOffer> {
     return this.prisma.chatShiftOffer.update({
       where: { id },
@@ -165,14 +174,17 @@ export class ShiftOffersRepository {
         status,
         respondedAt: respondedAt || new Date(),
       },
-    })
+    });
   }
 
-  async updateMessageId(id: string, messageId: string): Promise<ChatShiftOffer> {
+  async updateMessageId(
+    id: string,
+    messageId: string,
+  ): Promise<ChatShiftOffer> {
     return this.prisma.chatShiftOffer.update({
       where: { id },
       data: { messageId },
-    })
+    });
   }
 
   async expirePendingOffers(): Promise<number> {
@@ -184,8 +196,8 @@ export class ShiftOffersRepository {
       data: {
         status: ShiftOfferStatus.expired,
       },
-    })
-    return result.count
+    });
+    return result.count;
   }
 
   async cancel(id: string): Promise<ChatShiftOffer> {
@@ -194,6 +206,6 @@ export class ShiftOffersRepository {
       data: {
         status: ShiftOfferStatus.cancelled,
       },
-    })
+    });
   }
 }
