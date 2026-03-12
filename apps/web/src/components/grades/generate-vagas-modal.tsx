@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useFormatCurrency } from '@/lib/format-currency';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useFormatCurrency } from "@/lib/format-currency";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Modal } from '@/components/houston';
-import type { Grade } from '../../services/types';
+} from "@/components/ui/select";
+import { Modal } from "@/components/houston";
+import type { Grade } from "../../services/types";
 
 const ZapIcon = () => (
   <svg
@@ -45,9 +46,11 @@ export function GenerateVagasModal({
   especialidades,
   onConfirm,
 }: GenerateVagasModalProps) {
+  const t = useTranslations("Grades.generateVagas");
+  const tCommon = useTranslations("Common.actions");
   const formatCurrency = useFormatCurrency();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [especialidadeId, setEspecialidadeId] = useState('');
+  const [especialidadeId, setEspecialidadeId] = useState("");
   const [valor, setValor] = useState(0);
 
   const handleConfirm = async () => {
@@ -55,7 +58,7 @@ export function GenerateVagasModal({
     setIsSubmitting(true);
     try {
       await onConfirm(especialidadeId, valor);
-      setEspecialidadeId('');
+      setEspecialidadeId("");
       setValor(0);
     } catch {
       // Error handled by onConfirm callback
@@ -65,7 +68,7 @@ export function GenerateVagasModal({
   };
 
   const handleClose = () => {
-    setEspecialidadeId('');
+    setEspecialidadeId("");
     setValor(0);
     onOpenChange(false);
   };
@@ -78,8 +81,8 @@ export function GenerateVagasModal({
     <Modal
       open={open}
       onOpenChange={handleClose}
-      title="Gerar Vagas"
-      description="Configure os parametros para gerar vagas a partir dos time slots da grade"
+      title={t("title")}
+      description={t("description")}
       size="md"
     >
       <div className="space-y-6">
@@ -88,22 +91,19 @@ export function GenerateVagasModal({
             <ZapIcon />
           </div>
           <div>
-            <p className="text-sm font-medium">Resumo da Geracao</p>
+            <p className="text-sm font-medium">{t("summary")}</p>
             <p className="text-sm text-gray-600">
-              {slotsCount} time slots serao convertidos em {slotsCount} vagas
+              {t("summaryDescription", { slots: slotsCount })}
             </p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="especialidade">Especialidade</Label>
-            <Select
-              value={especialidadeId}
-              onValueChange={setEspecialidadeId}
-            >
+            <Label htmlFor="especialidade">{t("specialty")}</Label>
+            <Select value={especialidadeId} onValueChange={setEspecialidadeId}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecione a especialidade" />
+                <SelectValue placeholder={t("selectSpecialty")} />
               </SelectTrigger>
               <SelectContent>
                 {especialidades.map((esp) => (
@@ -116,7 +116,7 @@ export function GenerateVagasModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor por Vaga (R$)</Label>
+            <Label htmlFor="valor">{t("valuePerVaga")}</Label>
             <Input
               id="valor"
               type="number"
@@ -130,7 +130,7 @@ export function GenerateVagasModal({
         </div>
 
         <div className="rounded-lg border p-4">
-          <h4 className="text-sm font-medium mb-2">Valor Total Estimado</h4>
+          <h4 className="text-sm font-medium mb-2">{t("estimatedTotal")}</h4>
           <p className="text-2xl font-semibold text-primary-600">
             {formatCurrency(slotsCount * valor)}
           </p>
@@ -141,13 +141,13 @@ export function GenerateVagasModal({
 
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleClose}>
-            Cancelar
+            {tCommon("cancel")}
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={isSubmitting || !especialidadeId || valor <= 0}
           >
-            {isSubmitting ? 'Gerando...' : 'Gerar Vagas'}
+            {isSubmitting ? t("generating") : t("generateButton")}
           </Button>
         </div>
       </div>

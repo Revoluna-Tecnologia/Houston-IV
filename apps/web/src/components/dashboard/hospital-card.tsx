@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { useFormatCurrency } from '@/lib/format-currency';
-import type { Hospital, Vaga } from '../../services/types';
+import { useTranslations } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useFormatCurrency } from "@/lib/format-currency";
+import type { Hospital, Vaga } from "../../services/types";
 
 const BuildingIcon = () => (
   <svg
@@ -37,17 +38,25 @@ export interface HospitalCardProps {
   className?: string;
 }
 
-export function HospitalCard({ hospital, vagas, onClick, className }: HospitalCardProps) {
+export function HospitalCard({
+  hospital,
+  vagas,
+  onClick,
+  className,
+}: HospitalCardProps) {
+  const t = useTranslations("Dashboard.hospitalCard");
   const formatCurrency = useFormatCurrency();
-  const vagasAbertas = vagas.filter((v) => v.status === 'aberta' || v.status === 'anunciada').length;
-  const vagasFechadas = vagas.filter((v) => v.status === 'fechada').length;
+  const vagasAbertas = vagas.filter(
+    (v) => v.status === "aberta" || v.status === "anunciada",
+  ).length;
+  const vagasFechadas = vagas.filter((v) => v.status === "fechada").length;
   const valorTotal = vagas.reduce((acc, v) => acc + (v.valor || 0), 0);
 
   return (
     <Card
       className={cn(
-        'cursor-pointer transition-shadow hover:shadow-md',
-        className
+        "cursor-pointer transition-shadow hover:shadow-md",
+        className,
       )}
       onClick={onClick}
     >
@@ -57,7 +66,9 @@ export function HospitalCard({ hospital, vagas, onClick, className }: HospitalCa
             <BuildingIcon />
           </div>
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-base truncate">{hospital.nome}</CardTitle>
+            <CardTitle className="text-base truncate">
+              {hospital.nome}
+            </CardTitle>
             {hospital.cidade && hospital.estado && (
               <p className="text-sm text-gray-500">
                 {hospital.cidade}, {hospital.estado}
@@ -69,16 +80,22 @@ export function HospitalCard({ hospital, vagas, onClick, className }: HospitalCa
       <CardContent className="pt-2">
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <p className="text-2xl font-semibold text-yellow-600">{vagasAbertas}</p>
-            <p className="text-xs text-gray-500">Abertas</p>
+            <p className="text-2xl font-semibold text-yellow-600">
+              {vagasAbertas}
+            </p>
+            <p className="text-xs text-gray-500">{t("open")}</p>
           </div>
           <div>
-            <p className="text-2xl font-semibold text-green-600">{vagasFechadas}</p>
-            <p className="text-xs text-gray-500">Fechadas</p>
+            <p className="text-2xl font-semibold text-green-600">
+              {vagasFechadas}
+            </p>
+            <p className="text-xs text-gray-500">{t("closed")}</p>
           </div>
           <div>
-            <p className="text-lg font-semibold text-gray-900">{formatCurrency(valorTotal)}</p>
-            <p className="text-xs text-gray-500">Total</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {formatCurrency(valorTotal)}
+            </p>
+            <p className="text-xs text-gray-500">{t("total")}</p>
           </div>
         </div>
       </CardContent>

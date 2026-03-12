@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { TableRow, TableCell } from '@/components/ui/table';
-import { useFormatCurrency } from '@/lib/format-currency';
-import { useDateLocale } from '@/lib/date-locale';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { StatusBadge, type StatusBadgeVariant } from '@/components/houston';
-import type { Pagamento, PagamentoStatus } from '../../services/types';
+import { useState } from "react";
+import { format } from "date-fns";
+import { useTranslations } from "next-intl";
+import { TableRow, TableCell } from "@/components/ui/table";
+import { useFormatCurrency } from "@/lib/format-currency";
+import { useDateLocale } from "@/lib/date-locale";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { StatusBadge, type StatusBadgeVariant } from "@/components/houston";
+import type { Pagamento, PagamentoStatus } from "../../services/types";
 
 const ChevronDownIcon = () => (
   <svg
@@ -89,18 +90,11 @@ export interface PagamentoRowProps {
   onPagar: () => void;
 }
 
-const STATUS_LABELS: Record<PagamentoStatus, string> = {
-  pendente: 'Pendente',
-  autorizado: 'Autorizado',
-  pago: 'Pago',
-  cancelado: 'Cancelado',
-};
-
 const STATUS_VARIANTS: Record<PagamentoStatus, StatusBadgeVariant> = {
-  pendente: 'warning',
-  autorizado: 'info',
-  pago: 'success',
-  cancelado: 'error',
+  pendente: "warning",
+  autorizado: "info",
+  pago: "success",
+  cancelado: "error",
 };
 
 export function PagamentoRow({
@@ -110,42 +104,55 @@ export function PagamentoRow({
   onAutorizar,
   onPagar,
 }: PagamentoRowProps) {
+  const t = useTranslations("Pagamentos");
+  const tCommon = useTranslations("Common");
   const formatCurrency = useFormatCurrency();
   const dateLocale = useDateLocale();
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const STATUS_LABELS: Record<PagamentoStatus, string> = {
+    pendente: t("status.pending"),
+    autorizado: t("status.authorized"),
+    pago: t("status.paid"),
+    cancelado: t("status.cancelled"),
+  };
+
   const formatDate = (date: Date | string | null | undefined) => {
-    if (!date) return '-';
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
+    if (!date) return "-";
+    const d = typeof date === "string" ? new Date(date) : date;
+    return format(d, "dd/MM/yyyy", { locale: dateLocale });
   };
 
   const formatDateTime = (date: Date | string | null | undefined) => {
-    if (!date) return '-';
-    const d = typeof date === 'string' ? new Date(date) : date;
+    if (!date) return "-";
+    const d = typeof date === "string" ? new Date(date) : date;
     return format(d, "dd/MM/yyyy 'as' HH:mm", { locale: dateLocale });
   };
 
   return (
     <>
-      <TableRow className={isSelected ? 'bg-primary-50' : undefined}>
+      <TableRow className={isSelected ? "bg-primary-50" : undefined}>
         <TableCell className="w-12">
           <Checkbox
             checked={isSelected}
             onCheckedChange={onSelect}
-            aria-label="Selecionar pagamento"
+            aria-label={t("table.selectRow")}
           />
         </TableCell>
         <TableCell>
           <div className="flex flex-col">
-            <span className="font-medium">{pagamento.hospitalNome || '-'}</span>
-            <span className="text-xs text-gray-500">{formatDate(pagamento.vagaData)}</span>
+            <span className="font-medium">{pagamento.hospitalNome || "-"}</span>
+            <span className="text-xs text-gray-500">
+              {formatDate(pagamento.vagaData)}
+            </span>
           </div>
         </TableCell>
         <TableCell>
           <div className="flex flex-col">
-            <span className="font-medium">{pagamento.medicoNome || '-'}</span>
-            <span className="text-xs text-gray-500">CRM: {pagamento.medicoCrm || '-'}</span>
+            <span className="font-medium">{pagamento.medicoNome || "-"}</span>
+            <span className="text-xs text-gray-500">
+              CRM: {pagamento.medicoCrm || "-"}
+            </span>
           </div>
         </TableCell>
         <TableCell>
@@ -159,16 +166,16 @@ export function PagamentoRow({
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
-            {pagamento.status === 'pendente' && (
+            {pagamento.status === "pendente" && (
               <Button size="sm" variant="outline" onClick={onAutorizar}>
                 <CheckIcon />
-                Autorizar
+                {tCommon("actions.authorize")}
               </Button>
             )}
-            {pagamento.status === 'autorizado' && (
+            {pagamento.status === "autorizado" && (
               <Button size="sm" onClick={onPagar}>
                 <DollarSignIcon />
-                Pagar
+                {tCommon("actions.pay")}
               </Button>
             )}
             <Button
@@ -188,39 +195,57 @@ export function PagamentoRow({
             <div className="p-4 space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Hospital</p>
-                  <p className="text-sm">{pagamento.hospitalNome || '-'}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.hospital")}
+                  </p>
+                  <p className="text-sm">{pagamento.hospitalNome || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Setor</p>
-                  <p className="text-sm">{pagamento.setorNome || '-'}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.sector")}
+                  </p>
+                  <p className="text-sm">{pagamento.setorNome || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Data da Vaga</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.vagaDate")}
+                  </p>
                   <p className="text-sm">{formatDate(pagamento.vagaData)}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Horario</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.schedule")}
+                  </p>
                   <p className="text-sm">
-                    {pagamento.horaInicio || '-'} - {pagamento.horaFim || '-'}
+                    {pagamento.horaInicio || "-"} - {pagamento.horaFim || "-"}
                   </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Medico</p>
-                  <p className="text-sm">{pagamento.medicoNome || '-'}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.medico")}
+                  </p>
+                  <p className="text-sm">{pagamento.medicoNome || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">CRM</p>
-                  <p className="text-sm">{pagamento.medicoCrm || '-'}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.crm")}
+                  </p>
+                  <p className="text-sm">{pagamento.medicoCrm || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Valor</p>
-                  <p className="text-sm font-semibold">{formatCurrency(pagamento.valor)}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.value")}
+                  </p>
+                  <p className="text-sm font-semibold">
+                    {formatCurrency(pagamento.valor)}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Status</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {tCommon("labels.status")}
+                  </p>
                   <StatusBadge
                     status={STATUS_LABELS[pagamento.status]}
                     variant={STATUS_VARIANTS[pagamento.status]}
@@ -229,12 +254,20 @@ export function PagamentoRow({
               </div>
               <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Data de Autorizacao</p>
-                  <p className="text-sm">{formatDateTime(pagamento.dataAutorizacao)}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.authorizationDate")}
+                  </p>
+                  <p className="text-sm">
+                    {formatDateTime(pagamento.dataAutorizacao)}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Data de Pagamento</p>
-                  <p className="text-sm">{formatDateTime(pagamento.dataPagamento)}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    {t("row.paymentDate")}
+                  </p>
+                  <p className="text-sm">
+                    {formatDateTime(pagamento.dataPagamento)}
+                  </p>
                 </div>
               </div>
             </div>

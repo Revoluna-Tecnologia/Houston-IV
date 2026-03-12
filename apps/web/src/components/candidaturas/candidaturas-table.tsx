@@ -1,24 +1,31 @@
-'use client';
+"use client";
 
-import { useMemo, memo, useCallback } from 'react';
-import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { useDateLocale } from '@/lib/date-locale';
-import { Checkbox } from '@/components/ui/checkbox';
+import { useMemo, memo, useCallback } from "react";
+import { format } from "date-fns";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { useDateLocale } from "@/lib/date-locale";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   DataTable,
   StatusBadge,
   type ColumnDef,
   type SortingState,
   type StatusBadgeVariant,
-} from '@/components/houston';
-import type { Candidatura, CandidaturaStatus, Vaga, Medico, Hospital } from '../../services/types';
+} from "@/components/houston";
+import type {
+  Candidatura,
+  CandidaturaStatus,
+  Vaga,
+  Medico,
+  Hospital,
+} from "../../services/types";
 
 const MoreVerticalIcon = () => (
   <svg
@@ -109,16 +116,10 @@ export interface CandidaturasTableProps {
   onView: (candidatura: CandidaturaWithRelations) => void;
 }
 
-const STATUS_LABELS: Record<CandidaturaStatus, string> = {
-  pendente: 'Pendente',
-  aprovada: 'Aprovada',
-  rejeitada: 'Rejeitada',
-};
-
 const STATUS_VARIANTS: Record<CandidaturaStatus, StatusBadgeVariant> = {
-  pendente: 'pending',
-  aprovada: 'success',
-  rejeitada: 'error',
+  pendente: "pending",
+  aprovada: "success",
+  rejeitada: "error",
 };
 
 export const CandidaturasTable = memo(function CandidaturasTable({
@@ -135,121 +136,146 @@ export const CandidaturasTable = memo(function CandidaturasTable({
   onRejeitar,
   onView,
 }: CandidaturasTableProps) {
+  const t = useTranslations("Candidaturas");
+  const tCommon = useTranslations("Common.actions");
   const dateLocale = useDateLocale();
 
-  const formatDate = (date: Date | string) => {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return format(d, 'dd/MM/yyyy', { locale: dateLocale });
+  const STATUS_LABELS: Record<CandidaturaStatus, string> = {
+    pendente: t("status.pending"),
+    aprovada: t("status.approved"),
+    rejeitada: t("status.rejected"),
   };
 
-  const handleSelectAll = useCallback((checked: boolean) => {
-    if (checked) {
-      onSelectionChange(data.map((c) => c.id));
-    } else {
-      onSelectionChange([]);
-    }
-  }, [data, onSelectionChange]);
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === "string" ? new Date(date) : date;
+    return format(d, "dd/MM/yyyy", { locale: dateLocale });
+  };
 
-  const handleSelectRow = useCallback((id: string, checked: boolean) => {
-    if (checked) {
-      onSelectionChange([...selectedIds, id]);
-    } else {
-      onSelectionChange(selectedIds.filter((selectedId) => selectedId !== id));
-    }
-  }, [selectedIds, onSelectionChange]);
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      if (checked) {
+        onSelectionChange(data.map((c) => c.id));
+      } else {
+        onSelectionChange([]);
+      }
+    },
+    [data, onSelectionChange],
+  );
+
+  const handleSelectRow = useCallback(
+    (id: string, checked: boolean) => {
+      if (checked) {
+        onSelectionChange([...selectedIds, id]);
+      } else {
+        onSelectionChange(
+          selectedIds.filter((selectedId) => selectedId !== id),
+        );
+      }
+    },
+    [selectedIds, onSelectionChange],
+  );
 
   const allSelected = data.length > 0 && selectedIds.length === data.length;
-  const someSelected = selectedIds.length > 0 && selectedIds.length < data.length;
+  const someSelected =
+    selectedIds.length > 0 && selectedIds.length < data.length;
 
-  const columns = useMemo<ColumnDef<CandidaturaWithRelations>[]>(() => [
-    {
-      id: 'select',
-      header: '',
-      cell: (row) => (
-        <Checkbox
-          checked={selectedIds.includes(row.id)}
-          onCheckedChange={(checked) => handleSelectRow(row.id, checked as boolean)}
-        />
-      ),
-      className: 'w-12',
-    },
-    {
-      id: 'data',
-      header: 'Data',
-      sortable: true,
-      cell: (row) => formatDate(row.createdAt),
-    },
-    {
-      id: 'vaga',
-      header: 'Vaga',
-      sortable: true,
-      cell: (row) => (
-        <div className="flex flex-col">
-          <span className="font-medium">{row.hospitalNome || '-'}</span>
-          <span className="text-sm text-gray-500">
-            {row.setorNome || '-'} - {row.vaga?.horaInicio || '-'} - {row.vaga?.horaFim || '-'}
-          </span>
-        </div>
-      ),
-    },
-    {
-      id: 'medico',
-      header: 'Medico',
-      sortable: true,
-      cell: (row) => (
-        <div className="flex flex-col">
-          <span className="font-medium">{row.medicoNome || '-'}</span>
-          <span className="text-sm text-gray-500">{row.medicoCrm || '-'}</span>
-        </div>
-      ),
-    },
-    {
-      id: 'status',
-      header: 'Status',
-      accessorKey: 'status',
-      sortable: true,
-      cell: (row) => (
-        <StatusBadge
-          status={STATUS_LABELS[row.status]}
-          variant={STATUS_VARIANTS[row.status]}
-        />
-      ),
-    },
-    {
-      id: 'acoes',
-      header: 'Acoes',
-      cell: (row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVerticalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onView(row)}>
-              <EyeIcon />
-              Ver Detalhes
-            </DropdownMenuItem>
-            {row.status === 'pendente' && (
-              <>
-                <DropdownMenuItem onClick={() => onAprovar(row)}>
-                  <CheckIcon />
-                  Aprovar
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onRejeitar(row)}
-                  className="text-red-600"
-                >
-                  <XIcon />
-                  Rejeitar
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ], [selectedIds, handleSelectRow, onView, onAprovar, onRejeitar]);
+  const columns = useMemo<ColumnDef<CandidaturaWithRelations>[]>(
+    () => [
+      {
+        id: "select",
+        header: "",
+        cell: (row) => (
+          <Checkbox
+            checked={selectedIds.includes(row.id)}
+            onCheckedChange={(checked) =>
+              handleSelectRow(row.id, checked as boolean)
+            }
+          />
+        ),
+        className: "w-12",
+      },
+      {
+        id: "data",
+        header: t("table.date"),
+        sortable: true,
+        cell: (row) => formatDate(row.createdAt),
+      },
+      {
+        id: "vaga",
+        header: t("table.vaga"),
+        sortable: true,
+        cell: (row) => (
+          <div className="flex flex-col">
+            <span className="font-medium">{row.hospitalNome || "-"}</span>
+            <span className="text-sm text-gray-500">
+              {row.setorNome || "-"} - {row.vaga?.horaInicio || "-"} -{" "}
+              {row.vaga?.horaFim || "-"}
+            </span>
+          </div>
+        ),
+      },
+      {
+        id: "medico",
+        header: t("table.medico"),
+        sortable: true,
+        cell: (row) => (
+          <div className="flex flex-col">
+            <span className="font-medium">{row.medicoNome || "-"}</span>
+            <span className="text-sm text-gray-500">
+              {row.medicoCrm || "-"}
+            </span>
+          </div>
+        ),
+      },
+      {
+        id: "status",
+        header: t("table.status"),
+        accessorKey: "status",
+        sortable: true,
+        cell: (row) => (
+          <StatusBadge
+            status={STATUS_LABELS[row.status]}
+            variant={STATUS_VARIANTS[row.status]}
+          />
+        ),
+      },
+      {
+        id: "acoes",
+        header: t("table.actions"),
+        cell: (row) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onView(row)}>
+                <EyeIcon />
+                {tCommon("view")}
+              </DropdownMenuItem>
+              {row.status === "pendente" && (
+                <>
+                  <DropdownMenuItem onClick={() => onAprovar(row)}>
+                    <CheckIcon />
+                    {tCommon("approve")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onRejeitar(row)}
+                    className="text-red-600"
+                  >
+                    <XIcon />
+                    {tCommon("reject")}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ],
+    [selectedIds, handleSelectRow, onView, onAprovar, onRejeitar],
+  );
 
   return (
     <div className="space-y-4">
@@ -257,9 +283,9 @@ export const CandidaturasTable = memo(function CandidaturasTable({
         <Checkbox
           checked={allSelected}
           onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
-          className={someSelected ? 'data-[state=checked]:bg-primary-300' : ''}
+          className={someSelected ? "data-[state=checked]:bg-primary-300" : ""}
         />
-        <span className="text-sm text-gray-500">Selecionar todos</span>
+        <span className="text-sm text-gray-500">{t("table.selectAll")}</span>
       </div>
       <DataTable
         columns={columns}
@@ -272,7 +298,7 @@ export const CandidaturasTable = memo(function CandidaturasTable({
           totalCount,
         }}
         onPageChange={onPageChange}
-        emptyMessage="Nenhuma candidatura encontrada"
+        emptyMessage={t("noCandidaturas")}
       />
     </div>
   );
