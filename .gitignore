@@ -45,6 +45,7 @@ test-results
 # Prisma
 prisma/*.db
 prisma/*.db-journal
+**/generated/prisma
 
 # Cache
 .cache
