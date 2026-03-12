@@ -1,7 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional, IsString, IsEnum, IsUUID, IsNumber, Min } from 'class-validator'
-import { Type } from 'class-transformer'
-import { CandidaturaStatus } from '@prisma/client'
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsUUID,
+  IsNumber,
+  Min,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { CandidaturaStatus } from "../../generated/prisma/client";
 
 export class CandidaturaQueryDto {
   @ApiProperty({ example: 1, required: false })
@@ -9,37 +16,37 @@ export class CandidaturaQueryDto {
   @IsNumber()
   @Min(1)
   @IsOptional()
-  page?: number
+  page?: number;
 
   @ApiProperty({ example: 10, required: false })
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   @IsOptional()
-  limit?: number
+  limit?: number;
 
-  @ApiProperty({ example: 'createdAt', required: false })
+  @ApiProperty({ example: "createdAt", required: false })
   @IsString()
   @IsOptional()
-  sortBy?: string
+  sortBy?: string;
 
-  @ApiProperty({ example: 'desc', required: false })
+  @ApiProperty({ example: "desc", required: false })
   @IsString()
   @IsOptional()
-  sortOrder?: 'asc' | 'desc'
+  sortOrder?: "asc" | "desc";
 
-  @ApiProperty({ enum: ['pendente', 'aprovada', 'rejeitada'], required: false })
+  @ApiProperty({ enum: ["pendente", "aprovada", "rejeitada"], required: false })
   @IsOptional()
   @IsEnum(CandidaturaStatus)
-  status?: CandidaturaStatus
+  status?: CandidaturaStatus;
 
-  @ApiProperty({ example: 'uuid-vaga', required: false })
+  @ApiProperty({ example: "uuid-vaga", required: false })
   @IsOptional()
   @IsUUID()
-  vagaId?: string
+  vagaId?: string;
 
-  @ApiProperty({ example: 'uuid-medico', required: false })
+  @ApiProperty({ example: "uuid-medico", required: false })
   @IsOptional()
   @IsUUID()
-  medicoId?: string
+  medicoId?: string;
 }

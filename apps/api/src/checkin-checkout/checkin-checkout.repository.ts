@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CheckinCheckout, Prisma } from "@prisma/client";
+import type { CheckinCheckout, Prisma } from "../generated/prisma/client";
 import type {
   CreateCheckinCheckoutDto,
   UpdateCheckinCheckoutDto,

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Candidatura, Prisma } from "@prisma/client";
+import type { Candidatura, Prisma } from "../generated/prisma/client";
 import type { CreateCandidaturaDto, CandidaturaQueryDto } from "./dto";
 import type { PaginatedResult } from "../common";
 

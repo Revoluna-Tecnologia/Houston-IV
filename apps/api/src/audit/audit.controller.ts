@@ -15,7 +15,7 @@ import {
   Max,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { AuditAction } from "@prisma/client";
+import { AuditAction } from "../generated/prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { RequirePermissions } from "../auth/decorators";
 import { AppPermission } from "../auth/types/auth.types";
