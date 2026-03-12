@@ -1,4 +1,4 @@
-import type { Medico } from "@prisma/client";
+import type { Medico } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateMedicoFixtureParams {

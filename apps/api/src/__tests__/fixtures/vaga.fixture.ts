@@ -1,4 +1,4 @@
-import type { Vaga, VagaStatus } from "@prisma/client";
+import type { Vaga, VagaStatus } from "../../generated/prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
 import { randomUUID } from "crypto";
 

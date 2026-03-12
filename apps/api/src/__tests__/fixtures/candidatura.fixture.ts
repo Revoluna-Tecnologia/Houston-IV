@@ -1,4 +1,7 @@
-import type { Candidatura, CandidaturaStatus } from "@prisma/client";
+import type {
+  Candidatura,
+  CandidaturaStatus,
+} from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateCandidaturaFixtureParams {

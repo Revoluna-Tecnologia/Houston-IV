@@ -1,4 +1,4 @@
-import type { Especialidade } from "@prisma/client";
+import type { Especialidade } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateEspecialidadeFixtureParams {

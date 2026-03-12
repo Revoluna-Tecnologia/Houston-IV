@@ -1,4 +1,4 @@
-import type { Pagamento, PagamentoStatus } from "@prisma/client";
+import type { Pagamento, PagamentoStatus } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 import { Decimal } from "@prisma/client/runtime/client";
 

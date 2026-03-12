@@ -1,4 +1,4 @@
-import type { Escalista, EscalistaStatus } from "@prisma/client";
+import type { Escalista, EscalistaStatus } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateEscalistaFixtureParams {

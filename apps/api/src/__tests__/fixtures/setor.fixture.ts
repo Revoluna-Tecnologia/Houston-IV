@@ -1,4 +1,4 @@
-import type { Setor } from "@prisma/client";
+import type { Setor } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateSetorFixtureParams {

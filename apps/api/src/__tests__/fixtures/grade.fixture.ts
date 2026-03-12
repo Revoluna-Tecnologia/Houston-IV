@@ -1,4 +1,4 @@
-import type { Grade, GradeStatus } from "@prisma/client";
+import type { Grade, GradeStatus } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 type GradeOverrides = Partial<Omit<Grade, "dataInicio" | "dataFim">> & {

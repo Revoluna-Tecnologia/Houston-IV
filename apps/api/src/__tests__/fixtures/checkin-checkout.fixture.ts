@@ -1,4 +1,4 @@
-import type { CheckinCheckout } from "@prisma/client";
+import type { CheckinCheckout } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 export const createCheckinCheckoutFixture = (

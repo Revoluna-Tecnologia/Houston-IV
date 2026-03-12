@@ -1,4 +1,4 @@
-import type { Hospital } from "@prisma/client";
+import type { Hospital } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateHospitalFixtureParams {

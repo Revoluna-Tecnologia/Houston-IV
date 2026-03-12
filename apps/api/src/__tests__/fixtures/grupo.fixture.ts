@@ -1,4 +1,4 @@
-import type { Grupo } from "@prisma/client";
+import type { Grupo } from "../../generated/prisma/client";
 import { randomUUID } from "crypto";
 
 interface CreateGrupoFixtureParams {
