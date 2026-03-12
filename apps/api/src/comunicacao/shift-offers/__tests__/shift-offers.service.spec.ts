@@ -5,7 +5,10 @@ import {
   ShiftOfferWithRelations,
 } from "../shift-offers.repository";
 import { MessagesService } from "../../messages/messages.service";
-import { ShiftOfferStatus, MessageType } from "@prisma/client";
+import {
+  ShiftOfferStatus,
+  MessageType,
+} from "../../../generated/prisma/client";
 import {
   NotFoundException,
   ForbiddenException,

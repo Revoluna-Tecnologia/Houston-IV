@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
-import { MessageType, MessageStatus } from "@prisma/client";
+import { MessageType, MessageStatus } from "../../../generated/prisma/client";
 import { MessagesController } from "../messages.controller";
 import { MessagesService } from "../messages.service";
 import { AppRole } from "../../../auth/types/auth.types";

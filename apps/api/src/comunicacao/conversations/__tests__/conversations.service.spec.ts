@@ -4,7 +4,10 @@ import {
   ForbiddenException,
   BadRequestException,
 } from "@nestjs/common";
-import { ConversationType, ParticipantRole } from "@prisma/client";
+import {
+  ConversationType,
+  ParticipantRole,
+} from "../../../generated/prisma/client";
 import { ConversationsService } from "../conversations.service";
 import { ConversationsRepository } from "../conversations.repository";
 import { ParticipantsRepository } from "../participants.repository";

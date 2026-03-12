@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
-import { ConversationType, ParticipantRole } from "@prisma/client";
+import {
+  ConversationType,
+  ParticipantRole,
+} from "../../../generated/prisma/client";
 import { ConversationsController } from "../conversations.controller";
 import { ConversationsService } from "../conversations.service";
 import { AppRole } from "../../../auth/types/auth.types";

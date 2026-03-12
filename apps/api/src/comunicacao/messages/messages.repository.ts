@@ -1,46 +1,46 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
 import {
   ChatMessage,
   MessageType,
   MessageStatus,
   Prisma,
-} from '@prisma/client'
-import { PaginatedResult, MessageMetadata } from '../types'
+} from "../../generated/prisma/client";
+import { PaginatedResult, MessageMetadata } from "../types";
 
 // Tipo para mensagem com reply incluído
 export type MessageWithReply = ChatMessage & {
   replyTo?: {
-    id: string
-    content: string | null
-    messageType: MessageType
-    senderPhone: string
-  } | null
-}
+    id: string;
+    content: string | null;
+    messageType: MessageType;
+    senderPhone: string;
+  } | null;
+};
 
 // Dados para criar mensagem
 export interface CreateMessageData {
-  conversationId: string
-  senderId?: string
-  senderPhone: string
-  content?: string
-  messageType?: MessageType
-  replyToId?: string
-  metadata?: MessageMetadata
-  status?: MessageStatus
-  whatsappMessageId?: string
+  conversationId: string;
+  senderId?: string;
+  senderPhone: string;
+  content?: string;
+  messageType?: MessageType;
+  replyToId?: string;
+  metadata?: MessageMetadata;
+  status?: MessageStatus;
+  whatsappMessageId?: string;
 }
 
 // Filtros de busca internos do repository (com campos obrigatórios)
 export interface RepositoryMessageFilters {
-  conversationId: string
-  messageType?: MessageType
-  startDate?: Date
-  endDate?: Date
-  search?: string
-  page: number
-  limit: number
-  cursor?: string
+  conversationId: string;
+  messageType?: MessageType;
+  startDate?: Date;
+  endDate?: Date;
+  search?: string;
+  page: number;
+  limit: number;
+  cursor?: string;
 }
 
 /**
@@ -77,7 +77,7 @@ export class MessagesRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -96,13 +96,15 @@ export class MessagesRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
    * Busca mensagem por whatsappMessageId
    */
-  async findByWhatsappId(whatsappMessageId: string): Promise<MessageWithReply | null> {
+  async findByWhatsappId(
+    whatsappMessageId: string,
+  ): Promise<MessageWithReply | null> {
     return this.prisma.chatMessage.findFirst({
       where: { whatsappMessageId },
       include: {
@@ -115,14 +117,14 @@ export class MessagesRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
    * Lista mensagens de uma conversa com paginação
    */
   async findByConversation(
-    filters: RepositoryMessageFilters
+    filters: RepositoryMessageFilters,
   ): Promise<PaginatedResult<MessageWithReply>> {
     const {
       conversationId,
@@ -133,38 +135,38 @@ export class MessagesRepository {
       page,
       limit,
       cursor,
-    } = filters
+    } = filters;
 
     // Construir where clause
     const where: Prisma.ChatMessageWhereInput = {
       conversationId,
       deletedAt: null,
-    }
+    };
 
     if (messageType) {
-      where.messageType = messageType
+      where.messageType = messageType;
     }
 
     if (startDate || endDate) {
-      where.createdAt = {}
+      where.createdAt = {};
       if (startDate) {
-        where.createdAt.gte = startDate
+        where.createdAt.gte = startDate;
       }
       if (endDate) {
-        where.createdAt.lte = endDate
+        where.createdAt.lte = endDate;
       }
     }
 
     if (search) {
-      where.content = { contains: search, mode: 'insensitive' }
+      where.content = { contains: search, mode: "insensitive" };
     }
 
     // Se usar cursor, filtrar a partir dele
     if (cursor) {
-      where.id = { lt: cursor }
+      where.id = { lt: cursor };
     }
 
-    const skip = cursor ? 0 : (page - 1) * limit
+    const skip = cursor ? 0 : (page - 1) * limit;
 
     // Buscar total e dados em paralelo
     const [total, data] = await Promise.all([
@@ -181,14 +183,14 @@ export class MessagesRepository {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
-    ])
+    ]);
 
-    const totalPages = Math.ceil(total / limit)
-    const lastMessage = data[data.length - 1]
+    const totalPages = Math.ceil(total / limit);
+    const lastMessage = data[data.length - 1];
 
     return {
       data,
@@ -201,7 +203,7 @@ export class MessagesRepository {
         hasPrev: page > 1,
         ...(cursor && lastMessage ? { cursor: lastMessage.id } : {}),
       },
-    }
+    };
   }
 
   /**
@@ -212,32 +214,32 @@ export class MessagesRepository {
     data: Partial<
       Pick<
         ChatMessage,
-        'status' | 'whatsappMessageId' | 'deliveredAt' | 'readAt' | 'deletedAt'
+        "status" | "whatsappMessageId" | "deliveredAt" | "readAt" | "deletedAt"
       >
-    >
+    >,
   ): Promise<ChatMessage> {
     return this.prisma.chatMessage.update({
       where: { id },
       data,
-    })
+    });
   }
 
   /**
    * Atualiza status da mensagem
    */
   async updateStatus(id: string, status: MessageStatus): Promise<void> {
-    const updateData: Prisma.ChatMessageUpdateInput = { status }
+    const updateData: Prisma.ChatMessageUpdateInput = { status };
 
     if (status === MessageStatus.delivered) {
-      updateData.deliveredAt = new Date()
+      updateData.deliveredAt = new Date();
     } else if (status === MessageStatus.read) {
-      updateData.readAt = new Date()
+      updateData.readAt = new Date();
     }
 
     await this.prisma.chatMessage.update({
       where: { id },
       data: updateData,
-    })
+    });
   }
 
   /**
@@ -247,7 +249,7 @@ export class MessagesRepository {
     await this.prisma.chatMessage.update({
       where: { id },
       data: { deletedAt: new Date() },
-    })
+    });
   }
 
   /**
@@ -265,7 +267,7 @@ export class MessagesRepository {
         status: MessageStatus.read,
         readAt: new Date(),
       },
-    })
+    });
   }
 
   /**
@@ -279,6 +281,6 @@ export class MessagesRepository {
         status: { not: MessageStatus.read },
         deletedAt: null,
       },
-    })
+    });
   }
 }

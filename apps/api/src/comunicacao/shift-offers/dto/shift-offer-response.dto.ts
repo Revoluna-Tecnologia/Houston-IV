@@ -1,86 +1,86 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { ShiftOfferStatus } from '@prisma/client'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ShiftOfferStatus } from "../../../generated/prisma/client";
 
 export class VagaInfoDto {
   @ApiProperty()
-  id!: string
+  id!: string;
 
   @ApiProperty()
-  data!: Date
+  data!: Date;
 
   @ApiPropertyOptional()
-  horaInicio?: string
+  horaInicio?: string;
 
   @ApiPropertyOptional()
-  horaFim?: string
+  horaFim?: string;
 
   @ApiPropertyOptional()
-  valor?: number
+  valor?: number;
 
   @ApiPropertyOptional()
-  hospitalNome?: string
+  hospitalNome?: string;
 
   @ApiPropertyOptional()
-  setorNome?: string
+  setorNome?: string;
 
   @ApiPropertyOptional()
-  especialidadeNome?: string
+  especialidadeNome?: string;
 }
 
 export class ShiftOfferResponseDto {
   @ApiProperty()
-  id!: string
+  id!: string;
 
   @ApiProperty()
-  vagaId!: string
+  vagaId!: string;
 
   @ApiProperty({ type: VagaInfoDto })
-  vaga!: VagaInfoDto
+  vaga!: VagaInfoDto;
 
   @ApiPropertyOptional()
-  messageId?: string
+  messageId?: string;
 
   @ApiProperty()
-  senderId!: string
+  senderId!: string;
 
   @ApiPropertyOptional()
-  senderName?: string
+  senderName?: string;
 
   @ApiPropertyOptional()
-  recipientId?: string
+  recipientId?: string;
 
   @ApiPropertyOptional()
-  recipientMedicoId?: string
+  recipientMedicoId?: string;
 
   @ApiPropertyOptional()
-  recipientMedicoName?: string
+  recipientMedicoName?: string;
 
   @ApiProperty()
-  recipientPhone!: string
+  recipientPhone!: string;
 
   @ApiProperty({ enum: ShiftOfferStatus })
-  status!: ShiftOfferStatus
+  status!: ShiftOfferStatus;
 
   @ApiProperty()
-  expiresAt!: Date
+  expiresAt!: Date;
 
   @ApiProperty()
-  createdAt!: Date
+  createdAt!: Date;
 
   @ApiPropertyOptional()
-  respondedAt?: Date
+  respondedAt?: Date;
 
   @ApiProperty()
-  isExpired!: boolean
+  isExpired!: boolean;
 
   @ApiProperty()
-  canRespond!: boolean
+  canRespond!: boolean;
 }
 
 export class ShiftOfferListResponseDto {
   @ApiProperty({ type: [ShiftOfferResponseDto] })
-  data!: ShiftOfferResponseDto[]
+  data!: ShiftOfferResponseDto[];
 
   @ApiProperty()
-  total!: number
+  total!: number;
 }

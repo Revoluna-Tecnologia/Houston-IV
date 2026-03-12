@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
-import { ParticipantRole } from "@prisma/client";
+import { ParticipantRole } from "../../../generated/prisma/client";
 import { ParticipantsRepository } from "../participants.repository";
 import { PrismaService } from "../../../prisma/prisma.service";
 

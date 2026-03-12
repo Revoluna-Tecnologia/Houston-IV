@@ -5,7 +5,11 @@
 
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { ChatShiftOffer, ShiftOfferStatus, Prisma } from "@prisma/client";
+import {
+  ChatShiftOffer,
+  ShiftOfferStatus,
+  Prisma,
+} from "../../generated/prisma/client";
 import { ShiftOfferQueryDto } from "./dto";
 
 type Decimal = Prisma.Decimal;

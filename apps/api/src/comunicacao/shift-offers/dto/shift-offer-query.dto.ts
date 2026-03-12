@@ -1,43 +1,46 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsOptional, IsEnum, IsNumber, Min, IsUUID } from 'class-validator'
-import { Type } from 'class-transformer'
-import { ShiftOfferStatus } from '@prisma/client'
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsEnum, IsNumber, Min, IsUUID } from "class-validator";
+import { Type } from "class-transformer";
+import { ShiftOfferStatus } from "../../../generated/prisma/client";
 
 export class ShiftOfferQueryDto {
-  @ApiPropertyOptional({ description: 'Filtrar por status', enum: ShiftOfferStatus })
+  @ApiPropertyOptional({
+    description: "Filtrar por status",
+    enum: ShiftOfferStatus,
+  })
   @IsEnum(ShiftOfferStatus)
   @IsOptional()
-  status?: ShiftOfferStatus
+  status?: ShiftOfferStatus;
 
-  @ApiPropertyOptional({ description: 'Filtrar por vaga' })
+  @ApiPropertyOptional({ description: "Filtrar por vaga" })
   @IsUUID()
   @IsOptional()
-  vagaId?: string
+  vagaId?: string;
 
-  @ApiPropertyOptional({ description: 'Filtrar por médico destinatário' })
+  @ApiPropertyOptional({ description: "Filtrar por médico destinatário" })
   @IsUUID()
   @IsOptional()
-  recipientMedicoId?: string
+  recipientMedicoId?: string;
 
-  @ApiPropertyOptional({ description: 'Apenas ofertas enviadas por mim' })
+  @ApiPropertyOptional({ description: "Apenas ofertas enviadas por mim" })
   @IsOptional()
-  sentByMe?: boolean
+  sentByMe?: boolean;
 
-  @ApiPropertyOptional({ description: 'Apenas ofertas recebidas por mim' })
+  @ApiPropertyOptional({ description: "Apenas ofertas recebidas por mim" })
   @IsOptional()
-  receivedByMe?: boolean
+  receivedByMe?: boolean;
 
-  @ApiPropertyOptional({ description: 'Página (default: 1)' })
+  @ApiPropertyOptional({ description: "Página (default: 1)" })
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   @IsOptional()
-  page?: number = 1
+  page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Itens por página (default: 20)' })
+  @ApiPropertyOptional({ description: "Itens por página (default: 20)" })
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   @IsOptional()
-  limit?: number = 20
+  limit?: number = 20;
 }

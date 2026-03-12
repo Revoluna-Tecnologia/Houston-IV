@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ShiftOffersController } from "../shift-offers.controller";
 import { ShiftOffersService } from "../shift-offers.service";
-import { ShiftOfferStatus } from "@prisma/client";
+import { ShiftOfferStatus } from "../../../generated/prisma/client";
 import { AuthenticatedUser, AppRole } from "../../../auth/types/auth.types";
 
 describe("ShiftOffersController", () => {

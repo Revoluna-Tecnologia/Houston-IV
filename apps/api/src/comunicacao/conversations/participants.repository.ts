@@ -1,27 +1,30 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
-import { ChatParticipant, ParticipantRole } from '@prisma/client'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import {
+  ChatParticipant,
+  ParticipantRole,
+} from "../../generated/prisma/client";
 
 // Tipo de participante com médico e user incluídos
 export type ParticipantWithMedico = ChatParticipant & {
   medico?: {
-    id: string
-    nome: string
-    telefone: string | null
-  } | null
+    id: string;
+    nome: string;
+    telefone: string | null;
+  } | null;
   user?: {
-    id: string
-    image: string | null
-  } | null
-}
+    id: string;
+    image: string | null;
+  } | null;
+};
 
 // Dados para criar participante
 export interface CreateParticipantData {
-  conversationId: string
-  userId?: string
-  medicoId?: string
-  phoneNumber: string
-  role?: ParticipantRole
+  conversationId: string;
+  userId?: string;
+  medicoId?: string;
+  phoneNumber: string;
+  role?: ParticipantRole;
 }
 
 /**
@@ -36,7 +39,7 @@ export class ParticipantsRepository {
    * Adiciona um participante a uma conversa
    */
   async create(data: CreateParticipantData): Promise<ParticipantWithMedico> {
-    const normalizedPhone = this.normalizePhone(data.phoneNumber)
+    const normalizedPhone = this.normalizePhone(data.phoneNumber);
 
     return this.prisma.chatParticipant.create({
       data: {
@@ -61,23 +64,23 @@ export class ParticipantsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
    * Adiciona múltiplos participantes em batch
    */
   async createMany(
-    participants: CreateParticipantData[]
+    participants: CreateParticipantData[],
   ): Promise<ParticipantWithMedico[]> {
-    const results: ParticipantWithMedico[] = []
+    const results: ParticipantWithMedico[] = [];
 
     for (const data of participants) {
-      const participant = await this.create(data)
-      results.push(participant)
+      const participant = await this.create(data);
+      results.push(participant);
     }
 
-    return results
+    return results;
   }
 
   /**
@@ -101,7 +104,7 @@ export class ParticipantsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -109,9 +112,9 @@ export class ParticipantsRepository {
    */
   async findByConversationAndPhone(
     conversationId: string,
-    phoneNumber: string
+    phoneNumber: string,
   ): Promise<ParticipantWithMedico | null> {
-    const normalizedPhone = this.normalizePhone(phoneNumber)
+    const normalizedPhone = this.normalizePhone(phoneNumber);
 
     return this.prisma.chatParticipant.findFirst({
       where: {
@@ -134,7 +137,7 @@ export class ParticipantsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -142,7 +145,7 @@ export class ParticipantsRepository {
    */
   async findByConversationAndUser(
     conversationId: string,
-    userId: string
+    userId: string,
   ): Promise<ParticipantWithMedico | null> {
     return this.prisma.chatParticipant.findFirst({
       where: {
@@ -165,7 +168,7 @@ export class ParticipantsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -173,7 +176,7 @@ export class ParticipantsRepository {
    */
   async findByConversation(
     conversationId: string,
-    includeLeft = false
+    includeLeft = false,
   ): Promise<ParticipantWithMedico[]> {
     return this.prisma.chatParticipant.findMany({
       where: {
@@ -195,8 +198,8 @@ export class ParticipantsRepository {
           },
         },
       },
-      orderBy: { joinedAt: 'asc' },
-    })
+      orderBy: { joinedAt: "asc" },
+    });
   }
 
   /**
@@ -204,12 +207,12 @@ export class ParticipantsRepository {
    */
   async update(
     id: string,
-    data: Partial<Pick<ChatParticipant, 'role' | 'isMuted' | 'lastReadAt'>>
+    data: Partial<Pick<ChatParticipant, "role" | "isMuted" | "lastReadAt">>,
   ): Promise<ChatParticipant> {
     return this.prisma.chatParticipant.update({
       where: { id },
       data,
-    })
+    });
   }
 
   /**
@@ -219,7 +222,7 @@ export class ParticipantsRepository {
     await this.prisma.chatParticipant.update({
       where: { id },
       data: { leftAt: new Date() },
-    })
+    });
   }
 
   /**
@@ -227,7 +230,7 @@ export class ParticipantsRepository {
    */
   async resetUnreadCount(
     conversationId: string,
-    userId: string
+    userId: string,
   ): Promise<void> {
     await this.prisma.chatParticipant.updateMany({
       where: {
@@ -238,7 +241,7 @@ export class ParticipantsRepository {
         unreadCount: 0,
         lastReadAt: new Date(),
       },
-    })
+    });
   }
 
   /**
@@ -246,9 +249,9 @@ export class ParticipantsRepository {
    */
   async incrementUnreadExcept(
     conversationId: string,
-    exceptPhone: string
+    exceptPhone: string,
   ): Promise<void> {
-    const normalizedPhone = this.normalizePhone(exceptPhone)
+    const normalizedPhone = this.normalizePhone(exceptPhone);
 
     await this.prisma.chatParticipant.updateMany({
       where: {
@@ -259,7 +262,7 @@ export class ParticipantsRepository {
       data: {
         unreadCount: { increment: 1 },
       },
-    })
+    });
   }
 
   /**
@@ -267,7 +270,7 @@ export class ParticipantsRepository {
    */
   async getUnreadCount(
     conversationId: string,
-    userId: string
+    userId: string,
   ): Promise<number> {
     const participant = await this.prisma.chatParticipant.findFirst({
       where: {
@@ -276,18 +279,18 @@ export class ParticipantsRepository {
         leftAt: null,
       },
       select: { unreadCount: true },
-    })
-    return participant?.unreadCount || 0
+    });
+    return participant?.unreadCount || 0;
   }
 
   /**
    * Normaliza telefone para formato padrão
    */
   private normalizePhone(phone: string): string {
-    let normalized = phone.replace(/\D/g, '')
-    if (!normalized.startsWith('55')) {
-      normalized = '55' + normalized
+    let normalized = phone.replace(/\D/g, "");
+    if (!normalized.startsWith("55")) {
+      normalized = "55" + normalized;
     }
-    return normalized
+    return normalized;
   }
 }

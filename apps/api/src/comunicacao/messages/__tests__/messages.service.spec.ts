@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from "@nestjs/common";
-import { MessageType, MessageStatus } from "@prisma/client";
+import { MessageType, MessageStatus } from "../../../generated/prisma/client";
 import { MessagesService } from "../messages.service";
 import { MessagesRepository } from "../messages.repository";
 import { MessagesGateway } from "../messages.gateway";

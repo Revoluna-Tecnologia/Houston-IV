@@ -1,42 +1,42 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
 import {
   Conversation,
   ChatParticipant,
   ConversationType,
   Prisma,
-} from '@prisma/client'
-import { PaginatedResult } from '../types'
+} from "../../generated/prisma/client";
+import { PaginatedResult } from "../types";
 
 // Tipo para conversa com participantes incluídos
 export type ConversationWithParticipants = Conversation & {
   participants: (ChatParticipant & {
     medico?: {
-      id: string
-      nome: string
-      telefone: string | null
-    } | null
-  })[]
-}
+      id: string;
+      nome: string;
+      telefone: string | null;
+    } | null;
+  })[];
+};
 
 // Dados para criar conversa
 export interface CreateConversationData {
-  type: ConversationType
-  name?: string
-  createdById: string
-  grupoId: string
-  zapsterGroupId?: string
+  type: ConversationType;
+  name?: string;
+  createdById: string;
+  grupoId: string;
+  zapsterGroupId?: string;
 }
 
 // Filtros de busca internos do repository (com campos obrigatórios)
 export interface RepositoryConversationFilters {
-  type?: ConversationType
-  isArchived?: boolean
-  search?: string
-  grupoIds: string[]
-  userId: string
-  page: number
-  limit: number
+  type?: ConversationType;
+  isArchived?: boolean;
+  search?: string;
+  grupoIds: string[];
+  userId: string;
+  page: number;
+  limit: number;
 }
 
 /**
@@ -59,7 +59,7 @@ export class ConversationsRepository {
         grupoId: data.grupoId,
         zapsterGroupId: data.zapsterGroupId,
       },
-    })
+    });
   }
 
   /**
@@ -82,14 +82,14 @@ export class ConversationsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
    * Busca conversa por zapsterGroupId
    */
   async findByZapsterGroupId(
-    zapsterGroupId: string
+    zapsterGroupId: string,
   ): Promise<ConversationWithParticipants | null> {
     return this.prisma.conversation.findFirst({
       where: { zapsterGroupId },
@@ -107,7 +107,7 @@ export class ConversationsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -116,14 +116,14 @@ export class ConversationsRepository {
   async findDirectByPhone(
     grupoId: string,
     phone1: string,
-    phone2: string
+    phone2: string,
   ): Promise<ConversationWithParticipants | null> {
-    const normalizedPhone1 = this.normalizePhone(phone1)
-    const normalizedPhone2 = this.normalizePhone(phone2)
+    const normalizedPhone1 = this.normalizePhone(phone1);
+    const normalizedPhone2 = this.normalizePhone(phone2);
 
     return this.prisma.conversation.findFirst({
       where: {
-        type: 'direct',
+        type: "direct",
         grupoId,
         AND: [
           {
@@ -158,7 +158,7 @@ export class ConversationsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
@@ -166,13 +166,13 @@ export class ConversationsRepository {
    * Retorna a primeira conversa direta onde o telefone é participante
    */
   async findDirectByParticipantPhone(
-    phone: string
+    phone: string,
   ): Promise<ConversationWithParticipants | null> {
-    const normalizedPhone = this.normalizePhone(phone)
+    const normalizedPhone = this.normalizePhone(phone);
 
     return this.prisma.conversation.findFirst({
       where: {
-        type: 'direct',
+        type: "direct",
         participants: {
           some: {
             phoneNumber: normalizedPhone,
@@ -194,17 +194,17 @@ export class ConversationsRepository {
           },
         },
       },
-    })
+    });
   }
 
   /**
    * Lista conversas do usuário com paginação
    */
   async findAll(
-    filters: RepositoryConversationFilters
+    filters: RepositoryConversationFilters,
   ): Promise<PaginatedResult<ConversationWithParticipants>> {
-    const { type, isArchived, search, grupoIds, userId, page, limit } = filters
-    const skip = (page - 1) * limit
+    const { type, isArchived, search, grupoIds, userId, page, limit } = filters;
+    const skip = (page - 1) * limit;
 
     // Construir where clause
     const where: Prisma.ConversationWhereInput = {
@@ -215,19 +215,19 @@ export class ConversationsRepository {
           leftAt: null,
         },
       },
-    }
+    };
 
     if (type) {
-      where.type = type
+      where.type = type;
     }
 
     if (isArchived !== undefined) {
-      where.isArchived = isArchived
+      where.isArchived = isArchived;
     }
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: "insensitive" } },
         {
           participants: {
             some: {
@@ -235,7 +235,7 @@ export class ConversationsRepository {
             },
           },
         },
-      ]
+      ];
     }
 
     // Buscar total e dados em paralelo
@@ -258,15 +258,15 @@ export class ConversationsRepository {
           },
         },
         orderBy: [
-          { lastMessageAt: { sort: 'desc', nulls: 'last' } },
-          { createdAt: 'desc' },
+          { lastMessageAt: { sort: "desc", nulls: "last" } },
+          { createdAt: "desc" },
         ],
         skip,
         take: limit,
       }),
-    ])
+    ]);
 
-    const totalPages = Math.ceil(total / limit)
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data,
@@ -278,7 +278,7 @@ export class ConversationsRepository {
         hasNext: page < totalPages,
         hasPrev: page > 1,
       },
-    }
+    };
   }
 
   /**
@@ -286,12 +286,17 @@ export class ConversationsRepository {
    */
   async update(
     id: string,
-    data: Partial<Pick<Conversation, 'name' | 'isArchived' | 'lastMessageAt' | 'lastMessagePreview'>>
+    data: Partial<
+      Pick<
+        Conversation,
+        "name" | "isArchived" | "lastMessageAt" | "lastMessagePreview"
+      >
+    >,
   ): Promise<Conversation> {
     return this.prisma.conversation.update({
       where: { id },
       data,
-    })
+    });
   }
 
   /**
@@ -300,21 +305,24 @@ export class ConversationsRepository {
   async delete(id: string): Promise<void> {
     await this.prisma.conversation.delete({
       where: { id },
-    })
+    });
   }
 
   /**
    * Verifica se usuário é participante da conversa
    */
-  async isParticipant(conversationId: string, userId: string): Promise<boolean> {
+  async isParticipant(
+    conversationId: string,
+    userId: string,
+  ): Promise<boolean> {
     const participant = await this.prisma.chatParticipant.findFirst({
       where: {
         conversationId,
         userId,
         leftAt: null,
       },
-    })
-    return !!participant
+    });
+    return !!participant;
   }
 
   /**
@@ -329,18 +337,18 @@ export class ConversationsRepository {
       select: {
         conversationId: true,
       },
-    })
-    return participants.map((p) => p.conversationId)
+    });
+    return participants.map((p) => p.conversationId);
   }
 
   /**
    * Normaliza telefone para formato padrão
    */
   private normalizePhone(phone: string): string {
-    let normalized = phone.replace(/\D/g, '')
-    if (!normalized.startsWith('55')) {
-      normalized = '55' + normalized
+    let normalized = phone.replace(/\D/g, "");
+    if (!normalized.startsWith("55")) {
+      normalized = "55" + normalized;
     }
-    return normalized
+    return normalized;
   }
 }
