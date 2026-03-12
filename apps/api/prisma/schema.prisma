@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -178,6 +179,8 @@ model Grupo {
   nome             String
   descricao        String?
   ativo            Boolean           @default(true)
+  deletedAt        DateTime?         @map("deleted_at")
+  deletedBy        String?           @map("deleted_by")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
   hospitais        Hospital[]
@@ -193,13 +196,15 @@ model Grupo {
 }
 
 model Especialidade {
-  id        String   @id @default(uuid())
-  nome      String   @unique
+  id        String    @id @default(uuid())
+  nome      String    @unique
   sigla     String?
   cor       String?
-  ativo     Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  ativo     Boolean   @default(true)
+  deletedAt DateTime? @map("deleted_at")
+  deletedBy String?   @map("deleted_by")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   medicos   Medico[]
   vagas     Vaga[]
 
@@ -207,39 +212,45 @@ model Especialidade {
 }
 
 model Hospital {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   nome      String
-  cnpj      String?  @unique
+  cnpj      String?   @unique
   endereco  String?
   cidade    String?
   estado    String?
   cep       String?
   telefone  String?
   email     String?
-  ativo     Boolean  @default(true)
-  grupoId   String   @map("grupo_id")
-  grupo     Grupo    @relation(fields: [grupoId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  ativo     Boolean   @default(true)
+  grupoId   String    @map("grupo_id")
+  grupo     Grupo     @relation(fields: [grupoId], references: [id])
+  deletedAt DateTime? @map("deleted_at")
+  deletedBy String?   @map("deleted_by")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   setores   Setor[]
   vagas     Vaga[]
   grades    Grade[]
 
+  @@index([grupoId])
   @@map("hospitais")
 }
 
 model Setor {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   nome       String
   descricao  String?
-  ativo      Boolean  @default(true)
-  hospitalId String   @map("hospital_id")
-  hospital   Hospital @relation(fields: [hospitalId], references: [id])
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  ativo      Boolean   @default(true)
+  hospitalId String    @map("hospital_id")
+  hospital   Hospital  @relation(fields: [hospitalId], references: [id])
+  deletedAt  DateTime? @map("deleted_at")
+  deletedBy  String?   @map("deleted_by")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
   vagas      Vaga[]
   grades     Grade[]
 
+  @@index([hospitalId])
   @@map("setores")
 }
 
@@ -254,6 +265,8 @@ model Medico {
   especialidadeId       String            @map("especialidade_id")
   especialidade         Especialidade     @relation(fields: [especialidadeId], references: [id])
   ativo                 Boolean           @default(true)
+  deletedAt             DateTime?         @map("deleted_at")
+  deletedBy             String?           @map("deleted_by")
   createdAt             DateTime          @default(now()) @map("created_at")
   updatedAt             DateTime          @updatedAt @map("updated_at")
   escalistas            Escalista[]
@@ -266,6 +279,7 @@ model Medico {
   receivedShiftOffers   ChatShiftOffer[]  @relation("RecipientMedico")
 
   @@unique([crm, crmUf])
+  @@index([especialidadeId])
   @@map("medicos")
 }
 
@@ -276,10 +290,14 @@ model Escalista {
   grupoId   String          @map("grupo_id")
   grupo     Grupo           @relation(fields: [grupoId], references: [id])
   status    EscalistaStatus @default(pendente)
+  deletedAt DateTime?       @map("deleted_at")
+  deletedBy String?         @map("deleted_by")
   createdAt DateTime        @default(now()) @map("created_at")
   updatedAt DateTime        @updatedAt @map("updated_at")
 
   @@unique([medicoId, grupoId])
+  @@index([medicoId])
+  @@index([grupoId])
   @@map("escalistas")
 }
 
@@ -297,6 +315,8 @@ model Vaga {
   setor            Setor             @relation(fields: [setorId], references: [id])
   especialidadeId  String            @map("especialidade_id")
   especialidade    Especialidade     @relation(fields: [especialidadeId], references: [id])
+  deletedAt        DateTime?         @map("deleted_at")
+  deletedBy        String?           @map("deleted_by")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
   candidaturas     Candidatura[]
@@ -304,6 +324,9 @@ model Vaga {
   checkinCheckouts CheckinCheckout[]
   shiftOffers      ChatShiftOffer[]
 
+  @@index([hospitalId])
+  @@index([setorId])
+  @@index([especialidadeId])
   @@map("vagas")
 }
 
@@ -314,10 +337,14 @@ model Candidatura {
   medicoId  String            @map("medico_id")
   medico    Medico            @relation(fields: [medicoId], references: [id])
   status    CandidaturaStatus @default(pendente)
+  deletedAt DateTime?         @map("deleted_at")
+  deletedBy String?           @map("deleted_by")
   createdAt DateTime          @default(now()) @map("created_at")
   updatedAt DateTime          @updatedAt @map("updated_at")
 
   @@unique([vagaId, medicoId])
+  @@index([vagaId])
+  @@index([medicoId])
   @@map("candidaturas")
 }
 
@@ -332,10 +359,14 @@ model Grade {
   setorId    String      @map("setor_id")
   setor      Setor       @relation(fields: [setorId], references: [id])
   status     GradeStatus @default(rascunho)
+  deletedAt  DateTime?   @map("deleted_at")
+  deletedBy  String?     @map("deleted_by")
   createdAt  DateTime    @default(now()) @map("created_at")
   updatedAt  DateTime    @updatedAt @map("updated_at")
   timeSlots  TimeSlot[]
 
+  @@index([hospitalId])
+  @@index([setorId])
   @@map("grades")
 }
 
@@ -351,6 +382,7 @@ model TimeSlot {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
+  @@index([medicoId])
   @@map("time_slots")
 }
 
@@ -365,9 +397,13 @@ model Pagamento {
   dataAutorizacao DateTime?       @map("data_autorizacao")
   dataPagamento   DateTime?       @map("data_pagamento")
   observacoes     String?
+  deletedAt       DateTime?       @map("deleted_at")
+  deletedBy       String?         @map("deleted_by")
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
 
+  @@index([vagaId])
+  @@index([medicoId])
   @@map("pagamentos")
 }
 
@@ -380,10 +416,14 @@ model CheckinCheckout {
   checkinAt   DateTime? @map("checkin_at")
   checkoutAt  DateTime? @map("checkout_at")
   observacoes String?
+  deletedAt   DateTime? @map("deleted_at")
+  deletedBy   String?   @map("deleted_by")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@unique([vagaId, medicoId])
+  @@index([vagaId])
+  @@index([medicoId])
   @@map("checkin_checkout")
 }
 
