@@ -140,7 +140,7 @@ function MonthPicker({
             size="icon"
             onClick={handlePreviousYear}
             className="h-7 w-7"
-            aria-label={t("pagination.previous")}
+            aria-label={t("pagination.previousPage")}
           >
             <ChevronLeftIcon />
           </Button>
@@ -150,7 +150,7 @@ function MonthPicker({
             size="icon"
             onClick={handleNextYear}
             className="h-7 w-7"
-            aria-label={t("pagination.next")}
+            aria-label={t("pagination.nextPage")}
           >
             <ChevronRightIcon />
           </Button>
