@@ -223,6 +223,11 @@
       "folhaPagamento": "Payroll",
       "riscoOperacional": "Operational Risk"
     },
+    "hospitalCard": {
+      "open": "Open",
+      "closed": "Closed",
+      "total": "Total"
+    },
     "filters": {
       "period": "Period:",
       "selectMonth": "Select month",
@@ -349,6 +354,14 @@
       "bulkRejectDescription": "Are you sure you want to reject {count} application(s)?",
       "bulkRejectButton": "Reject All"
     },
+    "table": {
+      "selectAll": "Select all",
+      "date": "Date",
+      "vaga": "Shift",
+      "medico": "Doctor",
+      "status": "Status",
+      "actions": "Actions"
+    },
     "bulk": {
       "approveSelected": "Approve Selected",
       "rejectSelected": "Reject Selected"
@@ -397,6 +410,17 @@
       "ufRequired": "State is required",
       "invalidEmail": "Invalid email",
       "specialtyRequired": "Specialty is required"
+    },
+    "details": {
+      "title": "Doctor Details",
+      "fullName": "Full Name",
+      "crmUf": "CRM/State",
+      "cpf": "CPF",
+      "specialty": "Specialty",
+      "linkedGroups": "Linked Groups ({count})",
+      "groupId": "Group ID: {id}",
+      "candidaturasHistory": "Application History ({count})",
+      "vagaId": "Shift ID: {id}"
     }
   },
   "Hospitais": {
@@ -534,6 +558,18 @@
       "hospitalRequired": "Hospital is required",
       "sectorRequired": "Sector is required"
     },
+    "generateVagas": {
+      "title": "Generate Shifts",
+      "description": "Configure the parameters to generate shifts from the schedule time slots",
+      "summary": "Generation Summary",
+      "summaryDescription": "{slots} time slots will be converted into {slots} shifts",
+      "specialty": "Specialty",
+      "selectSpecialty": "Select specialty",
+      "valuePerVaga": "Value per Shift",
+      "estimatedTotal": "Estimated Total Value",
+      "generating": "Generating...",
+      "generateButton": "Generate Shifts"
+    },
     "detail": {
       "gradeNotFound": "Schedule not found",
       "back": "Back",
@@ -547,7 +583,10 @@
       "slots": "slots",
       "filledPercent": "% filled",
       "viewDetails": "View Details",
-      "selectMonth": "Select a month"
+      "selectMonth": "Select a month",
+      "createdAt": "Created at",
+      "hospitalId": "Hospital ID",
+      "sectorId": "Sector ID"
     }
   },
   "Pagamentos": {
@@ -579,6 +618,17 @@
       "medico": "Doctor",
       "value": "Value",
       "actions": "Actions"
+    },
+    "row": {
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "vagaDate": "Shift Date",
+      "schedule": "Schedule",
+      "medico": "Doctor",
+      "crm": "CRM",
+      "value": "Value",
+      "authorizationDate": "Authorization Date",
+      "paymentDate": "Payment Date"
     },
     "summary": {
       "totalPending": "Total Pending",
@@ -840,6 +890,10 @@
       "vagas": "Shifts",
       "messages": "Messages",
       "announcements": "Announcements"
+    },
+    "item": {
+      "markAsRead": "Mark as read",
+      "delete": "Delete"
     },
     "empty": {
       "noUnread": "No unread notifications",

@@ -223,6 +223,11 @@
       "folhaPagamento": "Folha de Pagamento",
       "riscoOperacional": "Risco Operacional"
     },
+    "hospitalCard": {
+      "open": "Abertas",
+      "closed": "Fechadas",
+      "total": "Total"
+    },
     "filters": {
       "period": "Período:",
       "selectMonth": "Selecione o mês",
@@ -349,6 +354,14 @@
       "bulkRejectDescription": "Tem certeza que deseja rejeitar {count} candidatura(s)?",
       "bulkRejectButton": "Rejeitar Todas"
     },
+    "table": {
+      "selectAll": "Selecionar todos",
+      "date": "Data",
+      "vaga": "Vaga",
+      "medico": "Médico",
+      "status": "Status",
+      "actions": "Ações"
+    },
     "bulk": {
       "approveSelected": "Aprovar Selecionados",
       "rejectSelected": "Rejeitar Selecionados"
@@ -397,6 +410,17 @@
       "ufRequired": "UF é obrigatória",
       "invalidEmail": "Email inválido",
       "specialtyRequired": "Especialidade é obrigatória"
+    },
+    "details": {
+      "title": "Detalhes do Médico",
+      "fullName": "Nome Completo",
+      "crmUf": "CRM/UF",
+      "cpf": "CPF",
+      "specialty": "Especialidade",
+      "linkedGroups": "Grupos Vinculados ({count})",
+      "groupId": "Grupo ID: {id}",
+      "candidaturasHistory": "Histórico de Candidaturas ({count})",
+      "vagaId": "Vaga ID: {id}"
     }
   },
   "Hospitais": {
@@ -534,6 +558,18 @@
       "hospitalRequired": "Hospital é obrigatório",
       "sectorRequired": "Setor é obrigatório"
     },
+    "generateVagas": {
+      "title": "Gerar Vagas",
+      "description": "Configure os parâmetros para gerar vagas a partir dos time slots da grade",
+      "summary": "Resumo da Geração",
+      "summaryDescription": "{slots} time slots serão convertidos em {slots} vagas",
+      "specialty": "Especialidade",
+      "selectSpecialty": "Selecione a especialidade",
+      "valuePerVaga": "Valor por Vaga (R$)",
+      "estimatedTotal": "Valor Total Estimado",
+      "generating": "Gerando...",
+      "generateButton": "Gerar Vagas"
+    },
     "detail": {
       "gradeNotFound": "Grade não encontrada",
       "back": "Voltar",
@@ -547,7 +583,10 @@
       "slots": "slots",
       "filledPercent": "% preenchido",
       "viewDetails": "Ver Detalhes",
-      "selectMonth": "Selecione um mês"
+      "selectMonth": "Selecione um mês",
+      "createdAt": "Criado em",
+      "hospitalId": "Hospital ID",
+      "sectorId": "Setor ID"
     }
   },
   "Pagamentos": {
@@ -579,6 +618,17 @@
       "medico": "Médico",
       "value": "Valor",
       "actions": "Ações"
+    },
+    "row": {
+      "hospital": "Hospital",
+      "sector": "Setor",
+      "vagaDate": "Data da Vaga",
+      "schedule": "Horário",
+      "medico": "Médico",
+      "crm": "CRM",
+      "value": "Valor",
+      "authorizationDate": "Data de Autorização",
+      "paymentDate": "Data de Pagamento"
     },
     "summary": {
       "totalPending": "Total Pendente",
@@ -840,6 +890,10 @@
       "vagas": "Vagas",
       "messages": "Mensagens",
       "announcements": "Comunicados"
+    },
+    "item": {
+      "markAsRead": "Marcar como lida",
+      "delete": "Excluir"
     },
     "empty": {
       "noUnread": "Nenhuma notificação não lida",

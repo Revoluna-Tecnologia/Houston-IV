@@ -223,6 +223,11 @@
       "folhaPagamento": "Nómina de Pagos",
       "riscoOperacional": "Riesgo Operacional"
     },
+    "hospitalCard": {
+      "open": "Abiertos",
+      "closed": "Cerrados",
+      "total": "Total"
+    },
     "filters": {
       "period": "Período:",
       "selectMonth": "Seleccione el mes",
@@ -349,6 +354,14 @@
       "bulkRejectDescription": "¿Está seguro de que desea rechazar {count} postulación(es)?",
       "bulkRejectButton": "Rechazar Todas"
     },
+    "table": {
+      "selectAll": "Seleccionar todos",
+      "date": "Fecha",
+      "vaga": "Turno",
+      "medico": "Médico",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
     "bulk": {
       "approveSelected": "Aprobar Seleccionados",
       "rejectSelected": "Rechazar Seleccionados"
@@ -397,6 +410,17 @@
       "ufRequired": "La UF es obligatoria",
       "invalidEmail": "Email inválido",
       "specialtyRequired": "La especialidad es obligatoria"
+    },
+    "details": {
+      "title": "Detalles del Médico",
+      "fullName": "Nombre Completo",
+      "crmUf": "CRM/UF",
+      "cpf": "CPF",
+      "specialty": "Especialidad",
+      "linkedGroups": "Grupos Vinculados ({count})",
+      "groupId": "Grupo ID: {id}",
+      "candidaturasHistory": "Historial de Postulaciones ({count})",
+      "vagaId": "Turno ID: {id}"
     }
   },
   "Hospitais": {
@@ -534,6 +558,18 @@
       "hospitalRequired": "El hospital es obligatorio",
       "sectorRequired": "El sector es obligatorio"
     },
+    "generateVagas": {
+      "title": "Generar Turnos",
+      "description": "Configure los parámetros para generar turnos a partir de los time slots del horario",
+      "summary": "Resumen de Generación",
+      "summaryDescription": "{slots} time slots se convertirán en {slots} turnos",
+      "specialty": "Especialidad",
+      "selectSpecialty": "Seleccione la especialidad",
+      "valuePerVaga": "Valor por Turno",
+      "estimatedTotal": "Valor Total Estimado",
+      "generating": "Generando...",
+      "generateButton": "Generar Turnos"
+    },
     "detail": {
       "gradeNotFound": "Horario no encontrado",
       "back": "Volver",
@@ -547,7 +583,10 @@
       "slots": "espacios",
       "filledPercent": "% completado",
       "viewDetails": "Ver Detalles",
-      "selectMonth": "Seleccione un mes"
+      "selectMonth": "Seleccione un mes",
+      "createdAt": "Creado el",
+      "hospitalId": "Hospital ID",
+      "sectorId": "Sector ID"
     }
   },
   "Pagamentos": {
@@ -579,6 +618,17 @@
       "medico": "Médico",
       "value": "Valor",
       "actions": "Acciones"
+    },
+    "row": {
+      "hospital": "Hospital",
+      "sector": "Sector",
+      "vagaDate": "Fecha del Turno",
+      "schedule": "Horario",
+      "medico": "Médico",
+      "crm": "CRM",
+      "value": "Valor",
+      "authorizationDate": "Fecha de Autorización",
+      "paymentDate": "Fecha de Pago"
     },
     "summary": {
       "totalPending": "Total Pendiente",
@@ -840,6 +890,10 @@
       "vagas": "Turnos",
       "messages": "Mensajes",
       "announcements": "Comunicados"
+    },
+    "item": {
+      "markAsRead": "Marcar como leída",
+      "delete": "Eliminar"
     },
     "empty": {
       "noUnread": "Ninguna notificación no leída",
