@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Grade, TimeSlot, Prisma } from "@prisma/client";
+import type { Grade, TimeSlot, Prisma } from "../generated/prisma/client";
 import type { CreateGradeDto, GradeQueryDto, CreateTimeSlotDto } from "./dto";
 import type { PaginatedResult } from "../common";
 

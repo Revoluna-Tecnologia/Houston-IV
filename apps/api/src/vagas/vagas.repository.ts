@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Vaga, Prisma } from "@prisma/client";
+import type { Vaga, Prisma } from "../generated/prisma/client";
 import type { CreateVagaDto, VagaQueryDto } from "./dto";
 import type { PaginatedResult } from "../common";
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Hospital, Prisma } from "@prisma/client";
+import type { Hospital, Prisma } from "../generated/prisma/client";
 import type {
   CreateHospitalDto,
   UpdateHospitalDto,

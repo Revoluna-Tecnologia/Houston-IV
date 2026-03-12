@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Setor, Prisma } from "@prisma/client";
+import type { Setor, Prisma } from "../generated/prisma/client";
 import type { CreateSetorDto, UpdateSetorDto, SetorQueryDto } from "./dto";
 import type { PaginatedResult } from "../common";
 

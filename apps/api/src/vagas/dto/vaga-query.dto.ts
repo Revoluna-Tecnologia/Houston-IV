@@ -1,7 +1,15 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsOptional, IsString, IsEnum, IsUUID, IsDateString, IsNumber, Min } from 'class-validator'
-import { Type } from 'class-transformer'
-import { VagaStatus } from '@prisma/client'
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsUUID,
+  IsDateString,
+  IsNumber,
+  Min,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { VagaStatus } from "../../generated/prisma/client";
 
 export class VagaQueryDto {
   @ApiPropertyOptional({ example: 1 })
@@ -9,52 +17,54 @@ export class VagaQueryDto {
   @IsNumber()
   @Min(1)
   @IsOptional()
-  page?: number
+  page?: number;
 
   @ApiPropertyOptional({ example: 10 })
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   @IsOptional()
-  limit?: number
+  limit?: number;
 
-  @ApiPropertyOptional({ example: 'createdAt' })
+  @ApiPropertyOptional({ example: "createdAt" })
   @IsOptional()
   @IsString()
-  sortBy?: string
+  sortBy?: string;
 
-  @ApiPropertyOptional({ enum: ['asc', 'desc'] })
+  @ApiPropertyOptional({ enum: ["asc", "desc"] })
   @IsOptional()
   @IsString()
-  sortOrder?: 'asc' | 'desc'
+  sortOrder?: "asc" | "desc";
 
-  @ApiPropertyOptional({ enum: ['aberta', 'fechada', 'cancelada', 'anunciada'] })
+  @ApiPropertyOptional({
+    enum: ["aberta", "fechada", "cancelada", "anunciada"],
+  })
   @IsOptional()
   @IsEnum(VagaStatus)
-  status?: VagaStatus
+  status?: VagaStatus;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  hospitalId?: string
+  hospitalId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  setorId?: string
+  setorId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  especialidadeId?: string
+  especialidadeId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsDateString()
-  dataInicio?: string
+  dataInicio?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsDateString()
-  dataFim?: string
+  dataFim?: string;
 }

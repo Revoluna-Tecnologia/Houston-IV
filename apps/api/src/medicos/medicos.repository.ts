@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Medico, Prisma } from "@prisma/client";
+import type { Medico, Prisma } from "../generated/prisma/client";
 import type { CreateMedicoDto, UpdateMedicoDto, MedicoQueryDto } from "./dto";
 import type { PaginatedResult } from "../common";
 

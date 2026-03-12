@@ -1,40 +1,40 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { VagaStatus } from '@prisma/client'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { VagaStatus } from "../../generated/prisma/client";
 
 export class VagaResponseDto {
   @ApiProperty()
-  id!: string
+  id!: string;
 
   @ApiProperty()
-  data!: Date
+  data!: Date;
 
   @ApiProperty()
-  horaInicio!: string
+  horaInicio!: string;
 
   @ApiProperty()
-  horaFim!: string
+  horaFim!: string;
 
   @ApiProperty()
-  valor!: number
+  valor!: number;
 
   @ApiPropertyOptional({ nullable: true })
-  observacoes!: string | null
+  observacoes!: string | null;
 
-  @ApiProperty({ enum: ['aberta', 'fechada', 'cancelada', 'anunciada'] })
-  status!: VagaStatus
-
-  @ApiProperty()
-  hospitalId!: string
+  @ApiProperty({ enum: ["aberta", "fechada", "cancelada", "anunciada"] })
+  status!: VagaStatus;
 
   @ApiProperty()
-  setorId!: string
+  hospitalId!: string;
 
   @ApiProperty()
-  especialidadeId!: string
+  setorId!: string;
 
   @ApiProperty()
-  createdAt!: Date
+  especialidadeId!: string;
 
   @ApiProperty()
-  updatedAt!: Date
+  createdAt!: Date;
+
+  @ApiProperty()
+  updatedAt!: Date;
 }

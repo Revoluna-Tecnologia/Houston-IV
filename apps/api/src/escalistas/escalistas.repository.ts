@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Escalista, Prisma } from "@prisma/client";
+import type { Escalista, Prisma } from "../generated/prisma/client";
 import type {
   CreateEscalistaDto,
   UpdateEscalistaDto,

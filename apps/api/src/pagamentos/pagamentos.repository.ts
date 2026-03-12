@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Pagamento, Prisma } from "@prisma/client";
+import type { Pagamento, Prisma } from "../generated/prisma/client";
 import type {
   CreatePagamentoDto,
   UpdatePagamentoDto,

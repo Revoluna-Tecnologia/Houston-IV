@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { Grupo, Prisma } from "@prisma/client";
+import type { Grupo, Prisma } from "../generated/prisma/client";
 import type { CreateGrupoDto, UpdateGrupoDto, GrupoQueryDto } from "./dto";
 import type { PaginatedResult } from "../common";
 
