@@ -1,11 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { GruposRepository } from '../grupos.repository'
-import { createGrupoFixture, createGrupoListFixture } from '../../__tests__/fixtures'
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { GruposRepository } from "../grupos.repository";
+import {
+  createGrupoFixture,
+  createGrupoListFixture,
+} from "../../__tests__/fixtures";
 
-describe('GruposRepository', () => {
-  let repository: GruposRepository
+describe("GruposRepository", () => {
+  let repository: GruposRepository;
 
   const mockPrisma = {
+    notDeleted: () => ({ deletedAt: null }),
+    softDeleteData: () => ({ deletedAt: new Date() }),
     grupo: {
       create: vi.fn(),
       findMany: vi.fn(),
@@ -15,147 +20,152 @@ describe('GruposRepository', () => {
       delete: vi.fn(),
       count: vi.fn(),
     },
-  }
+  };
 
   beforeEach(() => {
-    repository = new GruposRepository(mockPrisma as never)
-    vi.clearAllMocks()
-  })
+    repository = new GruposRepository(mockPrisma as never);
+    vi.clearAllMocks();
+  });
 
-  describe('create', () => {
-    it('should create a new grupo', async () => {
-      const dto = { nome: 'Novo Grupo', descricao: 'Descricao' }
-      const grupo = createGrupoFixture(dto)
-      mockPrisma.grupo.create.mockResolvedValue(grupo)
+  describe("create", () => {
+    it("should create a new grupo", async () => {
+      const dto = { nome: "Novo Grupo", descricao: "Descricao" };
+      const grupo = createGrupoFixture(dto);
+      mockPrisma.grupo.create.mockResolvedValue(grupo);
 
-      const result = await repository.create(dto)
+      const result = await repository.create(dto);
 
-      expect(result).toEqual(grupo)
-      expect(mockPrisma.grupo.create).toHaveBeenCalledWith({ data: dto })
-    })
-  })
+      expect(result).toEqual(grupo);
+      expect(mockPrisma.grupo.create).toHaveBeenCalledWith({ data: dto });
+    });
+  });
 
-  describe('findAll', () => {
-    it('should return paginated grupos', async () => {
-      const grupos = createGrupoListFixture(5)
-      mockPrisma.grupo.findMany.mockResolvedValue(grupos)
-      mockPrisma.grupo.count.mockResolvedValue(5)
+  describe("findAll", () => {
+    it("should return paginated grupos", async () => {
+      const grupos = createGrupoListFixture(5);
+      mockPrisma.grupo.findMany.mockResolvedValue(grupos);
+      mockPrisma.grupo.count.mockResolvedValue(5);
 
-      const result = await repository.findAll({ page: 1, limit: 10 })
+      const result = await repository.findAll({ page: 1, limit: 10 });
 
-      expect(result.data).toEqual(grupos)
-      expect(result.meta.total).toBe(5)
-      expect(result.meta.page).toBe(1)
-    })
+      expect(result.data).toEqual(grupos);
+      expect(result.meta.total).toBe(5);
+      expect(result.meta.page).toBe(1);
+    });
 
-    it('should apply ativo filter', async () => {
-      mockPrisma.grupo.findMany.mockResolvedValue([])
-      mockPrisma.grupo.count.mockResolvedValue(0)
+    it("should apply ativo filter", async () => {
+      mockPrisma.grupo.findMany.mockResolvedValue([]);
+      mockPrisma.grupo.count.mockResolvedValue(0);
 
-      await repository.findAll({ ativo: true })
+      await repository.findAll({ ativo: true });
 
       expect(mockPrisma.grupo.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({ ativo: true }),
-        })
-      )
-    })
+        }),
+      );
+    });
 
-    it('should apply search filter', async () => {
-      mockPrisma.grupo.findMany.mockResolvedValue([])
-      mockPrisma.grupo.count.mockResolvedValue(0)
+    it("should apply search filter", async () => {
+      mockPrisma.grupo.findMany.mockResolvedValue([]);
+      mockPrisma.grupo.count.mockResolvedValue(0);
 
-      await repository.findAll({ search: 'Hospital' })
+      await repository.findAll({ search: "Hospital" });
 
       expect(mockPrisma.grupo.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             OR: expect.any(Array),
           }),
-        })
-      )
-    })
+        }),
+      );
+    });
 
-    it('should use default pagination values', async () => {
-      mockPrisma.grupo.findMany.mockResolvedValue([])
-      mockPrisma.grupo.count.mockResolvedValue(0)
+    it("should use default pagination values", async () => {
+      mockPrisma.grupo.findMany.mockResolvedValue([]);
+      mockPrisma.grupo.count.mockResolvedValue(0);
 
-      const result = await repository.findAll({})
+      const result = await repository.findAll({});
 
-      expect(result.meta.page).toBe(1)
-      expect(result.meta.limit).toBe(10)
-    })
-  })
+      expect(result.meta.page).toBe(1);
+      expect(result.meta.limit).toBe(10);
+    });
+  });
 
-  describe('findById', () => {
-    it('should return grupo by id', async () => {
-      const grupo = createGrupoFixture({ id: 'test-id' })
-      mockPrisma.grupo.findUnique.mockResolvedValue(grupo)
+  describe("findById", () => {
+    it("should return grupo by id", async () => {
+      const grupo = createGrupoFixture({ id: "test-id" });
+      mockPrisma.grupo.findFirst.mockResolvedValue(grupo);
 
-      const result = await repository.findById('test-id')
+      const result = await repository.findById("test-id");
 
-      expect(result).toEqual(grupo)
-      expect(mockPrisma.grupo.findUnique).toHaveBeenCalledWith({
-        where: { id: 'test-id' },
-      })
-    })
+      expect(result).toEqual(grupo);
+      expect(mockPrisma.grupo.findFirst).toHaveBeenCalledWith({
+        where: { id: "test-id", deletedAt: null },
+      });
+    });
 
-    it('should return null when not found', async () => {
-      mockPrisma.grupo.findUnique.mockResolvedValue(null)
+    it("should return null when not found", async () => {
+      mockPrisma.grupo.findFirst.mockResolvedValue(null);
 
-      const result = await repository.findById('invalid-id')
+      const result = await repository.findById("invalid-id");
 
-      expect(result).toBeNull()
-    })
-  })
+      expect(result).toBeNull();
+    });
+  });
 
-  describe('findByNome', () => {
-    it('should return grupo by nome', async () => {
-      const grupo = createGrupoFixture({ nome: 'Grupo ABC' })
-      mockPrisma.grupo.findFirst.mockResolvedValue(grupo)
+  describe("findByNome", () => {
+    it("should return grupo by nome", async () => {
+      const grupo = createGrupoFixture({ nome: "Grupo ABC" });
+      mockPrisma.grupo.findFirst.mockResolvedValue(grupo);
 
-      const result = await repository.findByNome('Grupo ABC')
+      const result = await repository.findByNome("Grupo ABC");
 
-      expect(result).toEqual(grupo)
-    })
-  })
+      expect(result).toEqual(grupo);
+    });
+  });
 
-  describe('findByNomeExcludingId', () => {
-    it('should find by nome excluding specific id', async () => {
-      mockPrisma.grupo.findFirst.mockResolvedValue(null)
+  describe("findByNomeExcludingId", () => {
+    it("should find by nome excluding specific id", async () => {
+      mockPrisma.grupo.findFirst.mockResolvedValue(null);
 
-      await repository.findByNomeExcludingId('Grupo ABC', 'exclude-id')
+      await repository.findByNomeExcludingId("Grupo ABC", "exclude-id");
 
       expect(mockPrisma.grupo.findFirst).toHaveBeenCalledWith({
-        where: { nome: 'Grupo ABC', NOT: { id: 'exclude-id' } },
-      })
-    })
-  })
+        where: {
+          nome: "Grupo ABC",
+          NOT: { id: "exclude-id" },
+          deletedAt: null,
+        },
+      });
+    });
+  });
 
-  describe('update', () => {
-    it('should update grupo', async () => {
-      const grupo = createGrupoFixture({ nome: 'Updated' })
-      mockPrisma.grupo.update.mockResolvedValue(grupo)
+  describe("update", () => {
+    it("should update grupo", async () => {
+      const grupo = createGrupoFixture({ nome: "Updated" });
+      mockPrisma.grupo.update.mockResolvedValue(grupo);
 
-      const result = await repository.update('id', { nome: 'Updated' })
+      const result = await repository.update("id", { nome: "Updated" });
 
-      expect(result).toEqual(grupo)
+      expect(result).toEqual(grupo);
       expect(mockPrisma.grupo.update).toHaveBeenCalledWith({
-        where: { id: 'id' },
-        data: { nome: 'Updated' },
-      })
-    })
-  })
+        where: { id: "id" },
+        data: { nome: "Updated" },
+      });
+    });
+  });
 
-  describe('delete', () => {
-    it('should delete grupo', async () => {
-      mockPrisma.grupo.delete.mockResolvedValue({})
+  describe("delete", () => {
+    it("should delete grupo", async () => {
+      mockPrisma.grupo.update.mockResolvedValue({});
 
-      await repository.delete('id')
+      await repository.delete("id");
 
-      expect(mockPrisma.grupo.delete).toHaveBeenCalledWith({
-        where: { id: 'id' },
-      })
-    })
-  })
-})
+      expect(mockPrisma.grupo.update).toHaveBeenCalledWith({
+        where: { id: "id" },
+        data: { deletedAt: expect.any(Date) },
+      });
+    });
+  });
+});

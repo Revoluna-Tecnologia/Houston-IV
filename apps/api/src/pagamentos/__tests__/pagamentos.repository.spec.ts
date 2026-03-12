@@ -1,18 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-
-vi.mock("@prisma/client", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@prisma/client")>();
-  return {
-    ...actual,
-    PagamentoStatus: {
-      pendente: "pendente",
-      autorizado: "autorizado",
-      pago: "pago",
-      cancelado: "cancelado",
-    },
-  };
-});
-
 import { PagamentosRepository } from "../pagamentos.repository";
 import {
   createPagamentoFixture,
@@ -26,6 +12,8 @@ describe("PagamentosRepository", () => {
   let repository: PagamentosRepository;
 
   const mockPrisma = {
+    notDeleted: () => ({ deletedAt: null }),
+    softDeleteData: () => ({ deletedAt: new Date() }),
     pagamento: {
       create: vi.fn(),
       findMany: vi.fn(),
@@ -144,18 +132,18 @@ describe("PagamentosRepository", () => {
   describe("findById", () => {
     it("should return pagamento by id", async () => {
       const pagamento = createPagamentoFixture({ id: "test-id" });
-      mockPrisma.pagamento.findUnique.mockResolvedValue(pagamento);
+      mockPrisma.pagamento.findFirst.mockResolvedValue(pagamento);
 
       const result = await repository.findById("test-id");
 
       expect(result).toEqual(pagamento);
-      expect(mockPrisma.pagamento.findUnique).toHaveBeenCalledWith({
-        where: { id: "test-id" },
+      expect(mockPrisma.pagamento.findFirst).toHaveBeenCalledWith({
+        where: { id: "test-id", deletedAt: null },
       });
     });
 
     it("should return null when not found", async () => {
-      mockPrisma.pagamento.findUnique.mockResolvedValue(null);
+      mockPrisma.pagamento.findFirst.mockResolvedValue(null);
 
       const result = await repository.findById("invalid-id");
 
@@ -178,7 +166,7 @@ describe("PagamentosRepository", () => {
 
       expect(result).toEqual(pagamento);
       expect(mockPrisma.pagamento.findFirst).toHaveBeenCalledWith({
-        where: { vagaId: "vaga-id", medicoId: "medico-id" },
+        where: { vagaId: "vaga-id", medicoId: "medico-id", deletedAt: null },
       });
     });
   });
@@ -216,12 +204,13 @@ describe("PagamentosRepository", () => {
 
   describe("delete", () => {
     it("should delete pagamento", async () => {
-      mockPrisma.pagamento.delete.mockResolvedValue({});
+      mockPrisma.pagamento.update.mockResolvedValue({});
 
       await repository.delete("id");
 
-      expect(mockPrisma.pagamento.delete).toHaveBeenCalledWith({
+      expect(mockPrisma.pagamento.update).toHaveBeenCalledWith({
         where: { id: "id" },
+        data: { deletedAt: expect.any(Date) },
       });
     });
   });
@@ -236,7 +225,7 @@ describe("PagamentosRepository", () => {
 
       expect(result).toBe(4500);
       expect(mockPrisma.pagamento.aggregate).toHaveBeenCalledWith({
-        where: { medicoId: "medico-id" },
+        where: { medicoId: "medico-id", deletedAt: null },
         _sum: { valor: true },
       });
     });
@@ -264,7 +253,10 @@ describe("PagamentosRepository", () => {
 
       expect(result).toBe(10000);
       expect(mockPrisma.pagamento.aggregate).toHaveBeenCalledWith({
-        where: { createdAt: { gte: dataInicio, lte: dataFim } },
+        where: {
+          createdAt: { gte: dataInicio, lte: dataFim },
+          deletedAt: null,
+        },
         _sum: { valor: true },
       });
     });
